@@ -84,8 +84,10 @@ class DataTable(Frame):
         num_records = self.thisModel.getRowCount()
         num_columns = self.thisModel.getColumnCount()
         #Now we can draw the actual table
-        self.thisTable = TableCanvasWithHide(parent=self.parent, model=self.thisModel, width=num_columns * 170, editable=False)
-        self.thisTable.height = 15 * num_records
+        self.thisTable = TableCanvasWithHide(parent=self.parent, model=self.thisModel, width=num_columns * 70, editable=False, height=num_records * 20)
+        #self.thisTable = TableCanvas(parent=self.parent, model=self.thisModel, width=num_columns * 170,
+        #                                     editable=False)
+        #self.thisTable.height = 15 * num_records
         self.thisTable.createTableFrame()
         self.thisTable.autoResizeColumns()
         self.thisTable.redrawTable()
