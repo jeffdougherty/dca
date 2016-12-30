@@ -57,6 +57,7 @@ class SideInfoWindow(Frame):
             if i <= 1: #Scenario Key, Side Key
                 parent_frame = self.screen_frames[0]
                 thisDataLabel = Label(parent_frame, text=self.column_name_list[i], width=0)
+
                 thisDataValue = Entry(parent_frame)
                 thisDataValue.config(width=2, justify=CENTER)
                 thisDataValue.insert(0, self.field_values[i])
@@ -64,6 +65,7 @@ class SideInfoWindow(Frame):
             elif i == 2: #Side Name
                 parent_frame = self.screen_frames[0]
                 thisDataLabel = Label(parent_frame, text=self.column_name_list[i], width=0)
+
                 thisDataValue = Entry(parent_frame)
                 thisDataValue.config(width=8, justify=LEFT)
                 thisDataValue.insert(0, self.field_values[i])
