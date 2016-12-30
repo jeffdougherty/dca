@@ -1,6 +1,7 @@
 from tkintertable import *
-from helperfunctions import connect_to_db, determine_index, generate_data_set, close_connection, create_names_dict
-from helperclasses import ToplevelUpdate, DataTable
+from helperfunctions import connect_to_db, close_connection, create_names_dict
+from helperclasses import DataTable
+from ttk import Combobox
 
 class GameWindow(Frame):
 
@@ -8,9 +9,11 @@ class GameWindow(Frame):
         self.parent = parent
 
         #Set up the window
-        self.width = 720
+        self.width = 900
         self.height = 480
         self.center_window()
+        self.damage_type_string = StringVar()
+        self.damage_type_string.set('Shell/Bomb')
         Frame.__init__(self, parent, background='white')
         self.pack(fill=BOTH, expand=1)
         #Create the frames for holding the UI
@@ -22,6 +25,8 @@ class GameWindow(Frame):
         nav_controls_frame.grid(row=2, column=1)
         self.console_frame = Frame(master=self)
         self.console_frame.grid(row=3, column=1)
+        hit_controls_frame = Frame(master=self)
+        hit_controls_frame.grid(row=2, column=2)
         # Need the game turn before we proceed any further
         self.game_id = game_id
         cursor = connect_to_db()
@@ -36,10 +41,13 @@ class GameWindow(Frame):
         scenario_index = col_headings.index('Scenario Key')
         self.scenario_key = game_data[scenario_index]
         close_connection(cursor)
+
         self.load_game_log()
         self.draw_controls(controls_frame)
+        self.draw_hit_controls(hit_controls_frame)
         self.draw_tables(self.tables_frame)
         self.draw_nav_controls(nav_controls_frame)
+
         self.draw_console(self.console_frame)
 
     def center_window(self):
@@ -53,17 +61,20 @@ class GameWindow(Frame):
     def draw_controls(self, parent):
         turn_frame = Frame(parent)
         turn_frame.pack(side='top')
+        turn_label = Label(turn_frame, text='Game Turn')
+        turn_label.pack(side='top')
         prev_turn_button = Button(turn_frame, text='<<<', command=lambda: self.prev_turn())
         prev_turn_button.pack(side='left')
-        self.turn_readout = Entry(parent)
+        self.turn_readout = Entry(parent, width=2)
         self.turn_readout.insert(0, self.game_turn)
         self.turn_readout.config(state='readonly')
         self.turn_readout.pack(side='left')
         next_turn_button = Button(turn_frame, text='>>>', command=lambda: self.next_turn())
         next_turn_button.pack(side='left')
 
+
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Annex A Key', 'Damage Pts Taken', 'Damage Pts', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits']
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'Damage Pts Taken', 'Damage Pts', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits']
         ship_table_column_names_list = game_ship_table_column_names_list[:]
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'default': 'number'}
         self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed'})
@@ -102,6 +113,27 @@ class GameWindow(Frame):
             this_record = str(record[1]) + " Turn: " + str(record[2]) + " " + record[3] + "\n"
             self.log_console.insert(END, this_record)
         self.log_console.config(state=DISABLED)
+
+    def draw_hit_controls(self, parent):
+        hit_label_frame = Frame(parent)
+        hit_label_frame.pack(side='top')
+        panel_label = Label(hit_label_frame, text='Hit Controls')
+        panel_label.pack(side='top')
+        hit_type_frame = Frame(parent)
+        hit_type_frame.pack(side='top')
+        hit_type_label = Label(hit_type_frame, text="Type")
+        hit_type_label.pack(side='left')
+        damage_type_picker = Combobox(hit_type_frame, values=['Shell/Bomb', 'Torpedo/Mine'],
+                                      textvariable=self.damage_type_string, state='readonly')
+        damage_type_picker.pack(side='left')
+        hit_dp_frame = Frame(parent)
+        hit_dp_frame.pack(side='top')
+        hit_dp_amount = Entry(hit_dp_frame, width=6)
+        hit_dp_amount.pack(side='left')
+        hit_dp_label = Label(hit_dp_frame, text="DP")
+        hit_dp_label.pack(side='left')
+
+
 
     def close_window(self):
         self.destroy()
