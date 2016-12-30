@@ -13,14 +13,15 @@ class GameWindow(Frame):
         self.center_window()
         Frame.__init__(self, parent, background='white')
         self.pack(fill=BOTH, expand=1)
-
         #Create the frames for holding the UI
         self.tables_frame = Frame(master=self)
         self.tables_frame.grid(row=1, column=1)
         controls_frame = Frame(master=self)
         controls_frame.grid(row=1, column=2)
+        nav_controls_frame = Frame(master=self)
+        nav_controls_frame.grid(row=2, column=1)
         self.console_frame = Frame(master=self)
-        self.console_frame.grid(row=2, column=1)
+        self.console_frame.grid(row=3, column=1)
 
         # Need the game turn before we proceed any further
         self.game_id = game_id
@@ -38,9 +39,9 @@ class GameWindow(Frame):
         close_connection(cursor)
         self.load_game_log()
         self.draw_controls(controls_frame)
-        self.draw_tables()
-        #self.draw_console()
-
+        self.draw_tables(self.tables_frame)
+        self.draw_nav_controls(nav_controls_frame)
+        #self.draw_console(console_frame)
 
     def center_window(self):
         w, h = self.width, self.height
@@ -62,11 +63,11 @@ class GameWindow(Frame):
         next_turn_button = Button(turn_frame, text='>>>', command=lambda: self.next_turn())
         next_turn_button.pack(side='left')
 
-    def draw_tables(self):
+    def draw_tables(self, parent):
         game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Annex A Key', 'Damage Pts Taken', 'Damage Pts', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits']
         ship_table_column_names_list = game_ship_table_column_names_list[:]
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'default': 'number'}
-        self.shipsTable = DataTable(self.tables_frame, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed'})
+        self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed'})
         #Now adjust the table
         self.shipsTable.hide_column('Annex A Key')
         #Need to move columns, for that we need to address shipsTable's tableModel directly
@@ -83,8 +84,18 @@ class GameWindow(Frame):
             this_record['Damage Pts'] = int(this_record['Damage Pts']) - int(this_record['Damage Pts Taken']) #'Damage Pts' is the total the ship has.  This tells you how many it has left.
             #fill in Critical Hits
         ships_table_model.setSortOrder(columnName='Scenario Side')
+        self.shipsTable.hide_column('Damage Pts Taken')
         ships_table_canvas.redrawVisible()
 
+    def draw_nav_controls(self, parent):
+        quit_button = Button(parent, text="Quit", command=self.quit)
+        #quit_button.pack(side='right') #Do we want a quit button on every sub-window?!?
+        close_button = Button(parent, text="Close", command=lambda: self.close_window())
+        close_button.pack(side='left')
+
+    def close_window(self):
+        self.destroy()
+        self.parent.destroy()
 
     def prev_turn(self):
         self.game_turn -= 1
