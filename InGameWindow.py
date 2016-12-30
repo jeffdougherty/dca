@@ -22,7 +22,6 @@ class GameWindow(Frame):
         nav_controls_frame.grid(row=2, column=1)
         self.console_frame = Frame(master=self)
         self.console_frame.grid(row=3, column=1)
-
         # Need the game turn before we proceed any further
         self.game_id = game_id
         cursor = connect_to_db()
@@ -41,7 +40,7 @@ class GameWindow(Frame):
         self.draw_controls(controls_frame)
         self.draw_tables(self.tables_frame)
         self.draw_nav_controls(nav_controls_frame)
-        #self.draw_console(console_frame)
+        self.draw_console(self.console_frame)
 
     def center_window(self):
         w, h = self.width, self.height
@@ -93,22 +92,36 @@ class GameWindow(Frame):
         close_button = Button(parent, text="Close", command=lambda: self.close_window())
         close_button.pack(side='left')
 
+    def draw_console(self, parent):
+        self.log_console = Text(master=parent, relief=RIDGE, bd=4)
+        self.log_console.pack(side='top')
+        #Initial load of game log events
+        cursor = connect_to_db()
+        cursor.execute("""SELECT * FROM 'Game Log' WHERE [Game ID]=?;""",(self.game_id,))
+        for record in cursor.fetchall():
+            this_record = str(record[1]) + " Turn: " + str(record[2]) + " " + record[3] + "\n"
+            self.log_console.insert(END, this_record)
+        self.log_console.config(state=DISABLED)
+
     def close_window(self):
         self.destroy()
         self.parent.destroy()
 
     def prev_turn(self):
+        self.write_game_log("Game turn moved back to " + str(self.game_turn - 1))
         self.game_turn -= 1
         self.update_turn_readout()
-        self.write_game_log("Game turn moved back to " + str(self.game_turn))
+
 
     def next_turn(self):
+        self.write_game_log("Game turn advanced to " + str(self.game_turn + 1))
         self.game_turn += 1
         self.update_turn_readout()
-        self.write_game_log("Game turn advanced to " + str(self.game_turn))
+
 
     def update_turn_readout(self):
         self.turn_readout.config(state='normal')
+        self.turn_readout.delete(0, END)
         self.turn_readout.insert(0, self.game_turn)
         self.turn_readout.config(state='readonly')
         cursor, conn = connect_to_db(returnConnection=True)
@@ -133,7 +146,17 @@ class GameWindow(Frame):
     def write_game_log(self, message):
         #Do something here to make the message appear in the console, once that exists
         #Do something else here to write the message to the MySQL DB
-        pass
+        #First put it on the console
+        self.log_console.config(state=NORMAL)
+        this_message = str(self.log_sequence) + " Turn: " + str(self.game_turn) + " " + message + "\n"
+        self.log_console.insert(END, this_message)
+        self.log_console.config(state=DISABLED)
+        self.log_console.see(END)
+        self.log_console.update()
+        cursor, conn = connect_to_db(returnConnection=True)
+        cursor.execute("""INSERT INTO 'Game Log' VALUES (?,?,?,?);""", (self.game_id, self.log_sequence, self.game_turn, message,))
+        conn.commit()
+        close_connection(cursor)
 
     def generate_crits_statement(self, this_record):
         #this_record is a ship record from the database.  Renders into readable string form

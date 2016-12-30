@@ -122,7 +122,8 @@ class NewGamePicker(Frame):
         game_name = self.name_field.get()
         game_date = self.date_field.get()
         game_turn = 1
-        cursor.execute("""INSERT INTO 'Game' VALUES(?,?,?,?,?)""", (next_game_index, self.scenario_key, game_name, game_date, game_turn,))
+        cursor.execute("""INSERT INTO 'Game' VALUES(?,?,?,?,?);""", (next_game_index, self.scenario_key, game_name, game_date, game_turn,))
+        cursor.execute("""INSERT INTO 'Game Log' VALUES (?,?,?,?);""", (next_game_index, 1, 1, "Game Log Opened"))
         conn.commit()
         # Create the ship entries, that's going to be its own thing...
         self.load_ships()

@@ -196,6 +196,8 @@ class DataTable(Frame):
     def hide_column(self, column_to_hide):
         self.thisTable.hide_column(column_to_hide)
 
+
+
 class ToplevelUpdate(Toplevel):
     #Parent must be of class ScenariosScreen for this function to work
     #Identical to Toplevel widget, except that it can reach up and call the force_refresh() function
