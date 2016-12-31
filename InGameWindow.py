@@ -14,6 +14,12 @@ class GameWindow(Frame):
         self.center_window()
         self.damage_type_string = StringVar()
         self.damage_type_string.set('Shell/Bomb')
+        self.torpedo_aspect_string = StringVar()
+        self.torpedo_aspect_string.set('Other')
+        self.armor_pen_string = StringVar()
+        self.armor_pen_string.set('Yes')
+        self.torpedo_depth_string = StringVar()
+        self.torpedo_depth_string.set('Shallow')
         Frame.__init__(self, parent, background='white')
         self.pack(fill=BOTH, expand=1)
         #Create the frames for holding the UI
@@ -25,8 +31,6 @@ class GameWindow(Frame):
         nav_controls_frame.grid(row=2, column=1)
         self.console_frame = Frame(master=self)
         self.console_frame.grid(row=3, column=1)
-        hit_controls_frame = Frame(master=self)
-        hit_controls_frame.grid(row=2, column=2)
         # Need the game turn before we proceed any further
         self.game_id = game_id
         cursor = connect_to_db()
@@ -44,10 +48,8 @@ class GameWindow(Frame):
 
         self.load_game_log()
         self.draw_controls(controls_frame)
-        self.draw_hit_controls(hit_controls_frame)
         self.draw_tables(self.tables_frame)
         self.draw_nav_controls(nav_controls_frame)
-
         self.draw_console(self.console_frame)
 
     def center_window(self):
@@ -65,12 +67,17 @@ class GameWindow(Frame):
         turn_label.pack(side='top')
         prev_turn_button = Button(turn_frame, text='<<<', command=lambda: self.prev_turn())
         prev_turn_button.pack(side='left')
-        self.turn_readout = Entry(parent, width=2)
+        self.turn_readout = Entry(turn_frame, width=2)
         self.turn_readout.insert(0, self.game_turn)
         self.turn_readout.config(state='readonly')
         self.turn_readout.pack(side='left')
         next_turn_button = Button(turn_frame, text='>>>', command=lambda: self.next_turn())
         next_turn_button.pack(side='left')
+        spacer_frame = Frame(parent)
+        spacer_frame.pack(side='top')
+        spacer_label = Label(spacer_frame, text='')
+        spacer_label.pack(side='left')
+        self.draw_hit_controls(parent)
 
 
     def draw_tables(self, parent):
@@ -123,17 +130,52 @@ class GameWindow(Frame):
         hit_type_frame.pack(side='top')
         hit_type_label = Label(hit_type_frame, text="Type")
         hit_type_label.pack(side='left')
-        damage_type_picker = Combobox(hit_type_frame, values=['Shell/Bomb', 'Torpedo/Mine'],
-                                      textvariable=self.damage_type_string, state='readonly')
-        damage_type_picker.pack(side='left')
+        self.damage_type_picker = Combobox(hit_type_frame, values=['Shell/Bomb', 'Torpedo'],
+                                      textvariable=self.damage_type_string, state='readonly', width=9)
+        self.damage_type_picker.pack(side='left')
+        self.damage_type_picker.bind("<<ComboboxSelected>>", lambda a: self.set_hit_panels())
         hit_dp_frame = Frame(parent)
         hit_dp_frame.pack(side='top')
-        hit_dp_amount = Entry(hit_dp_frame, width=6)
+        hit_dp_amount = Entry(hit_type_frame, width=3)
         hit_dp_amount.pack(side='left')
-        hit_dp_label = Label(hit_dp_frame, text="DP")
+        hit_dp_label = Label(hit_type_frame, text="DP")
         hit_dp_label.pack(side='left')
+        self.bomb_shell_frame = Frame(parent)
+        self.bomb_shell_frame.pack(side='top')
+        armor_pen_label = Label(self.bomb_shell_frame, text="Armor Penetrated?")
+        armor_pen_label.pack(side="left")
+        armor_pen_picker = Combobox(self.bomb_shell_frame, values=['Yes', 'No'], state='readonly', textvariable = self.armor_pen_string, width=5)
+        armor_pen_picker.pack(side='left')
+        #Add something in for very small caliber hits
+        self.torpedo_frame = Frame(parent)
+        self.torpedo_frame.pack(side='top')
+        depth_label = Label(self.torpedo_frame, text='Run Depth')
+        depth_label.pack(side='left')
+        depth_picker = Combobox(self.torpedo_frame, values=['Shallow', 'Deep'], state='disabled', textvariable=self.torpedo_depth_string, width=8)
+        depth_picker.pack(side='left')
+        aspect_label = Label(self.torpedo_frame, text="Hit Aspect")
+        aspect_label.pack(side='left')
+        aspect_picker = Combobox(self.torpedo_frame, values=['Bow', 'Stern', 'Other'], state='disabled', textvariable=self.torpedo_aspect_string, width=5)
+        aspect_picker.pack(side='left')
+        execute_button_frame = Frame(parent)
+        execute_button_frame.pack(side='top')
+        execute_button = Button(execute_button_frame, text='Apply', command=lambda: self.apply_this_hit())
 
-
+    def set_hit_panels(self):
+        new_val = self.damage_type_picker.get()
+        assert new_val == 'Shell/Bomb' or new_val == 'Torpedo'
+        if new_val == 'Shell/Bomb':
+            bomb_shell_val = 'readonly'
+            torpedo_val = 'disabled'
+        elif new_val == 'Torpedo':
+            bomb_shell_val = 'disabled'
+            torpedo_val = 'readonly'
+        for this_widget in self.bomb_shell_frame.winfo_children():
+            if this_widget.widgetName == 'ttk::combobox':
+                this_widget.config(state=bomb_shell_val)
+        for this_widget in self.torpedo_frame.winfo_children():
+            if this_widget.widgetName == 'ttk::combobox':
+                this_widget.config(state=torpedo_val)
 
     def close_window(self):
         self.destroy()
