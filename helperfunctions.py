@@ -139,11 +139,19 @@ def generate_column_names_dict(descriptions, column_names_list=None, alias_dict=
         this_name = this_description[0]
         if this_name[0] == 'u':  # Should be ' character unless we have one of those annoying leading 'u's
             this_name = this_name[1:]
-        if column_names_list == None or this_name in column_names_list:
+        if column_names_list == None:
             column_names_dict[i] = this_name
+        elif this_name in column_names_list:
+            column_names_dict[i] = this_name
+            del column_names_list[column_names_list.index(this_name)] #Used to check and see if we have any columns left that aren't directly from the database at the end
         if type(alias_dict) == dict and this_name in alias_dict.keys(): #May overwrite previously assigned value
             column_names_dict[i] = alias_dict[this_name]
-
+    #Now add any additional columns that will be in the data table, but are not directly taken from the database
+    if type(column_names_list) == list and len(column_names_list) > 0:
+        max_key = max(column_names_dict.keys())
+        for this_name in column_names_list:
+            max_key += 1
+            column_names_dict[max_key] = this_name
     return column_names_dict
 
 def is_empty(this_list):

@@ -274,7 +274,7 @@ class TableCanvasWithHide(TableCanvas):
         model = self.model
         self.rows = self.model.getRowCount()
         self.cols = self.model.getColumnCount()
-        self.cols -= len(self.hidden_columns)
+        #self.cols -= len(self.hidden_columns)
 
         self.tablewidth = (self.cellwidth) * self.cols
         self.configure(bg=self.cellbackgr)

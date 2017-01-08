@@ -658,3 +658,9 @@ class ShipEditForm(ShipEntryForm):
         if data_sent:
             conn.commit()
         close_connection(cursor)
+
+class AircraftFormationScreen(Frame):
+    #One day there will be something here
+
+    def __init__(self):
+        pass
