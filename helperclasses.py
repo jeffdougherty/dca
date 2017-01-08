@@ -68,6 +68,9 @@ class DataTable(Frame):
             for i in range(1, num_columns + 1):
                 self.column_names_dict[i] = dummy_data['columnorder'][i]
             self.thisModel = TableModel(newdict=dummy_data, rows=1, columns=num_columns)
+            if self.column_title_alias_dict != None:
+                for this_key in self.column_title_alias_dict.keys():
+                    self.thisModel.relabel_Column(self.thisModel.getColumnIndex(this_key), self.column_title_alias_dict[this_key])
         else:
             if self.column_names_list == None: #Don't need to exclude any of the column headings from the finished table
                 self.column_names_list = [description[0] for description in raw_column_headings]
@@ -77,6 +80,9 @@ class DataTable(Frame):
                 self.column_names_dict = generate_column_names_dict(raw_column_headings, self.column_names_list, alias_dict=self.column_title_alias_dict)
                 the_data, num_records = generate_restricted_data_set(raw_data, self.column_names_dict, self.column_types_dict)
             self.thisModel = TableModel(newdict=the_data)
+            if self.column_title_alias_dict != None:
+                for this_key in self.column_title_alias_dict.keys():
+                    self.thisModel.relabel_Column(self.thisModel.getColumnIndex(this_key), self.column_title_alias_dict[this_key])
         close_connection(cursor)
 
     def draw_table(self):
@@ -196,6 +202,8 @@ class DataTable(Frame):
     def hide_column(self, column_to_hide):
         self.thisTable.hide_column(column_to_hide)
 
+    def sort_data(self, columnName, reverse=0):
+        self.thisModel.setSortOrder(columnName=columnName, reverse=reverse)
 
 
 class ToplevelUpdate(Toplevel):

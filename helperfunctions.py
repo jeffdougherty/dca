@@ -144,8 +144,8 @@ def generate_column_names_dict(descriptions, column_names_list=None, alias_dict=
         elif this_name in column_names_list:
             column_names_dict[i] = this_name
             del column_names_list[column_names_list.index(this_name)] #Used to check and see if we have any columns left that aren't directly from the database at the end
-        if type(alias_dict) == dict and this_name in alias_dict.keys(): #May overwrite previously assigned value
-            column_names_dict[i] = alias_dict[this_name]
+        #if type(alias_dict) == dict and this_name in alias_dict.keys(): #May overwrite previously assigned value
+        #    column_names_dict[i] = alias_dict[this_name]
     #Now add any additional columns that will be in the data table, but are not directly taken from the database
     if type(column_names_list) == list and len(column_names_list) > 0:
         max_key = max(column_names_dict.keys())
