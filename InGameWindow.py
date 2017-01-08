@@ -299,10 +299,16 @@ class GameWindow(Frame):
         if hit_type == 'Shell/Bomb':
             if self.armor_pen_picker.get() == 'Yes':
                 armor_pen = True
-            elif self.armor_pen_picker.get() == 'No':
+            #default is no armor pen
+            else:
                 armor_pen = False
+
             self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from shell/bomb hit.")
-            self.write_game_log(shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen, d6, d20))
+            critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen, d6, d20)
+            if critical_hit_result == 'Unsupported Ship':
+                tkMessageBox.showinfo('Unsupported Ship', 'This ship type is not yet supported by Damage Control Assistant')
+            else:
+                self.write_game_log(critical_hit_result)
         if hit_type == 'Torpedo':
             depth = self.depth_picker.get()
             aspect = self.aspect_picker.get()
