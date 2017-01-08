@@ -82,7 +82,7 @@ class GameWindow(Frame):
 
 
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'Damage Pts Taken', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Starting Damage Pts', 'Side Name']
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'Damage Pts Taken', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Starting Damage Pts', 'Side Name', 'Speed Damaged', 'Damage Pts']
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'Side Name': 'text', 'default': 'number'}
         self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed', 'Damage Pts': 'Damage Pts Left'})
 
@@ -96,7 +96,7 @@ class GameWindow(Frame):
 
         #Now we need to go through the data
         for this_record in ships_table_model.data.values():
-            this_record['Starting Damage Pts'] = this_record['Damage Pts Left'] + this_record['Damage Pts Taken'] #Keep track of the DP each ship had at the start
+            this_record['Starting Damage Pts'] = this_record['Damage Pts'] + this_record['Damage Pts Taken'] #Keep track of the DP each ship had at the start
             this_record['Side Name'] = this_side_names_dict[int(this_record['Scenario Side'])]
             this_record['Critical Hits'] = ''
             #fill in calculated columns
