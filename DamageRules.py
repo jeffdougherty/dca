@@ -2,6 +2,9 @@ from random import randrange
 from helperfunctions import connect_to_db, close_connection, to_precision
 
 def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
+
+    aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
+
     cursor, conn = connect_to_db(returnConnection=True)
     print target
     remaining_points = target[column_index_dict['Damage Pts']] - dp
