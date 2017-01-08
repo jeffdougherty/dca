@@ -1,8 +1,8 @@
 from random import randrange
 from helperfunctions import connect_to_db, close_connection, to_precision
 
-def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
-
+def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6, d20):
+    aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
     cursor, conn = connect_to_db(returnConnection=True)
     print target
     if armor_pen == False:
@@ -16,32 +16,38 @@ def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
     cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts] = ?;""",(remaining_points,))
     #Check for speed reduction
     log_string += check_speed_reduction(target, column_index_dict, remaining_points)
+    #Check for massive damage
+    massive_damage_result = check_massive_damage(target, column_index_dict, dp, remaining_points, hit_type)
+    if 'sinks' in massive_damage_result:
+        return massive_damage_result #Massive damage sank the ship, terminate function
+    else:
+        log_string += massive_damage_result
     #Now we start checking for crits
 
     damage_ratio = float(dp / remaining_points)
     if dp / target[column_index_dict['Damage Pts Start']] <= 0.01:
         damage_ratio_dict = {}
-    elif damage_ratio <= 0.10:
+    elif damage_ratio < 0.10:
         damage_ratio_dict = {6: 1}
-    elif damage_ratio <= 0.20:
+    elif damage_ratio < 0.20:
         damage_ratio_dict = {5: 1, 6: 2}
-    elif damage_ratio <= 0.30:
+    elif damage_ratio < 0.30:
         damage_ratio_dict = {4: 1, 5: 2, 6: 3}
-    elif damage_ratio <= 0.40:
+    elif damage_ratio < 0.40:
         damage_ratio_dict = {3: 1, 4: 2, 5: 3, 6: 4}
-    elif damage_ratio <= 0.50:
+    elif damage_ratio < 0.50:
         damage_ratio_dict = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5}
-    elif damage_ratio <= 0.60:
+    elif damage_ratio < 0.60:
         damage_ratio_dict = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
-    elif damage_ratio <= 0.70:
+    elif damage_ratio < 0.70:
         damage_ratio_dict = {1: 2, 2: 3, 3: 4, 5: 6, 6: 7}
-    elif damage_ratio <= 0.80:
+    elif damage_ratio < 0.80:
         damage_ratio_dict = {1: 3, 2: 4, 3: 5, 4: 6, 5: 7, 6: 8}
-    elif damage_ratio <= 0.90:
+    elif damage_ratio < 0.90:
         damage_ratio_dict = {1: 4, 2: 5, 3: 6, 4: 7, 5: 8, 6: 9}
-    elif damage_ratio <= 1.00:
+    elif damage_ratio < 1.00:
         damage_ratio_dict = {1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10}
-    elif damage_ratio <= 1.20:
+    elif damage_ratio < 1.20:
         damage_ratio_dict = {1: 6, 2: 7, 3: 8, 4: 9, 5: 10, 6: 11}
     elif damage_ratio < 3.00:
         damage_ratio_dict = {1: 6, 2: 7, 3: 8, 4: 9, 5: 10, 6: 11}
@@ -98,6 +104,13 @@ def check_speed_reduction(target, column_index_dict, remaining_points):
         close_connection(cursor)
     return addl_log_string
 
+def check_massive_damage(target, column_index_dict, dp, remaining_points, hit_type):
+    #Check to see if massive damage sinks the ship
+    if dp >= (0.75 * target[column_index_dict['Damage Pts Start']]):
+        roll = rolld10()
+        if (roll <= 4 and hit_type == 'Bomb') or (roll <= 8 and hit_type == 'Torpedo/Mine'):
+            return 'takes massive damage from a single hit and sinks!'
+
 def roll_for_crits(target, column_index_dict, armor_pen, d20):
     aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
     merchant_auxiliary = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
@@ -137,6 +150,9 @@ def get_ship_id_info(target, column_index_dict):
 
 def rolld6():
     return randrange(1, 6)
+
+def rolld10():
+    return randrange(1, 10)
 
 def rolld20():
     return randrange(1, 20)
