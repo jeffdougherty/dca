@@ -3,10 +3,10 @@ from helperfunctions import connect_to_db, close_connection, to_precision
 
 def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
 
-    aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
-
     cursor, conn = connect_to_db(returnConnection=True)
     print target
+    if armor_pen == False:
+        dp = int(dp * 0.5)
     remaining_points = target[column_index_dict['Damage Pts']] - dp
     #First thing, check to see if the ship's sunk
     if remaining_points <= 0:
@@ -19,7 +19,9 @@ def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
     #Now we start checking for crits
 
     damage_ratio = float(dp / remaining_points)
-    if damage_ratio <= 0.10:
+    if dp / target[column_index_dict['Damage Pts Start']] <= 0.01:
+        damage_ratio_dict = {}
+    elif damage_ratio <= 0.10:
         damage_ratio_dict = {6: 1}
     elif damage_ratio <= 0.20:
         damage_ratio_dict = {5: 1, 6: 2}
@@ -47,15 +49,22 @@ def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
         for this_key in damage_ratio_dict.keys():
             damage_ratio_dict[this_key] = damage_ratio_dict[this_key] + addl_crits
     else:
-        pass
+        damage_ratio_dict = {}
         # !!! Massive damage kicks in
+
     if d6 == None: #No value supplied for debug mode
         d6 = rolld6()
 
-    num_crits = damage_ratio_dict[d6]
+    if d6 in damage_ratio_dict.keys():
+        num_crits = damage_ratio_dict[d6]
+    else:
+        num_crits = 0
 
+    for i in range(num_crits):
+        this_crit = roll_for_crits(target, column_index_dict, armor_pen, d20)
+        apply_crit(this_crit)
 
-
+    # !!! Also need to check for auto crits
 
 def sink_ship(target, column_index_dict):
     cursor, conn = connect_to_db(returnConnection=True)
@@ -67,7 +76,7 @@ def sink_ship(target, column_index_dict):
 
 def check_speed_reduction(target, column_index_dict, remaining_points):
     cursor, conn = connect_to_db(returnConnection=True)
-
+    addl_log_string = ""
     if remaining_points <= 0.25 * target[column_index_dict['Damage Pts Start']]:
         new_speed = float(to_precision(target[column_index_dict['Speed']] * 0.25, 3))
     elif remaining_points <= 0.5 * target[column_index_dict['Damage Pts Start']]:
@@ -76,7 +85,6 @@ def check_speed_reduction(target, column_index_dict, remaining_points):
         new_speed = float(to_precision(target[column_index_dict['Speed']] * 0.75, 3))
     else:
         new_speed = None
-        addl_log_string = ""
 
     if new_speed != None:
         cursor.execute("""UDPATE 'Game Ship Formation Ship' SET [Speed Damaged]=?;""", (new_speed,))
@@ -84,8 +92,38 @@ def check_speed_reduction(target, column_index_dict, remaining_points):
         # !!! Will need something here to take in the effect of engineering criticals
         conn.commit()
         close_connection(cursor)
-
     return addl_log_string
+
+def roll_for_crits(target, column_index_dict, armor_pen, d20):
+    aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
+    merchant_auxiliary = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
+    this_ship_type = target[column_index_dict['Ship Type']]
+    this_size_class = target[column_index_dict['Size Class']]
+    if this_ship_type in merchant_auxiliary:
+        crit_dict = {1: 'Cargo', 2: 'Cargo', 3: 'Cargo', 4: 'Cargo', 5: 'Cargo', 6: 'Cargo', 7: 'Cargo', 8: 'Weapon', 9: 'Weapon', 10: 'Engineering', 11: 'Engineering', 12: 'Flooding', 13: 'Flooding', 14: 'Flooding', 15: 'Fire', 16: 'Fire', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder'}
+    elif this_ship_type in aviation_ships:
+        crit_dict = {1: 'Flight Deck*', 2: 'Flight Deck*', 3: 'Flight Deck*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Ammo/Fuel*', 7:'Ammo/Fuel*', 8:'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding', 13: 'Flooding', 14: 'Flooding', 15: 'Fire', 16: 'Fire', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge*', 20: 'Rudder*'}
+        #RAW indicate you need to penetrate armor to do a sensor/comms hit on an aviation ship, but I think that's a misprint
+    elif this_size_class == 'A' or this_size_class == 'B':
+        #Major surface combatant
+        crit_dict = {1: 'Main Battery*', 2: 'Main Battery*', 3: 'Main Battery*', 4: 'Sec Battery', 5: 'Sec Battery', 6: 'Other Wpn*', 7: 'Other Wpn*', 8: 'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding*', 13: 'Flooding*', 14: 'Flooding*', 15: 'Fire*', 16: 'Fire*', 17: 'Fire*', 18: 'Sensor/Comms', 19: 'Bridge*', 20: 'Rudder*'}
+    elif this_size_class == 'C' or this_size_class == 'D':
+        #Minor surface combatant
+        crit_dict = {1: 'Main Battery*', 2: 'Main Battery*', 3: 'Main Battery*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Other Wpn', 7: 'Other Wpn', 8: 'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding*', 13: 'Flooding*', 14: 'Flooding*', 15: 'Fire*', 16: 'Fire*', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder*'}
+    else:
+        raise ValueError('DCA is not yet equipped to handle hits on small ships')
+
+    this_critical_hit = crit_dict[d20]
+    if '*' in this_critical_hit:
+        if armor_pen == False:
+            this_critical_hit = None
+        else:
+            this_critical_hit = this_critical_hit[:-1] #Takes off the '*'
+    return this_critical_hit
+
+def apply_crit(this_crit):
+    if this_crit == None:
+        return 0
 
 def get_ship_id_info(target, column_index_dict):
     game_id = target[column_index_dict['Game ID']]
