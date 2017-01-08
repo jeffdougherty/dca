@@ -98,7 +98,6 @@ class GameWindow(Frame):
 
         #Now we need to go through the data
         for this_record in ships_table_model.data.values():
-
             this_record['Side Name'] = this_side_names_dict[int(this_record['Scenario Side'])]
             this_record['Critical Hits'] = ''
             #fill in calculated columns
@@ -142,7 +141,7 @@ class GameWindow(Frame):
         hit_type_frame.pack(side='top')
         hit_type_label = Label(hit_type_frame, text="Type")
         hit_type_label.pack(side='left')
-        self.damage_type_picker = Combobox(hit_type_frame, values=['Shell/Bomb', 'Torpedo'],
+        self.damage_type_picker = Combobox(hit_type_frame, values=['Bomb','Shell', 'Torpedo/Mine'],
                                       textvariable=self.damage_type_string, state='readonly', width=9)
         self.damage_type_picker.pack(side='left')
         self.damage_type_picker.bind("<<ComboboxSelected>>", lambda a: self.set_hit_panels())
@@ -179,11 +178,11 @@ class GameWindow(Frame):
 
     def set_hit_panels(self):
         new_val = self.damage_type_picker.get()
-        assert new_val == 'Shell/Bomb' or new_val == 'Torpedo'
-        if new_val == 'Shell/Bomb':
+        assert new_val == 'Shell' or new_val == 'Torpedo/Mine' or new_val == 'Bomb'
+        if new_val == 'Shell' or new_val == 'Bomb':
             bomb_shell_val = 'readonly'
             torpedo_val = 'disabled'
-        elif new_val == 'Torpedo':
+        elif new_val == 'Torpedo/Mine':
             bomb_shell_val = 'disabled'
             torpedo_val = 'readonly'
         for this_widget in self.bomb_shell_frame.winfo_children():
@@ -296,7 +295,7 @@ class GameWindow(Frame):
         else:
             d6 = None
             d20 = None
-        if hit_type == 'Shell/Bomb':
+        if hit_type == 'Shell' or hit_type == 'Bomb':
             if self.armor_pen_picker.get() == 'Yes':
                 armor_pen = True
             #default is no armor pen
@@ -304,7 +303,7 @@ class GameWindow(Frame):
                 armor_pen = False
 
             self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from shell/bomb hit.")
-            critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen, d6, d20)
+            critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, hit_type, armor_pen, d6, d20)
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:
