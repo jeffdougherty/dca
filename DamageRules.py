@@ -1,5 +1,6 @@
 from random import randrange
 from helperfunctions import connect_to_db, close_connection, to_precision
+from tkintertable import *
 
 def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
 
@@ -62,7 +63,10 @@ def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
 
     for i in range(num_crits):
         this_crit = roll_for_crits(target, column_index_dict, armor_pen, d20)
-        apply_crit(this_crit)
+        if this_crit == 'Unsupported Ship':
+            return 'Unsupported Ship'
+        if this_crit != None:
+            apply_crit(this_crit)
 
     # !!! Also need to check for auto crits
 
@@ -73,6 +77,7 @@ def sink_ship(target, column_index_dict):
     conn.commit()
     close_connection(cursor)
     return target[column_index_dict['Ship Name']] + " runs out of DP and sinks!"
+
 
 def check_speed_reduction(target, column_index_dict, remaining_points):
     cursor, conn = connect_to_db(returnConnection=True)
@@ -111,7 +116,7 @@ def roll_for_crits(target, column_index_dict, armor_pen, d20):
         #Minor surface combatant
         crit_dict = {1: 'Main Battery*', 2: 'Main Battery*', 3: 'Main Battery*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Other Wpn', 7: 'Other Wpn', 8: 'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding*', 13: 'Flooding*', 14: 'Flooding*', 15: 'Fire*', 16: 'Fire*', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder*'}
     else:
-        raise ValueError('DCA is not yet equipped to handle hits on small ships')
+        return 'Unsupported Ship'
 
     this_critical_hit = crit_dict[d20]
     if '*' in this_critical_hit:
@@ -122,8 +127,7 @@ def roll_for_crits(target, column_index_dict, armor_pen, d20):
     return this_critical_hit
 
 def apply_crit(this_crit):
-    if this_crit == None:
-        return 0
+    pass
 
 def get_ship_id_info(target, column_index_dict):
     game_id = target[column_index_dict['Game ID']]
