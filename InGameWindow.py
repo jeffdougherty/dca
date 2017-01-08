@@ -2,6 +2,7 @@ from tkintertable import *
 from helperfunctions import connect_to_db, close_connection, create_names_dict
 from helperclasses import DataTable
 from ttk import Combobox
+from DamageRules import shell_bomb_hit
 
 class GameWindow(Frame):
 
@@ -81,28 +82,37 @@ class GameWindow(Frame):
 
 
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'Damage Pts Taken', 'Damage Pts', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits']
-        ship_table_column_names_list = game_ship_table_column_names_list[:]
-        ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'default': 'number'}
-        self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed'})
-        #Now adjust the table
-        self.shipsTable.hide_column('Annex A Key')
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'Damage Pts Taken', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Starting Damage Pts', 'Side Name']
+        ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'Side Name': 'text', 'default': 'number'}
+        self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed', 'Damage Pts': 'Damage Pts Left'})
+
         #Need to move columns, for that we need to address shipsTable's tableModel directly
         ships_table_model = self.shipsTable.get_model()
         ships_table_canvas = self.shipsTable.get_table()
-        ships_table_model.moveColumn(1, 3)
-        crits_original_index = ships_table_model.getColumnIndex('Critical Hits')
-        ships_table_model.moveColumn(ships_table_model.getColumnIndex('Critical Hits'), 8) #Puts "Critical Hits" in last place
+        #ships_table_model.moveColumn(1, 3)
+        ships_table_model.moveColumn(ships_table_model.getColumnIndex('Critical Hits'), ships_table_model.getColumnCount() - 1) #Puts "Critical Hits" in last place
 
         this_side_names_dict = create_names_dict(self.scenario_key)
+
         #Now we need to go through the data
         for this_record in ships_table_model.data.values():
-            this_record['Scenario Side'] = this_side_names_dict[int(this_record['Scenario Side'])]
-            this_record['Damage Pts'] = int(this_record['Damage Pts']) - int(this_record['Damage Pts Taken']) #'Damage Pts' is the total the ship has.  This tells you how many it has left.
-            #fill in Critical Hits
+            this_record['Starting Damage Pts'] = this_record['Damage Pts Left'] + this_record['Damage Pts Taken'] #Keep track of the DP each ship had at the start
+            this_record['Side Name'] = this_side_names_dict[int(this_record['Scenario Side'])]
+            this_record['Critical Hits'] = ''
+            #fill in calculated columns
+        ships_table_canvas.redrawTable()
         ships_table_model.setSortOrder(columnName='Scenario Side')
         self.shipsTable.hide_column('Damage Pts Taken')
+        self.shipsTable.hide_column('Starting Damage Pts')
+        self.shipsTable.hide_column('Annex A Key')
+        self.shipsTable.hide_column('Scenario Side')
+
+
         ships_table_canvas.redrawVisible()
+        #Need to store the columns and their indexes for later reference.
+        self.ships_table_index_dict = {}
+        for i in range(ships_table_model.getColumnCount()):
+            self.ships_table_index_dict[ships_table_model.getColumnName(i)] = i
 
     def draw_nav_controls(self, parent):
         quit_button = Button(parent, text="Quit", command=self.quit)
@@ -136,30 +146,31 @@ class GameWindow(Frame):
         self.damage_type_picker.bind("<<ComboboxSelected>>", lambda a: self.set_hit_panels())
         hit_dp_frame = Frame(parent)
         hit_dp_frame.pack(side='top')
-        hit_dp_amount = Entry(hit_type_frame, width=3)
-        hit_dp_amount.pack(side='left')
+        self.hit_dp_amount = Entry(hit_type_frame, width=3)
+        self.hit_dp_amount.pack(side='left')
         hit_dp_label = Label(hit_type_frame, text="DP")
         hit_dp_label.pack(side='left')
         self.bomb_shell_frame = Frame(parent)
         self.bomb_shell_frame.pack(side='top')
         armor_pen_label = Label(self.bomb_shell_frame, text="Armor Penetrated?")
         armor_pen_label.pack(side="left")
-        armor_pen_picker = Combobox(self.bomb_shell_frame, values=['Yes', 'No'], state='readonly', textvariable = self.armor_pen_string, width=5)
-        armor_pen_picker.pack(side='left')
+        self.armor_pen_picker = Combobox(self.bomb_shell_frame, values=['Yes', 'No'], state='readonly', textvariable = self.armor_pen_string, width=5)
+        self.armor_pen_picker.pack(side='left')
         #Add something in for very small caliber hits
         self.torpedo_frame = Frame(parent)
         self.torpedo_frame.pack(side='top')
         depth_label = Label(self.torpedo_frame, text='Run Depth')
         depth_label.pack(side='left')
-        depth_picker = Combobox(self.torpedo_frame, values=['Shallow', 'Deep'], state='disabled', textvariable=self.torpedo_depth_string, width=8)
-        depth_picker.pack(side='left')
+        self.depth_picker = Combobox(self.torpedo_frame, values=['Shallow', 'Deep'], state='disabled', textvariable=self.torpedo_depth_string, width=8)
+        self.depth_picker.pack(side='left')
         aspect_label = Label(self.torpedo_frame, text="Hit Aspect")
         aspect_label.pack(side='left')
-        aspect_picker = Combobox(self.torpedo_frame, values=['Bow', 'Stern', 'Other'], state='disabled', textvariable=self.torpedo_aspect_string, width=5)
-        aspect_picker.pack(side='left')
+        self.aspect_picker = Combobox(self.torpedo_frame, values=['Bow', 'Stern', 'Other'], state='disabled', textvariable=self.torpedo_aspect_string, width=5)
+        self.aspect_picker.pack(side='left')
         execute_button_frame = Frame(parent)
         execute_button_frame.pack(side='top')
         execute_button = Button(execute_button_frame, text='Apply', command=lambda: self.apply_this_hit())
+        execute_button.pack(side='left')
 
     def set_hit_panels(self):
         new_val = self.damage_type_picker.get()
@@ -236,3 +247,18 @@ class GameWindow(Frame):
         #this_record is a ship record from the database.  Renders into readable string form
         #Need to be able to read from multiple databases.  Need to write those as we go along
         pass
+
+    def apply_this_hit(self):
+        target = self.shipsTable.get_currentRecord()
+        dp = self.hit_dp_amount.get()
+        hit_type = self.damage_type_picker.get()
+        if hit_type == 'Shell/Bomb':
+            if self.armor_pen_picker.get() == 'Yes':
+                armor_pen = True
+            elif self.armor_pen_picker.get() == 'No':
+                armor_pen = False
+            self.write_game_log(shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen))
+        if hit_type == 'Torpedo':
+            depth = self.depth_picker.get()
+            aspect = self.aspect_picker.get()
+            #torpedo_hit(target, dp, depth, aspect)

@@ -2,7 +2,7 @@ from tkintertable import *
 from helperfunctions import *
 from helperclasses import ToplevelUpdate
 from EditSideInfoWindow import SideInfoWindow
-from ShowFormationScreens import ShipFormationScreen
+from FormationScreens import ShipFormationScreen
 from ttk import Combobox
 
 
@@ -123,7 +123,8 @@ class ScenarioInfoWindow(Frame):
         self.thisTable.height = 15 * num_records
         self.thisTable.createTableFrame()
         self.thisTable.autoResizeColumns()
-        self.thisTable.redrawTable()
+        #self.thisTable.redrawTable()
+        self.thisTable.redrawVisible()
         close_connection(cursor)
         # Now we put in the buttons
         buttonFrame = Frame(self.screen_frames[5])

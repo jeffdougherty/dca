@@ -2,7 +2,7 @@ from helperfunctions import *
 from helperclasses import DataTable, ToplevelUpdate
 from tkintertable import *
 from EditSideInfoWindow import SideInfoWindow
-from ShowFormationScreens import ShipFormationScreen, FormationSidePicker
+from FormationScreens import ShipFormationScreen, FormationSidePicker
 
 
 class ScenarioInfoWindow(Frame):
