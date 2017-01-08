@@ -1,7 +1,7 @@
 from tkintertable import *
 from helperfunctions import connect_to_db, close_connection, create_names_dict
 from helperclasses import DataTable
-from ttk import Combobox
+from ttk import Combobox, Checkbutton
 from DamageRules import shell_bomb_hit
 
 class GameWindow(Frame):
@@ -21,6 +21,8 @@ class GameWindow(Frame):
         self.armor_pen_string.set('Yes')
         self.torpedo_depth_string = StringVar()
         self.torpedo_depth_string.set('Shallow')
+        self.debug_frame_armed = IntVar()
+        self.debug_frame_armed.set(0)
         Frame.__init__(self, parent, background='white')
         self.pack(fill=BOTH, expand=1)
         #Create the frames for holding the UI
@@ -82,7 +84,7 @@ class GameWindow(Frame):
 
 
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'Damage Pts Taken', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Starting Damage Pts', 'Side Name', 'Speed Damaged', 'Damage Pts']
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts']
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'Side Name': 'text', 'default': 'number'}
         self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed', 'Damage Pts': 'Damage Pts Left'})
 
@@ -96,17 +98,16 @@ class GameWindow(Frame):
 
         #Now we need to go through the data
         for this_record in ships_table_model.data.values():
-            this_record['Starting Damage Pts'] = this_record['Damage Pts'] + this_record['Damage Pts Taken'] #Keep track of the DP each ship had at the start
+
             this_record['Side Name'] = this_side_names_dict[int(this_record['Scenario Side'])]
             this_record['Critical Hits'] = ''
             #fill in calculated columns
         ships_table_canvas.redrawTable()
         ships_table_model.setSortOrder(columnName='Scenario Side')
-        self.shipsTable.hide_column('Damage Pts Taken')
         self.shipsTable.hide_column('Starting Damage Pts')
         self.shipsTable.hide_column('Annex A Key')
         self.shipsTable.hide_column('Scenario Side')
-
+        self.shipsTable.hide_column('Speed')
 
         ships_table_canvas.redrawVisible()
         #Need to store the columns and their indexes for later reference.
@@ -130,6 +131,7 @@ class GameWindow(Frame):
             this_record = str(record[1]) + " Turn: " + str(record[2]) + " " + record[3] + "\n"
             self.log_console.insert(END, this_record)
         self.log_console.config(state=DISABLED)
+        close_connection(cursor)
 
     def draw_hit_controls(self, parent):
         hit_label_frame = Frame(parent)
@@ -172,6 +174,9 @@ class GameWindow(Frame):
         execute_button = Button(execute_button_frame, text='Apply', command=lambda: self.apply_this_hit())
         execute_button.pack(side='left')
 
+        self.draw_debug_controls(parent) #!!! Can remove this when debug functionality no longer desired
+
+
     def set_hit_panels(self):
         new_val = self.damage_type_picker.get()
         assert new_val == 'Shell/Bomb' or new_val == 'Torpedo'
@@ -187,6 +192,37 @@ class GameWindow(Frame):
         for this_widget in self.torpedo_frame.winfo_children():
             if this_widget.widgetName == 'ttk::combobox':
                 this_widget.config(state=torpedo_val)
+
+    def draw_debug_controls(self, parent):
+        debug_arm_frame = Frame(parent)
+        debug_arm_frame.pack(side='top')
+        debug_arm_button = Checkbutton(debug_arm_frame, text="DEBUG", command = lambda: self.toggle_debug_frame(), variable=self.debug_frame_armed)
+        debug_arm_button.pack(side='top')
+        dice_entry_frame = Frame(parent)
+        dice_entry_frame.pack(side='top')
+        d6_label = Label(dice_entry_frame, text="D6")
+        d6_label.pack(side='left')
+        self.d6_entry = Entry(dice_entry_frame, width=2)
+        self.d6_entry.pack(side='left')
+        self.d6_entry.config(state='disabled')
+        d20_label = Label(dice_entry_frame, text="D20")
+        d20_label.pack(side='left')
+        self.d20_entry = Entry(dice_entry_frame, width=2)
+        self.d20_entry.pack(side='left')
+        self.d20_entry.config(state='disabled')
+
+    def toggle_debug_frame(self):
+        new_val = self.debug_frame_armed.get()
+        if new_val == 1:
+            self.d6_entry.config(state='normal')
+            self.d20_entry.config(state='normal')
+        else:
+            self.d6_entry.delete(0, END)
+            self.d6_entry.config(state='disabled')
+            self.d20_entry.delete(0, END)
+            self.d20_entry.config(state='disabled')
+
+
 
     def close_window(self):
         self.destroy()
@@ -226,6 +262,7 @@ class GameWindow(Frame):
             sequence_index = col_headings.index('Log Sequence')
             self.log_sequence = last_record[sequence_index]
         #May add something here to input existing entries into the console once that exists
+        close_connection(cursor)
 
 
     def write_game_log(self, message):
@@ -252,12 +289,20 @@ class GameWindow(Frame):
         target = self.shipsTable.get_currentRecord()
         dp = self.hit_dp_amount.get()
         hit_type = self.damage_type_picker.get()
+        debug = self.debug_frame_armed.get()
+        if debug == 1:
+            d6 = self.d6_entry.get()
+            d20 = self.d20_entry.get()
+        else:
+            d6 = None
+            d20 = None
         if hit_type == 'Shell/Bomb':
             if self.armor_pen_picker.get() == 'Yes':
                 armor_pen = True
             elif self.armor_pen_picker.get() == 'No':
                 armor_pen = False
-            self.write_game_log(shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen))
+            self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from shell/bomb hit.")
+            self.write_game_log(shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen, d6, d20))
         if hit_type == 'Torpedo':
             depth = self.depth_picker.get()
             aspect = self.aspect_picker.get()
