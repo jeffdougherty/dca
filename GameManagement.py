@@ -1,6 +1,6 @@
 from tkintertable import *
 from helperfunctions import connect_to_db, determine_index, generate_data_set, close_connection
-from helperclasses import ToplevelUpdate, TableCanvasWithHide, ColumnHeaderWithHide
+from helperclasses import ToplevelUpdate, TableCanvasWithHide
 from PrintScenarioDocs import DocsPrinter
 from InGameWindow import GameWindow
 from ttk import Combobox
@@ -152,6 +152,10 @@ class NewGamePicker(Frame):
                 if this_column in scenario_columns:
                     this_column_index = scenario_columns.index(this_column)
                     this_data[this_column] = scenario_data[i][this_column_index]
+                elif this_column == 'Damage Pts':
+                    this_column_index = annex_a_columns.index(this_column)
+                    this_data[this_column] = annex_a_data[this_column_index]
+                    this_data['Damage Pts Start'] = annex_a_data[this_column_index]
                 elif this_column in annex_a_columns:
                     this_column_index = annex_a_columns.index(this_column)
                     this_data[this_column] = annex_a_data[this_column_index]
@@ -167,6 +171,8 @@ class NewGamePicker(Frame):
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Speed Submerged')]
                 elif this_column == 'Critical Hits':
                     this_data[this_column] = ""
+                elif this_column == 'Damage Pts Start':
+                    pass #Already set while we were on 'Damage Pts'
                 else:
                     this_data[this_column] = 0
             # Dictionary is done, now we need to get it into a list in the proper order
@@ -174,7 +180,7 @@ class NewGamePicker(Frame):
                 this_column = columns_needed[i]
                 data_to_submit.append(this_data[this_column])
             data_to_submit = tuple(data_to_submit)
-            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
+            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
             conn.commit()
             # Now we need to check for mounts and sensors associated with that ship.
             cursor = conn.cursor()
