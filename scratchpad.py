@@ -106,4 +106,15 @@ def game_log_testing():
     cursor.execute("""SELECT * FROM [Game Log] WHERE [Game ID] = 1;""")
     print cursor.fetchall()
 
-game_log_testing()
+#game_log_testing()
+
+def get_ship_types():
+    cursor = connect_to_db()
+    cursor.execute("""SELECT * FROM Ship""")
+    headings = [description[0] for description in cursor.description]
+    types = set([record[headings.index('Ship Type')] for record in cursor.fetchall()])
+    print types
+    print("Num Types: " + str(len(types)))
+
+    #Aviation types: CVL, CV, CVE, AV, AVP, AVT, AVM
+get_ship_types()
