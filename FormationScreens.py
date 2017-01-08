@@ -105,20 +105,21 @@ class ShipFormationScreen(Frame):
         ship_window_column_names_list = ['Formation Ship Key', 'Ship Name', 'Annex A Key', 'Remarks']
         ship_window_column_types_dict = {'default': 'text', 'Annex A Key': 'number'}
         ship_window_additional_keys = {'Scenario Side': self.side_key, 'Formation ID': self.field_values[1]}
-        annex_a_column_names_list = ['Ship Type', 'Class', 'Class Variant', 'Damage Pts', 'Speed']
+        annex_a_column_names_list = ['Ship Type', 'Class', 'Class Variant', 'Damage Pts', 'Speed', 'Country']
         ships_table_column_indexes = {}
         annex_a_column_types_dict = {'Damage Pts': 'number', 'Speed': 'number', 'default': 'text'}
         self.shipsTable = DataTable(parent=self.shipsFrame, scenario_key=self.scenario_key,
                                     column_types_dict=ship_window_column_types_dict,
                                     table_name='Scenario Ship Formation Ship',
                                     column_names_list=ship_window_column_names_list,
-                                    additional_keys=ship_window_additional_keys)
+                                    additional_keys=ship_window_additional_keys, column_title_alias_dict={'Formation Ship Key': 'Ship Key'})
         self.data_tables_on_screen.append(self.shipsTable)
         # Now add the data columns we want to fill in
         self.shipsTable.hide_column('Country')
         self.shipsTable.hide_column('Annex A Key')
         self.shipsTable.hide_column('Remarks')
         self.shipsTable.thisTable.width = 64
+        self.shipsTable.sort_data('Ship Key')
 
         for new_column in annex_a_column_names_list:
             if new_column in annex_a_column_types_dict.keys():

@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/DamageRules.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ShowFormationScreens.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EditScenarioWindow.py" afterPath="$PROJECT_DIR$/EditScenarioWindow.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/InGameWindow.py" afterPath="$PROJECT_DIR$/InGameWindow.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NewEditScenarioWindow.py" afterPath="$PROJECT_DIR$/NewEditScenarioWindow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FormationScreens.py" afterPath="$PROJECT_DIR$/FormationScreens.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helperclasses.py" afterPath="$PROJECT_DIR$/helperclasses.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helperfunctions.py" afterPath="$PROJECT_DIR$/helperfunctions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webcasdata2016.sqlite" afterPath="$PROJECT_DIR$/webcasdata2016.sqlite" />
@@ -46,61 +41,21 @@
       <file leaf-file-name="MainMenu.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MainMenu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DamageRules.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameManagement.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GameManagement.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="404" column="0" selection-start-line="404" selection-start-column="0" selection-end-line="404" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tkinter.py" pinned="false" current-in-tab="false">
-        <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="2560" column="0" selection-start-line="2560" selection-start-column="0" selection-end-line="2560" selection-end-column="0" />
+            <state relative-caret-position="45">
+              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FormationScreens.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FormationScreens.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FormationScreens.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="665" column="12" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
+            <state relative-caret-position="326">
+              <caret line="114" column="139" selection-start-line="114" selection-start-column="81" selection-end-line="114" selection-end-column="139" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
-                <element signature="e#174#14520#0" expanded="false" />
-                <element signature="e#14560#16435#0" expanded="false" />
-                <element signature="e#16470#27968#0" expanded="false" />
-                <element signature="e#28010#35114#0" expanded="false" />
-                <element signature="e#35158#35233#0" expanded="false" />
+                <element signature="e#35275#35350#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -109,21 +64,31 @@
       <file leaf-file-name="helperfunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helperfunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="145" column="170" selection-start-line="145" selection-start-column="170" selection-end-line="145" selection-end-column="170" />
+            <state relative-caret-position="266">
+              <caret line="147" column="9" selection-start-line="147" selection-start-column="9" selection-end-line="147" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="helperclasses.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Tkinter.py" pinned="false" current-in-tab="false">
+        <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="155">
+              <caret line="1937" column="0" selection-start-line="1937" selection-start-column="0" selection-end-line="1937" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="helperclasses.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/helperclasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1440">
-              <caret line="276" column="9" selection-start-line="276" selection-start-column="9" selection-end-line="276" selection-end-column="9" />
+            <state relative-caret-position="435">
+              <caret line="80" column="34" selection-start-line="80" selection-start-column="34" selection-end-line="80" selection-end-column="34" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
-                <element signature="e#10876#12924#0" expanded="false" />
+                <element signature="e#11506#13554#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -132,8 +97,8 @@
       <file leaf-file-name="EditScenarioWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EditScenarioWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-390">
-              <caret line="121" column="101" selection-start-line="121" selection-start-column="101" selection-end-line="121" selection-end-column="101" />
+            <state relative-caret-position="476">
+              <caret line="390" column="45" selection-start-line="390" selection-start-column="26" selection-end-line="390" selection-end-column="45" />
               <folding>
                 <element signature="e#11984#12985#0" expanded="false" />
                 <element signature="e#15973#16976#0" expanded="false" />
@@ -148,11 +113,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TableModels.py" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/Library/Python/2.7/lib/python/site-packages/tkintertable-1.2-py2.7.egg!/tkintertable/TableModels.py">
+      <file leaf-file-name="ListScenariosScreen.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ListScenariosScreen.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="491" column="0" selection-start-line="491" selection-start-column="0" selection-end-line="491" selection-end-column="0" />
+            <state relative-caret-position="75">
+              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NewEditScenarioWindow.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/NewEditScenarioWindow.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -194,11 +169,11 @@
         <option value="$PROJECT_DIR$/EditSideInfoWindow.py" />
         <option value="$PROJECT_DIR$/GameManagement.py" />
         <option value="$PROJECT_DIR$/DamageRules.py" />
-        <option value="$PROJECT_DIR$/helperfunctions.py" />
         <option value="$PROJECT_DIR$/InGameWindow.py" />
-        <option value="$PROJECT_DIR$/helperclasses.py" />
         <option value="$PROJECT_DIR$/EditScenarioWindow.py" />
         <option value="$PROJECT_DIR$/FormationScreens.py" />
+        <option value="$PROJECT_DIR$/helperfunctions.py" />
+        <option value="$PROJECT_DIR$/helperclasses.py" />
       </list>
     </option>
   </component>
@@ -666,11 +641,6 @@
           <option name="timeStamp" value="168" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/FormationScreens.py</url>
-          <line>549</line>
-          <option name="timeStamp" value="370" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
           <line>75</line>
           <option name="timeStamp" value="426" />
@@ -745,8 +715,18 @@
           <line>110</line>
           <option name="timeStamp" value="483" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/FormationScreens.py</url>
+          <line>7</line>
+          <option name="timeStamp" value="485" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/EditScenarioWindow.py</url>
+          <line>390</line>
+          <option name="timeStamp" value="486" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="484" />
+      <option name="time" value="488" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1017,21 +997,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ListScenariosScreen.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/NewEditScenarioWindow.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -1058,57 +1023,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GameManagement.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="404" column="0" selection-start-line="404" selection-start-column="0" selection-end-line="404" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MainMenu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="2560" column="0" selection-start-line="2560" selection-start-column="0" selection-end-line="2560" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/helperfunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="145" column="170" selection-start-line="145" selection-start-column="170" selection-end-line="145" selection-end-column="170" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/Library/Python/2.7/lib/python/site-packages/tkintertable-1.2-py2.7.egg!/tkintertable/TableModels.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
+        <state relative-caret-position="6675">
           <caret line="491" column="0" selection-start-line="491" selection-start-column="0" selection-end-line="491" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/helperclasses.py">
+    <entry file="file://$PROJECT_DIR$/GameManagement.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="276" column="9" selection-start-line="276" selection-start-column="9" selection-end-line="276" selection-end-column="9" />
+        <state relative-caret-position="6060">
+          <caret line="404" column="0" selection-start-line="404" selection-start-column="0" selection-end-line="404" selection-end-column="0" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
-            <element signature="e#10876#12924#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1123,10 +1051,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/NewEditScenarioWindow.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ListScenariosScreen.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MainMenu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/EditScenarioWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-390">
-          <caret line="121" column="101" selection-start-line="121" selection-start-column="101" selection-end-line="121" selection-end-column="101" />
+        <state relative-caret-position="476">
+          <caret line="390" column="45" selection-start-line="390" selection-start-column="26" selection-end-line="390" selection-end-column="45" />
           <folding>
             <element signature="e#11984#12985#0" expanded="false" />
             <element signature="e#15973#16976#0" expanded="false" />
@@ -1140,17 +1092,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="1937" column="0" selection-start-line="1937" selection-start-column="0" selection-end-line="1937" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/FormationScreens.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="665" column="12" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
+        <state relative-caret-position="326">
+          <caret line="114" column="139" selection-start-line="114" selection-start-column="81" selection-end-line="114" selection-end-column="139" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
-            <element signature="e#174#14520#0" expanded="false" />
-            <element signature="e#14560#16435#0" expanded="false" />
-            <element signature="e#16470#27968#0" expanded="false" />
-            <element signature="e#28010#35114#0" expanded="false" />
-            <element signature="e#35158#35233#0" expanded="false" />
+            <element signature="e#35275#35350#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helperfunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="147" column="9" selection-start-line="147" selection-start-column="9" selection-end-line="147" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helperclasses.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="80" column="34" selection-start-line="80" selection-start-column="34" selection-end-line="80" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#11506#13554#0" expanded="false" />
           </folding>
         </state>
       </provider>
