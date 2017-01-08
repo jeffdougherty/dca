@@ -306,7 +306,7 @@ class GameWindow(Frame):
             self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from shell/bomb hit.")
             critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, armor_pen, d6, d20)
             if critical_hit_result == 'Unsupported Ship':
-                tkMessageBox.showinfo('Unsupported Ship', 'This ship type is not yet supported by Damage Control Assistant')
+                tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:
                 self.write_game_log(critical_hit_result)
         if hit_type == 'Torpedo':

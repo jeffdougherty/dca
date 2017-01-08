@@ -1,6 +1,5 @@
 from random import randrange
 from helperfunctions import connect_to_db, close_connection, to_precision
-from tkintertable import *
 
 def shell_bomb_hit(target, column_index_dict, dp, armor_pen, d6, d20):
 
