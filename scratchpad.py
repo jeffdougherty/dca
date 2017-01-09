@@ -117,4 +117,26 @@ def get_ship_types():
     print("Num Types: " + str(len(types)))
 
     #Aviation types: CVL, CV, CVE, AV, AVP, AVT, AVM
-get_ship_types()
+#et_ship_types()
+
+def string_tests():
+    number_list = '14, 20, 17'
+    start = 0
+    digits = []
+    while len(number_list) > 0:
+        try:
+            comma_posit = number_list.index(',')
+        except:
+            comma_posit = len(number_list) #No comma, so we're at the end of the string
+        next_digit = number_list[start:comma_posit]
+        digits.append(int(next_digit))
+        number_list = number_list[comma_posit+1:]
+    print digits
+
+
+string_tests()
+
+def string_test_2():
+    print(int(' 20'))
+
+string_test_2()

@@ -243,3 +243,18 @@ def to_precision(x,p):
         out.append(m)
 
     return "".join(out)
+
+
+def parse_comma_separated_numbers(number_list):
+    # Takes a string of numbers separated by commas and turns them into a list of integers
+    start = 0
+    digits = []
+    while len(number_list) > 0:
+        try:
+            comma_posit = number_list.index(',')
+        except:
+            comma_posit = len(number_list)  # No comma, so we're at the end of the string
+        next_digit = number_list[start:comma_posit]
+        digits.append(int(next_digit))
+        number_list = number_list[comma_posit + 1:]
+    return digits
