@@ -84,7 +84,7 @@ class GameWindow(Frame):
 
 
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts']
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts','25% Threshold Crossed', '10% Threshold Crossed']
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'Side Name': 'text', 'default': 'number'}
         self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed', 'Damage Pts': 'Damage Pts Left'})
 
@@ -107,6 +107,8 @@ class GameWindow(Frame):
         self.shipsTable.hide_column('Annex A Key')
         self.shipsTable.hide_column('Scenario Side')
         self.shipsTable.hide_column('Speed')
+        self.shipsTable.hide_column('25% Threshold Crossed')
+        self.shipsTable.hide_column('10% Threshold Crossed')
 
         ships_table_canvas.redrawVisible()
         #Need to store the columns and their indexes for later reference.
@@ -221,8 +223,6 @@ class GameWindow(Frame):
             self.d20_entry.delete(0, END)
             self.d20_entry.config(state='disabled')
 
-
-
     def close_window(self):
         self.destroy()
         self.parent.destroy()
@@ -302,7 +302,7 @@ class GameWindow(Frame):
             else:
                 armor_pen = False
 
-            self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from shell/bomb hit.")
+            self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from " + hit_type + " hit.")
             critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, hit_type, armor_pen, d6, d20)
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
