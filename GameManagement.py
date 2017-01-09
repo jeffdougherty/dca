@@ -236,6 +236,31 @@ class NewGamePicker(Frame):
                     mount_data_to_submit = tuple(mount_data_to_submit)
                     cursor.execute("""INSERT INTO 'Game Ship Other Mounts' VALUES(?,?,?,?,?,?,?,?,?)""", mount_data_to_submit)
                     conn.commit()
+            # And torpedo mounts
+            cursor.execute("""SELECT * FROM 'Ship Torp Mount' WHERE [Ship Key]=?""", (annex_a_key,))
+            torp_mount_data = cursor.fetchall()
+            if len(torp_mount_data) > 0:
+                torp_mount_columns = [description[0] for description in cursor.description]
+                cursor.execute("""SELECT * FROM 'Game Ship Torp Mount'""")
+                torp_mount_columns_needed = [description[0] for description in cursor.description]
+                for this_mount in torp_mount_data:
+                    torp_mount_data = {}
+                    torp_mount_data_to_submit = []
+                    for this_column in torp_mount_columns_needed:
+                        if this_column in torp_mount_columns:
+                            torp_mount_data[this_column] = this_mount[torp_mount_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            torp_mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
+                        elif this_column == 'Game ID':
+                            torp_mount_data[this_column] = self.this_game_index
+                        else:
+                            torp_mount_data[this_column] = 0 #Catcher, shouldn't be any columns that actually fall into this category.
+                    for k in range(len(torp_mount_columns_needed)):
+                        this_column = torp_mount_columns_needed[k]
+                        torp_mount_data_to_submit.append(torp_mount_data[this_column])
+                    torp_mount_data_to_submit = tuple(torp_mount_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship Torp Mount' VALUES(?,?,?,?,?,?,?,?)""", torp_mount_data_to_submit)
+                    conn.commit()
             # Now we do the same thing with fire directors
             cursor.execute("""SELECT * FROM 'Ship FC Director' WHERE [Ship Key]=?""", (annex_a_key,))
             fc_director_data = cursor.fetchall()
