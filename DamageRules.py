@@ -110,6 +110,8 @@ def check_massive_damage(target, column_index_dict, dp, remaining_points, hit_ty
         roll = rolld10()
         if (roll <= 4 and hit_type == 'Bomb') or (roll <= 8 and hit_type == 'Torpedo/Mine'):
             return 'takes massive damage from a single hit and sinks!'
+        else:
+            pass
 
 def roll_for_crits(target, column_index_dict, armor_pen, d20):
     aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
