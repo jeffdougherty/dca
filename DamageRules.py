@@ -1,8 +1,11 @@
 from random import randrange
 from helperfunctions import connect_to_db, close_connection, to_precision
 
+AVIATION_SHIPS = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
+MERCHANT_AUXILIARY = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
+
 def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6, d20):
-    aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
+
     cursor, conn = connect_to_db(returnConnection=True)
     print target
     if armor_pen == False:
@@ -10,10 +13,12 @@ def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6, d20):
     remaining_points = target[column_index_dict['Damage Pts']] - dp
     #First thing, check to see if the ship's sunk
     if remaining_points <= 0:
-        return sink_ship(target, column_index_dict)
+        log_string = target[column_index_dict['Ship Name']] + 'runs out of DP ' + sink_ship(target, column_index_dict)
+        return log_string
     #else
     log_string = target[column_index_dict['Ship Name']] + " hit for " + str(dp) + " DP by shell/bomb. "
     cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts] = ?;""",(remaining_points,))
+
     #Check for speed reduction
     log_string += check_speed_reduction(target, column_index_dict, remaining_points)
     #Check for massive damage
@@ -78,10 +83,10 @@ def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6, d20):
 def sink_ship(target, column_index_dict):
     cursor, conn = connect_to_db(returnConnection=True)
     ship_id_info = get_ship_id_info(target, column_index_dict)
-    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Critical Hits] = 'SUNK', [Damage Pts]=0 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(ship_id_info))
+    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Critical Hits] = 'SUNK', [Damage Pts]=0 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
     conn.commit()
     close_connection(cursor)
-    return target[column_index_dict['Ship Name']] + " runs out of DP and sinks!"
+    return target[column_index_dict['Ship Name']] + "and sinks!"
 
 
 def check_speed_reduction(target, column_index_dict, remaining_points):
@@ -109,18 +114,22 @@ def check_massive_damage(target, column_index_dict, dp, remaining_points, hit_ty
     if dp >= (0.75 * target[column_index_dict['Damage Pts Start']]):
         roll = rolld10()
         if (roll <= 4 and hit_type == 'Bomb') or (roll <= 8 and hit_type == 'Torpedo/Mine'):
-            return 'takes massive damage from a single hit and sinks!'
-        else:
-            pass
+            return ' takes massive damage from a single hit ' + sink_ship(target, column_index_dict)
+    if (remaining_points <= 0.25 * target[column_index_dict['Damage Pts Start']]) and target[column_index_dict['25% Threshold Crossed']] == 0:
+        #Just crossed the 25% threshold
+        ship_id_info = get_ship_id_info(target, column_index_dict)
+        cursor, conn = connect_to_db(returnConnection=True)
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [25% Threshold Crossed] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?; """, ship_id_info)
+
 
 def roll_for_crits(target, column_index_dict, armor_pen, d20):
-    aviation_ships = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
-    merchant_auxiliary = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
+
+
     this_ship_type = target[column_index_dict['Ship Type']]
     this_size_class = target[column_index_dict['Size Class']]
-    if this_ship_type in merchant_auxiliary:
+    if this_ship_type in MERCHANT_AUXILIARY:
         crit_dict = {1: 'Cargo', 2: 'Cargo', 3: 'Cargo', 4: 'Cargo', 5: 'Cargo', 6: 'Cargo', 7: 'Cargo', 8: 'Weapon', 9: 'Weapon', 10: 'Engineering', 11: 'Engineering', 12: 'Flooding', 13: 'Flooding', 14: 'Flooding', 15: 'Fire', 16: 'Fire', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder'}
-    elif this_ship_type in aviation_ships:
+    elif this_ship_type in AVIATION_SHIPS:
         crit_dict = {1: 'Flight Deck*', 2: 'Flight Deck*', 3: 'Flight Deck*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Ammo/Fuel*', 7:'Ammo/Fuel*', 8:'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding', 13: 'Flooding', 14: 'Flooding', 15: 'Fire', 16: 'Fire', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge*', 20: 'Rudder*'}
         #RAW indicate you need to penetrate armor to do a sensor/comms hit on an aviation ship, but I think that's a misprint
     elif this_size_class == 'A' or this_size_class == 'B':
