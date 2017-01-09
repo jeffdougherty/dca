@@ -176,11 +176,11 @@ class NewGamePicker(Frame):
                 else:
                     this_data[this_column] = 0
             # Dictionary is done, now we need to get it into a list in the proper order
-            for i in range(len(columns_needed)):
-                this_column = columns_needed[i]
+            for j in range(len(columns_needed)):
+                this_column = columns_needed[j]
                 data_to_submit.append(this_data[this_column])
             data_to_submit = tuple(data_to_submit)
-            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
+            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
             conn.commit()
             # Now we need to check for mounts and sensors associated with that ship.
             cursor = conn.cursor()
@@ -195,19 +195,20 @@ class NewGamePicker(Frame):
                     mount_data_to_submit = []
                     for this_column in gun_mount_columns_needed:
                         if this_column in gun_mount_columns:
-                            this_column_index = gun_mount_columns.index(this_column)
-                            mount_data[this_column] = mount[this_column_index]
+                            mount_data[this_column] = mount[gun_mount_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'AA Factor':
                             mount_data[this_column] = 0.0  # Need to replace with the real formula
                         elif this_column == 'Game ID':
                             mount_data[this_column] = self.this_game_index
                         else:
                             mount_data[this_column] = 0
-                    for i in range(len(gun_mount_columns_needed)):
-                        this_column = gun_mount_columns_needed[i]
+                    for k in range(len(gun_mount_columns_needed)):
+                        this_column = gun_mount_columns_needed[k]
                         mount_data_to_submit.append(mount_data[this_column])
                     mount_data_to_submit = tuple(mount_data_to_submit)
-                    cursor.execute("""INSERT INTO 'Game Ship Gun Mount' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    cursor.execute("""INSERT INTO 'Game Ship Gun Mount' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                                    mount_data_to_submit)
                     conn.commit()
             # Gun mounts done, now we need to check for other mounts.  Code very similar.
@@ -222,17 +223,18 @@ class NewGamePicker(Frame):
                     mount_data_to_submit = []
                     for this_column in other_mount_columns_needed:
                         if this_column in other_mount_columns:
-                            this_column_index = other_mount_columns.index(this_column)
-                            mount_data[this_column] = mount[this_column_index]
+                            mount_data[this_column] = other_mount_columns.index(this_column)
+                        elif this_column in scenario_columns:
+                            mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'Game ID':
                             mount_data[this_column] = self.this_game_index
                         else:
                             mount_data[this_column] = 0
-                    for i in range(len(other_mount_columns_needed)):
-                        this_column = other_mount_columns_needed[i]
+                    for k in range(len(other_mount_columns_needed)):
+                        this_column = other_mount_columns_needed[k]
                         mount_data_to_submit.append(mount_data[this_column])
                     mount_data_to_submit = tuple(mount_data_to_submit)
-                    cursor.execute("""INSERT INTO 'Game Ship Other Mounts' VALUES(?,?,?,?,?,?)""", mount_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship Other Mounts' VALUES(?,?,?,?,?,?,?,?,?)""", mount_data_to_submit)
                     conn.commit()
             # Now we do the same thing with fire directors
             cursor.execute("""SELECT * FROM 'Ship FC Director' WHERE [Ship Key]=?""", (annex_a_key,))
@@ -246,17 +248,18 @@ class NewGamePicker(Frame):
                     director_data_to_submit = []
                     for this_column in fc_director_columns_needed:
                         if this_column in fc_director_columns:
-                            this_column_index = fc_director_columns.index(this_column)
-                            director_data[this_column] = director[this_column_index]
+                            director_data[this_column] = director[fc_director_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            director_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'Game ID':
                             director_data[this_column] = self.this_game_index
                         else:
                             director_data[this_column] = 0
-                    for i in range(len(fc_director_columns_needed)):
-                        this_column = fc_director_columns_needed[i]
+                    for k in range(len(fc_director_columns_needed)):
+                        this_column = fc_director_columns_needed[k]
                         director_data_to_submit.append(director_data[this_column])
                     director_data_to_submit = tuple(director_data_to_submit)
-                    cursor.execute("""INSERT INTO 'Game Ship FC Director' VALUES(?,?,?,?,?,?,?)""", director_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship FC Director' VALUES(?,?,?,?,?,?,?,?,?,?)""", director_data_to_submit)
                     conn.commit()
             # Now we need to do sensors, which requires doing multiple lookups in the database
             sensor_index = 1
@@ -280,6 +283,8 @@ class NewGamePicker(Frame):
                             if this_column in radar_columns:
                                 this_column_index = radar_columns.index(this_column)
                                 radar_data[this_column] = this_radar[this_column_index]
+                            elif this_column in scenario_columns:
+                                radar_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                             elif this_column == 'Sensor Type':
                                 radar_data[this_column] = 'Radar'
                             elif this_column == 'Sensor Name':
@@ -294,11 +299,11 @@ class NewGamePicker(Frame):
                                 radar_data[this_column] = self.this_game_index
                             else:
                                 radar_data[this_column] = 0
-                        for i in range(len(sensor_columns_needed)):
-                            this_column = sensor_columns_needed[i]
+                        for k in range(len(sensor_columns_needed)):
+                            this_column = sensor_columns_needed[k]
                             radar_data_to_submit.append(radar_data[this_column])
                         radar_data_to_submit = tuple(radar_data_to_submit)
-                        cursor.execute("""INSERT INTO 'Game Ship Sensor' VALUES(?,?,?,?,?,?,?)""", radar_data_to_submit)
+                        cursor.execute("""INSERT INTO 'Game Ship Sensor' VALUES(?,?,?,?,?,?,?,?,?,?)""", radar_data_to_submit)
                         conn.commit()
             cursor.execute("""SELECT * FROM 'Ship Sonar' WHERE [Ship Key]=?""", (annex_a_key,))
             sonar_data = cursor.fetchall()
@@ -316,8 +321,9 @@ class NewGamePicker(Frame):
                     sonar_data_to_submit = []
                     for this_column in sensor_columns_needed:
                         if this_column in sonar_columns:
-                            this_column_index = sonar_columns.index(this_column)
-                            sonar_data[this_column] = this_sonar[this_column_index]
+                            sonar_data[this_column] = this_sonar[sonar_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            sonar_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'Sensor Type':
                             sonar_data[this_column] = 'Sonar'
                         elif this_column == 'Sensor Name':
@@ -331,11 +337,11 @@ class NewGamePicker(Frame):
                             sonar_data[this_column] = self.this_game_index
                         else:
                             sonar_data[this_column] = 0
-                    for i in range(len(sensor_columns_needed)):
-                        this_column = sensor_columns_needed[i]
+                    for k in range(len(sensor_columns_needed)):
+                        this_column = sensor_columns_needed[k]
                         sonar_data_to_submit.append(sonar_data[this_column])
                     sonar_data_to_submit = tuple(sonar_data_to_submit)
-                    cursor.execute("""INSERT INTO 'Game Ship Sensor' VALUES(?,?,?,?,?,?,?)""", sonar_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship Sensor' VALUES(?,?,?,?,?,?,?,?,?,?)""", sonar_data_to_submit)
                     conn.commit()
             cursor.execute("""SELECT * FROM 'Ship Other Sensor' WHERE [Ship Key]=?""", (annex_a_key,))
             other_data = cursor.fetchall()
@@ -349,8 +355,9 @@ class NewGamePicker(Frame):
                     sensor_data_to_submit = []
                     for this_column in sensor_columns_needed:
                         if this_column in other_columns:
-                            this_column_index = other_columns.index(this_column)
-                            sensor_data[this_column] = this_sensor[this_column_index]
+                            sensor_data[this_column] = this_sensor[other_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            sensor_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'Sensor Type':
                             sensor_data[this_column] = 'Other Sensor'
                         elif this_column == 'Sensor Name':
@@ -362,11 +369,11 @@ class NewGamePicker(Frame):
                             sensor_data[this_column] = self.this_game_index
                         else:
                             sensor_data[this_column] = 0
-                    for i in range(len(sensor_columns_needed)):
-                        this_column = sensor_columns_needed[i]
+                    for k in range(len(sensor_columns_needed)):
+                        this_column = sensor_columns_needed[k]
                         sensor_data_to_submit.append(sensor_data[this_column])
                     sensor_data_to_submit = tuple(sensor_data_to_submit)
-                    cursor.execute("""INSERT INTO 'Game Ship Sensor' VALUES(?,?,?,?,?,?,?)""", sensor_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship Sensor' VALUES(?,?,?,?,?,?,?,?,?,?)""", sensor_data_to_submit)
                     conn.commit()
 
 class LoadGamePicker(Frame):
