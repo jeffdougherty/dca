@@ -1,5 +1,5 @@
 from tkintertable import *
-from helperfunctions import connect_to_db, close_connection, create_names_dict
+from helperfunctions import connect_to_db, close_connection, create_names_dict, parse_comma_separated_numbers
 from helperclasses import DataTable
 from ttk import Combobox, Checkbutton
 from DamageRules import shell_bomb_hit
@@ -291,10 +291,10 @@ class GameWindow(Frame):
         debug = self.debug_frame_armed.get()
         if debug == 1:
             d6 = self.d6_entry.get()
-            d20 = self.d20_entry.get()
+            d20_list = parse_comma_separated_numbers(self.d20_entry.get())
         else:
             d6 = None
-            d20 = None
+            d20_list = None
         if hit_type == 'Shell' or hit_type == 'Bomb':
             if self.armor_pen_picker.get() == 'Yes':
                 armor_pen = True
@@ -303,7 +303,7 @@ class GameWindow(Frame):
                 armor_pen = False
 
             self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from " + hit_type + " hit.")
-            critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, hit_type, armor_pen, d6, d20)
+            critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, hit_type, armor_pen, d6, d20_list)
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:
@@ -312,3 +312,4 @@ class GameWindow(Frame):
             depth = self.depth_picker.get()
             aspect = self.aspect_picker.get()
             #torpedo_hit(target, dp, depth, aspect)
+

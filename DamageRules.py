@@ -4,7 +4,7 @@ from helperfunctions import connect_to_db, close_connection, to_precision
 AVIATION_SHIPS = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
 MERCHANT_AUXILIARY = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
 
-def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6, d20):
+def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6=None, d20_list=None):
 
     cursor, conn = connect_to_db(returnConnection=True)
     print target
@@ -72,7 +72,12 @@ def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6, d20):
         num_crits = 0
 
     for i in range(num_crits):
-        this_crit = roll_for_crits(target, column_index_dict, armor_pen, d20)
+        if d20_list != None:
+            crit_tuple = roll_for_crits(target, column_index_dict, armor_pen, d20_list)
+            this_crit = crit_tuple[0]
+            d20_list = crit_tuple[1]
+        else:
+            this_crit = roll_for_crits(target, column_index_dict, armor_pen, d20_list)
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
         if this_crit != None:
@@ -122,9 +127,8 @@ def check_massive_damage(target, column_index_dict, dp, remaining_points, hit_ty
         cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [25% Threshold Crossed] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?; """, ship_id_info)
 
 
-def roll_for_crits(target, column_index_dict, armor_pen, d20):
-
-
+def roll_for_crits(target, column_index_dict, armor_pen, d20_list):
+    d20_list = d20_list #Defensive programming to make sure we have a local copy to mutate
     this_ship_type = target[column_index_dict['Ship Type']]
     this_size_class = target[column_index_dict['Size Class']]
     if this_ship_type in MERCHANT_AUXILIARY:
@@ -140,14 +144,20 @@ def roll_for_crits(target, column_index_dict, armor_pen, d20):
         crit_dict = {1: 'Main Battery*', 2: 'Main Battery*', 3: 'Main Battery*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Other Wpn', 7: 'Other Wpn', 8: 'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding*', 13: 'Flooding*', 14: 'Flooding*', 15: 'Fire*', 16: 'Fire*', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder*'}
     else:
         return 'Unsupported Ship'
-
+    if d20_list != None:
+        d20 = d20_list.pop(0)
+    else:
+        d20 = rolld20()
     this_critical_hit = crit_dict[d20]
     if '*' in this_critical_hit:
         if armor_pen == False:
             this_critical_hit = None
         else:
             this_critical_hit = this_critical_hit[:-1] #Takes off the '*'
-    return this_critical_hit
+    if d20_list != None:
+        return (this_critical_hit, d20_list)
+    else:
+        return this_critical_hit
 
 def apply_crit(this_crit):
     pass
