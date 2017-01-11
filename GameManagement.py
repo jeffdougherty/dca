@@ -165,6 +165,8 @@ class NewGamePicker(Frame):
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Armor UW')]
                 elif this_column == 'Light AA Damaged Rating':
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Light AA Rating')]
+                elif this_column == 'Area AA Damaged Rarting':
+                    this_data[this_column] = annex_a_data[annex_a_columns.index('Area AA Rating')]
                 elif this_column == 'Speed Damaged':
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Speed')]
                 elif this_column == 'Speed Damaged Submerged':
@@ -172,7 +174,7 @@ class NewGamePicker(Frame):
                 elif this_column == 'Critical Hits':
                     this_data[this_column] = ""
                 elif this_column == 'Damage Pts Start':
-                    pass #Already set while we were on 'Damage Pts'
+                    pass #Already set while we were on 'Damage Pts, but don't want it set to 0
                 else:
                     this_data[this_column] = 0
             # Dictionary is done, now we need to get it into a list in the proper order
@@ -180,7 +182,7 @@ class NewGamePicker(Frame):
                 this_column = columns_needed[j]
                 data_to_submit.append(this_data[this_column])
             data_to_submit = tuple(data_to_submit)
-            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
+            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
             conn.commit()
             # Now we need to check for mounts and sensors associated with that ship.
             cursor = conn.cursor()
@@ -254,7 +256,7 @@ class NewGamePicker(Frame):
                         elif this_column == 'Game ID':
                             torp_mount_data[this_column] = self.this_game_index
                         else:
-                            torp_mount_data[this_column] = 0 #Catcher, shouldn't be any columns that actually fall into this category.
+                            torp_mount_data[this_column] = 0 #Catcher, should just be for Crit Mount
                     for k in range(len(torp_mount_columns_needed)):
                         this_column = torp_mount_columns_needed[k]
                         torp_mount_data_to_submit.append(torp_mount_data[this_column])
@@ -524,6 +526,7 @@ class LoadGamePicker(Frame):
             cursor.execute("""DELETE FROM 'Game Ship FC Director' WHERE [Game ID]=?;""", (game_key,))
             cursor.execute("""DELETE FROM 'Game Ship Formation Ship' WHERE [Game ID]=?;""", (game_key,))
             cursor.execute("""DELETE FROM 'Game Ship Gun Mount' WHERE [Game ID]=?;""", (game_key,))
+            cursor.execute("""DELETE FROM 'Game Ship Torp Mount' WHERE [Game ID]=?;""", (game_key,))
             cursor.execute("""DELETE FROM 'Game Ship Other Mounts' WHERE [Game ID]=?;""", (game_key,))
             cursor.execute("""DELETE FROM 'Game Ship Sensor' WHERE [Game ID]=?;""", (game_key,))
             connection.commit()

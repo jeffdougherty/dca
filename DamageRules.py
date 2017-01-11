@@ -1,5 +1,6 @@
 from random import randrange
 from helperfunctions import connect_to_db, close_connection, to_precision
+import tkMessageBox
 
 AVIATION_SHIPS = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
 MERCHANT_AUXILIARY = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
@@ -29,6 +30,15 @@ def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6=None, 
         log_string += massive_damage_result
     #Now we start checking for crits
 
+    #!!!Auto crits first
+    if hit_type == 'Bomb' and target[column_index_dict['Ship Type']] in AVIATION_SHIPS and armor_pen:
+        if tkMessageBox.askyesno(title='Bomb', message='Is the bomb 100 lb/50 kg or more?'):
+            apply_crit('Flight Deck')
+    elif hit_type == 'Shell' and target[column_index_dict['Ship Type']] in AVIATION_SHIPS:
+        if tkMessageBox.askquestion(title='Shell', message='Is the shell 120mm or larger, and hit from Long/Extreme Range?'):
+            pass
+
+    #Regular crit rolling
     damage_ratio = float(dp / remaining_points)
     if dp / target[column_index_dict['Damage Pts Start']] <= 0.01:
         damage_ratio_dict = {}
@@ -60,8 +70,11 @@ def shell_bomb_hit(target, column_index_dict, dp, hit_type, armor_pen, d6=None, 
         for this_key in damage_ratio_dict.keys():
             damage_ratio_dict[this_key] = damage_ratio_dict[this_key] + addl_crits
     else:
-        damage_ratio_dict = {}
         # !!! Massive damage kicks in
+        log_string += 'Reduced to 10% DP by massive damage.  '
+        new_dp = 0.1 * target[column_index_dict['Damage Pts Start']]
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=?;""",(new_dp,))
+        return log_string
 
     if d6 == None: #No value supplied for debug mode
         d6 = rolld6()
@@ -115,17 +128,42 @@ def check_speed_reduction(target, column_index_dict, remaining_points):
     return addl_log_string
 
 def check_massive_damage(target, column_index_dict, dp, remaining_points, hit_type):
+    log_string = ""
+    crossed_25_this_hit = False
     #Check to see if massive damage sinks the ship
     if dp >= (0.75 * target[column_index_dict['Damage Pts Start']]):
         roll = rolld10()
         if (roll <= 4 and hit_type == 'Bomb') or (roll <= 8 and hit_type == 'Torpedo/Mine'):
             return ' takes massive damage from a single hit ' + sink_ship(target, column_index_dict)
+        else:
+            print "Massive damage checked, ship not sunk"
+
     if (remaining_points <= 0.25 * target[column_index_dict['Damage Pts Start']]) and target[column_index_dict['25% Threshold Crossed']] == 0:
         #Just crossed the 25% threshold
         ship_id_info = get_ship_id_info(target, column_index_dict)
         cursor, conn = connect_to_db(returnConnection=True)
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [25% Threshold Crossed] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?; """, ship_id_info)
-
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [25% Threshold Crossed] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit Mount] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        conn.commit()
+        close_connection(cursor)
+        log_string = ' reaches 25% of original DP, all main/secondary guns out, flight deck damaged. '
+        crossed_25_this_hit = True
+    if (remaining_points <= 0.10 * target[column_index_dict['Damage Pts Start']] and target[column_index_dict['10% Threshold Crossed']] == 0):
+        # Just crossed the 10% threshold
+        ship_id_info = get_ship_id_info(target, column_index_dict)
+        cursor, conn = connect_to_db(returnConnection=True)
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [10% Threshold Crossed] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Area AA Damaged Rating] = 0 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        cursor.execute("""UPDATE 'Game Ship Foramtion Ship' SET [Light AA Damaged Rating] = 0 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        cursor.execute("""UPDATE 'Game Ship Torp Mount' SET [Crit Mount] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        cursor.execute("""UPDATE 'Game Ship Other Mount' SET [Crit Mount] = 1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+        conn.commit()
+        close_connection()
+        if crossed_25_this_hit:
+            log_string += ' Also reaches 10% of original DP, all weapons out.  '
+        else:
+            log_string += ' reaches 10% of original DP, all weapons out. '
+    return log_string
 
 def roll_for_crits(target, column_index_dict, armor_pen, d20_list):
     d20_list = d20_list #Defensive programming to make sure we have a local copy to mutate

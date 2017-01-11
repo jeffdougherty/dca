@@ -255,6 +255,7 @@ def parse_comma_separated_numbers(number_list):
         except:
             comma_posit = len(number_list)  # No comma, so we're at the end of the string
         next_digit = number_list[start:comma_posit]
-        digits.append(int(next_digit))
+        if str.isnumeric(next_digit):
+            digits.append(int(next_digit))
         number_list = number_list[comma_posit + 1:]
     return digits

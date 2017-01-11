@@ -6,6 +6,7 @@ def cleanup_game_db():
     cursor.execute("""DELETE FROM 'Game Log'""")
     cursor.execute("""DELETE FROM 'Game Ship Formation Ship'""")
     cursor.execute("""DELETE FROM 'Game Ship Gun Mount'""")
+    cursor.execute("""DELETE FROM 'Game Ship Torp Mount'""")
     cursor.execute("""DELETE FROM 'Game Ship Other Mounts'""")
     cursor.execute("""DELETE FROM 'Game Ship FC Director'""")
     cursor.execute("""DELETE FROM 'Game Ship Sensor'""")
