@@ -261,7 +261,7 @@ class NewGamePicker(Frame):
                         this_column = torp_mount_columns_needed[k]
                         torp_mount_data_to_submit.append(torp_mount_data[this_column])
                     torp_mount_data_to_submit = tuple(torp_mount_data_to_submit)
-                    cursor.execute("""INSERT INTO 'Game Ship Torp Mount' VALUES(?,?,?,?,?,?,?,?)""", torp_mount_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship Torp Mount' VALUES(?,?,?,?,?,?,?,?,?)""", torp_mount_data_to_submit)
                     conn.commit()
             # Now we do the same thing with fire directors
             cursor.execute("""SELECT * FROM 'Ship FC Director' WHERE [Ship Key]=?""", (annex_a_key,))
