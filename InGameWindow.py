@@ -14,7 +14,7 @@ class GameWindow(Frame):
         self.height = 480
         self.center_window()
         self.damage_type_string = StringVar()
-        self.damage_type_string.set('Shell/Bomb')
+        self.damage_type_string.set('Bomb')
         self.torpedo_aspect_string = StringVar()
         self.torpedo_aspect_string.set('Other')
         self.armor_pen_string = StringVar()
@@ -302,8 +302,9 @@ class GameWindow(Frame):
             else:
                 armor_pen = False
 
-            self.write_game_log(target[self.ships_table_index_dict['Ship Name']] + " takes " + str(dp) + " DP from " + hit_type + " hit.")
-            critical_hit_result = shell_bomb_hit(target, self.ships_table_index_dict, dp, hit_type, armor_pen, d6, d20_list)
+            self.write_game_log(target['Ship Name'] + " takes " + dp + " DP from " + hit_type + " hit.")
+            print type(target['Speed'])
+            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d20_list)
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:
