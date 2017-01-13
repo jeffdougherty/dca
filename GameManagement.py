@@ -165,7 +165,7 @@ class NewGamePicker(Frame):
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Armor UW')]
                 elif this_column == 'Light AA Damaged Rating':
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Light AA Rating')]
-                elif this_column == 'Area AA Damaged Rarting':
+                elif this_column == 'Area AA Damaged Rating':
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Area AA Rating')]
                 elif this_column == 'Speed Damaged':
                     this_data[this_column] = annex_a_data[annex_a_columns.index('Speed')]
@@ -182,7 +182,7 @@ class NewGamePicker(Frame):
                 this_column = columns_needed[j]
                 data_to_submit.append(this_data[this_column])
             data_to_submit = tuple(data_to_submit)
-            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
+            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
             conn.commit()
             # Now we need to check for mounts and sensors associated with that ship.
             cursor = conn.cursor()
@@ -225,7 +225,7 @@ class NewGamePicker(Frame):
                     mount_data_to_submit = []
                     for this_column in other_mount_columns_needed:
                         if this_column in other_mount_columns:
-                            mount_data[this_column] = other_mount_columns.index(this_column)
+                            mount_data[this_column] = mount[other_mount_columns.index(this_column)]
                         elif this_column in scenario_columns:
                             mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'Game ID':
