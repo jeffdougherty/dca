@@ -454,7 +454,10 @@ def apply_crit(target, this_crit):
             cursor.execute("""SELECT * IN 'Game Ship Torp Mount' WHERE [Crit Mount] = 0 AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",ship_id_info)
             torp_mount_column_headings = [description[0] for description in cursor.description]
             torp_mounts = cursor.fetchall()
-            mounts = other_mounts + torp_mounts
+            cursor.execute("""SELECT * IN 'Game Ship ASW Mount' WHERE [Crit Mount] = 0 AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",ship_id_info)
+            asw_mount_column_headings = [description[0] for description in cursor.description]
+            asw_mounts = cursor.fetchall()
+            mounts = other_mounts + torp_mounts + asw_mounts
         else:
             #General 'Weapon' - need to combine mounts of all types
             batt_type = ''
@@ -467,7 +470,10 @@ def apply_crit(target, this_crit):
             cursor.execute("""SELECT * IN 'Game Ship Torp Mount' WHERE [Crit Mount] = 0 AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",ship_id_info)
             torp_mount_column_headings = [description[0] for description in cursor.description]
             torp_mounts = cursor.fetchall()
-            mounts = gun_mounts + other_mounts + torp_mounts
+            cursor.execute("""SELECT * IN 'Game Ship ASW Mount' WHERE [Crit Mount] = 0 AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",ship_id_info)
+            asw_mount_column_headings = [description[0] for description in cursor.description]
+            asw_mounts = cursor.fetchall()
+            mounts = gun_mounts + other_mounts + torp_mounts + asw_mounts
 
         mount_hit = choice(mounts)
 
@@ -482,17 +488,25 @@ def apply_crit(target, this_crit):
         else:
             if mount_hit in gun_mounts:
                 #Do the same things we just did
+                batt_type = 'Gun battery '
                 this_mount_class = mount_hit[gun_battery_column_headings.index('Mount Class')]
                 this_mount_number = mount_hit[gun_battery_column_headings.index('Mount Number')]
                 cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit Mount] = 1 WHERE [Mount Class] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_class, this_mount_number, ship_id_info[0], ship_id_info[1], ship_id_info[2],ship_id_info[3],))
             elif mount_hit in other_mounts:
+                batt_type = 'Other mount '
                 #Don't know if mounts are only numbered by same type.  Better not take chances.
                 this_mount_type = mount_hit[other_mount_column_headings.index('Mount Type')]
                 this_mount_number = mount_hit[other_mount_column_headings.index('Mount Number')]
                 cursor.execute("""UPDATE 'Game Ship Other Mounts' SET [Crit Mount] = 1 WHERE [Mount Type] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_type, this_mount_number, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
             elif mount_hit in torp_mounts:
+                batt_type = 'Torp mount'
                 this_mount_key = mount_hit[torp_mount_column_headings.index('Torp Mount Key')]
                 cursor.execute("""UPDATE 'Game Ship Torp Mount' SET [Crit Mount] = 1 WHERE [Torp Mount Key] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_key, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+            elif mount_hit in asw_mounts:
+                batt_type = 'ASW mount '
+                this_mount_key = mount_hit[asw_mount_column_headings.index('Mount Number')]
+                this_mount_type = mount_hit[asw_mount_column_headings.index('Mount Type')]
+                cursor.execute("""UPDATE 'Game Ship ASW Mount' SET [Crit Mount] = 1 WHERE [Mount Number] = ? AND [Mount Type] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_key, this_mount_type, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
             else:
                 raise Exception('Weapon mount hit, but a nonexistent mount was specified!')
 
@@ -502,7 +516,7 @@ def apply_crit(target, this_crit):
         else:
             #We have to calculate explosion damage.  If it auto-sank the ship it would have been dealt with above.
             pass
-            
+
 
 
 

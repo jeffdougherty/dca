@@ -246,22 +246,46 @@ class NewGamePicker(Frame):
                 cursor.execute("""SELECT * FROM 'Game Ship Torp Mount'""")
                 torp_mount_columns_needed = [description[0] for description in cursor.description]
                 for this_mount in torp_mount_data:
-                    torp_mount_data = {}
+                    mount_data = {}
                     torp_mount_data_to_submit = []
                     for this_column in torp_mount_columns_needed:
                         if this_column in torp_mount_columns:
-                            torp_mount_data[this_column] = this_mount[torp_mount_columns.index(this_column)]
+                            mount_data[this_column] = this_mount[torp_mount_columns.index(this_column)]
                         elif this_column in scenario_columns:
-                            torp_mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
+                            mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
                         elif this_column == 'Game ID':
-                            torp_mount_data[this_column] = self.this_game_index
+                            mount_data[this_column] = self.this_game_index
                         else:
-                            torp_mount_data[this_column] = 0 #Catcher, should just be for Crit Mount
+                            mount_data[this_column] = 0 #Catcher, should just be for Crit Mount
                     for k in range(len(torp_mount_columns_needed)):
                         this_column = torp_mount_columns_needed[k]
-                        torp_mount_data_to_submit.append(torp_mount_data[this_column])
+                        torp_mount_data_to_submit.append(mount_data[this_column])
                     torp_mount_data_to_submit = tuple(torp_mount_data_to_submit)
                     cursor.execute("""INSERT INTO 'Game Ship Torp Mount' VALUES(?,?,?,?,?,?,?,?,?)""", torp_mount_data_to_submit)
+                    conn.commit()
+            cursor.execute("""SELECT * FROM 'Ship ASW Mount' WHERE [Ship Key]=?""", (annex_a_key,))
+            asw_mount_data = cursor.fetchall()
+            if len(asw_mount_data) > 0:
+                asw_mount_columns = [description[0] for description in cursor.description]
+                cursor.execute("""SELECT * FROM 'Game Ship ASW Mount'""")
+                asw_mount_columns_needed = [description[0] for description in cursor.description]
+                for this_mount in asw_mount_data:
+                    mount_data = {}
+                    asw_mount_data_to_submit = []
+                    for this_column in asw_mount_columns_needed:
+                        if this_column in asw_mount_columns:
+                            mount_data[this_column] = this_mount[asw_mount_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
+                        elif this_column == 'Game ID':
+                            mount_data[this_column] = self.this_game_index
+                        else:
+                            mount_data[this_column] = 0
+                    for k in range(len(asw_mount_columns_needed)):
+                        this_column = asw_mount_columns_needed[k]
+                        asw_mount_data_to_submit.append(mount_data[this_column])
+                    asw_mount_data_to_submit = tuple(asw_mount_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship ASW Mount' VALUES(?,?,?,?,?,?,?,?,?,?,?)""",asw_mount_data_to_submit)
                     conn.commit()
             # Now we do the same thing with fire directors
             cursor.execute("""SELECT * FROM 'Ship FC Director' WHERE [Ship Key]=?""", (annex_a_key,))
