@@ -2,26 +2,17 @@ from random import randrange, choice
 from helperfunctions import connect_to_db, close_connection, to_precision
 import tkMessageBox
 
-AVIATION_SHIPS = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM', 'CA'] #!!!!! Removed 'CA' before release!  Debug only!
+AVIATION_SHIPS = ['CVL', 'CV', 'CVE', 'AV', 'AVP', 'AVT', 'AVM']
 MERCHANT_AUXILIARY = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', 'LSD', 'AC', 'LCP', 'AO', 'AF', 'AK', 'APD']
+# !!!IMPORTANT: This is the only thing 'telling' the program which types are aviation ships and merchant/auxillaries.
+# If a new type of aviation ship/merchant is added to Annex A, it must be added to the appropriate list
+# Otherwise, it will be treated as a surface combatant.
 
 def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
 
     cursor, conn = connect_to_db(returnConnection=True)
     print target
-    if armor_pen == False:
-        dp = int(dp * 0.5)
-    remaining_points = target['Damage Pts'] - dp
-    #First thing, check to see if the ship's sunk
-    if remaining_points <= 0:
-        log_string = target['Ship Name'] + 'runs out of DP ' + sink_ship(target)
-        return log_string
-    #else
-    log_string = target['Ship Name'] + " hit for " + str(dp) + " DP by shell/bomb. "
-    ship_info = get_ship_id_info(target)
-    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(remaining_points,ship_info[0],ship_info[1], ship_info[2], ship_info[3],))
-    conn.commit()
-    close_connection(cursor)
+    (log_string, remaining_points) = damage_ship(target, dp, armor_pen, hit_type)
 
     #Check for speed reduction
     log_string += check_speed_reduction(target, remaining_points)
@@ -103,6 +94,22 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         if this_crit != None:
             log_string += apply_crit(target, this_crit)
 
+def damage_ship(target, dp, armor_pen, hit_type):
+    cursor, conn = connect_to_db(returnConnection=True)
+    if armor_pen == False:
+        dp = int(dp * 0.5)
+    remaining_points = target['Damage Pts'] - dp
+    # First thing, check to see if the ship's sunk
+    if remaining_points <= 0:
+        log_string = target['Ship Name'] + 'runs out of DP ' + sink_ship(target)
+        return log_string
+    # else
+    log_string = target['Ship Name'] + " hit for " + str(dp) + " DP by " + str(hit_type)
+    ship_info = get_ship_id_info(target)
+    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(remaining_points, ship_info[0], ship_info[1], ship_info[2], ship_info[3],))
+    conn.commit()
+    close_connection(cursor)
+    return (log_string, remaining_points)
 
 def sink_ship(target):
     cursor, conn = connect_to_db(returnConnection=True)
@@ -110,7 +117,7 @@ def sink_ship(target):
     cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Critical Hits] = 'SUNK', [Damage Pts]=0 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
     conn.commit()
     close_connection(cursor)
-    return target['Ship Name'] + "and sinks!"
+    return target['Ship Name'] + " sinks!"
 
 
 def check_speed_reduction(target, remaining_points):
@@ -395,10 +402,6 @@ def roll_for_crits(target, armor_pen, d100):
 
     return this_crit
 
-
-
-
-
 def apply_crit(target, this_crit):
     #This is going to be the mother of all 'if...elif' statements
     #For each crit we need to: make any database changes needed, and return an appropriate entry for the log string
@@ -408,7 +411,7 @@ def apply_crit(target, this_crit):
     cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
     this_ship_record = cursor.fetchone()
     ship_column_names = [description[0] for description in cursor.description]
-
+    current_crits = this_ship_record[ship_column_names.index('Critical Hits')]
     #Deal with the crits in the order they happen in the tables.  Got to handle it somehow.
 
     if 'Ship Sunk' in this_crit:
@@ -426,11 +429,10 @@ def apply_crit(target, this_crit):
         this_director = choice(eligible_directors)
         cursor.execute("""UPDATE 'Game Ship FC Director' SET [Director Crit] = 1 WHERE [Director Number] = ? AND SELECT * IN 'Game Ship FC Director WHERE [Gun Battery Class] = 'M' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit FC] = 1 WHERE [Primary Director = ? AND [Alternative Director] IS NULL AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+        conn.commit()
         #For those annoying mounts with 2 directors...
         #May code that later, will be ugly and require multiple SQL lookups
-
-        conn.commit()
-        return batt_type + "director # " + str(this_director) + "hit, linked guns lose FC."
+        new_crit_string = batt_type + "director # " + str(this_director) + "hit, linked guns lose FC."
 
     elif 'Weapon' in this_crit:
         if 'Main battery' in this_crit:
@@ -457,6 +459,7 @@ def apply_crit(target, this_crit):
             cursor.execute("""SELECT * IN 'Game Ship ASW Mount' WHERE [Crit Mount] = 0 AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",ship_id_info)
             asw_mount_column_headings = [description[0] for description in cursor.description]
             asw_mounts = cursor.fetchall()
+            # !!! Need to figure out how to deal with mine mounts- how are they affected if there's no magazine explosion?
             mounts = other_mounts + torp_mounts + asw_mounts
         else:
             #General 'Weapon' - need to combine mounts of all types
@@ -473,6 +476,7 @@ def apply_crit(target, this_crit):
             cursor.execute("""SELECT * IN 'Game Ship ASW Mount' WHERE [Crit Mount] = 0 AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",ship_id_info)
             asw_mount_column_headings = [description[0] for description in cursor.description]
             asw_mounts = cursor.fetchall()
+            # !!! Need to figure out how to deal with mine mounts- how are they affected if there's no magazine explosion?
             mounts = gun_mounts + other_mounts + torp_mounts + asw_mounts
 
         mount_hit = choice(mounts)
@@ -483,23 +487,23 @@ def apply_crit(target, this_crit):
         if batt_type == 'Main battery ' or batt_type == 'Secondary battery ':
             #We know what table it's going back in
             this_mount_class = mount_hit[gun_battery_column_headings.index('Mount Class')]
-            this_mount_number = mount_hit[gun_battery_column_headings.index('Mount Number')]
-            cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit Mount] = 1 WHERE [Mount Class] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_class, this_mount_number, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+            this_mount_key = mount_hit[gun_battery_column_headings.index('Mount Number')]
+            cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit Mount] = 1 WHERE [Mount Class] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_class, this_mount_key, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         else:
             if mount_hit in gun_mounts:
                 #Do the same things we just did
                 batt_type = 'Gun battery '
                 this_mount_class = mount_hit[gun_battery_column_headings.index('Mount Class')]
-                this_mount_number = mount_hit[gun_battery_column_headings.index('Mount Number')]
-                cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit Mount] = 1 WHERE [Mount Class] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_class, this_mount_number, ship_id_info[0], ship_id_info[1], ship_id_info[2],ship_id_info[3],))
+                this_mount_key = mount_hit[gun_battery_column_headings.index('Mount Number')]
+                cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit Mount] = 1 WHERE [Mount Class] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_class, this_mount_key, ship_id_info[0], ship_id_info[1], ship_id_info[2],ship_id_info[3],))
             elif mount_hit in other_mounts:
                 batt_type = 'Other mount '
                 #Don't know if mounts are only numbered by same type.  Better not take chances.
                 this_mount_type = mount_hit[other_mount_column_headings.index('Mount Type')]
-                this_mount_number = mount_hit[other_mount_column_headings.index('Mount Number')]
-                cursor.execute("""UPDATE 'Game Ship Other Mounts' SET [Crit Mount] = 1 WHERE [Mount Type] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_type, this_mount_number, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+                this_mount_key = mount_hit[other_mount_column_headings.index('Mount Number')]
+                cursor.execute("""UPDATE 'Game Ship Other Mounts' SET [Crit Mount] = 1 WHERE [Mount Type] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_type, this_mount_key, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
             elif mount_hit in torp_mounts:
-                batt_type = 'Torp mount'
+                batt_type = 'Torp mount '
                 this_mount_key = mount_hit[torp_mount_column_headings.index('Torp Mount Key')]
                 cursor.execute("""UPDATE 'Game Ship Torp Mount' SET [Crit Mount] = 1 WHERE [Torp Mount Key] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_key, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
             elif mount_hit in asw_mounts:
@@ -510,12 +514,79 @@ def apply_crit(target, this_crit):
             else:
                 raise Exception('Weapon mount hit, but a nonexistent mount was specified!')
 
-        if 'explodes' not in this_crit:
-            #No explosion, so we can terminate the function and return our string
-            pass
+        if batt_type != 'ASW mount' and batt_type != 'Other mount':
+            new_crit_string = batt_type + str(this_mount_key) + " disabled. "
         else:
-            #We have to calculate explosion damage.  If it auto-sank the ship it would have been dealt with above.
-            pass
+            new_crit_string = this_mount_type + " " + str(this_mount_key) + " disabled. "
+
+        if 'explodes' in this_crit:
+            explosion_happens = True
+            # We have to calculate explosion damage.  If it auto-sank the ship it would have been dealt with above.
+            if batt_type == 'Gun battery ':
+                cursor.execute("""SELECT * IN 'Game Ship Gun Mount' WHERE [Mount Class] = ? AND [Mount Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_class, this_mount_key, ship_id_info[0], ship_id_info[1], ship_id_info[2],ship_id_info[3],))
+                this_mount_data = cursor.fetchall()
+                this_gun_key = this_mount_data[gun_battery_column_headings.index('Gun Key')]
+                cursor.execute("""SELECT * IN 'Gun Ammo' WHERE [Key Gun]=? AND [Key Shell]='HE';""",(this_gun_key,))
+                ammo_record = cursor.fetchall()
+                ammo_columns = [description[0] for description in cursor.description]
+                this_damage = ammo_record[ammo_columns.index('SR Dam')]
+
+            elif batt_type == 'Torp mount ':
+                cursor.execute("""SELECT * IN 'Game Ship Torp Mount' WHERE [Mount Number] = ? AND [Mount Type] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_key, this_mount_type, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+                this_mount_data = cursor.fetchall()
+                this_torp_key = this_mount_data[torp_mount_column_headings.index('Torpedo')]
+                this_mount_tubes = this_mount_data[torp_mount_column_headings.index('Tubes')]
+                cursor.execute("""SELECT * IN 'Torpedo' WHERE [Torp Key]=?;"""(this_torp_key,))
+                torp_record = cursor.fetchall()
+                torp_columns = [description[0] for description in cursor.description]
+                this_torp_damage = torp_record[torp_columns.index('Damage Points')]
+                this_damage = (this_mount_tubes * this_torp_damage) / 2
+                if this_damage < this_torp_damage:
+                    this_damage = this_torp_damage
+
+            elif batt_type == 'ASW Mount':
+                cursor.execute("""SELECT * IN 'Game Ship ASW Mount' WHERE [Mount Number] = ? AND [Mount Type] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(this_mount_key, this_mount_type, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+                this_mount_data = cursor.fetchall()
+                this_mount_key = this_mount_data[asw_mount_column_headings.index('DC Key')]
+                this_mount_rounds = this_mount_data[asw_mount_column_headings.index('Ready Rounds')]
+                if str.isnumeric(str(this_mount_rounds)) == False:
+                    # Hack: if there's a NULL, default to 1.0 Ready rounds
+                    this_mount_rounds = 1.0
+                asw_weap_type = 'DC'
+                if this_mount_key == 0:
+                    #It was an ATW instead, oops
+                    this_mount_key = this_mount_data[asw_mount_column_headings.index('ATW Key')]
+                    asw_weap_type = 'ATW'
+                #Need to do the next lookup in parallel since the column names are different between the tables
+                if asw_weap_type == 'DC':
+                    cursor.execute("""SELECT * IN 'Depth Charges - Surface' WHERE [Ship DC Key] = ?""", (this_mount_key,))
+                    asw_weap_column_headings = [description[0] for description in cursor.description]
+                    this_weapon_data = cursor.fetchall()
+                    this_weapon_damage = this_weapon_data[asw_weap_column_headings.index('Lethal Dam Pts')]
+                else:
+                    cursor.execute("""SELECT * IN 'ATW Launcher' WHERE [ATW Key]=?;""", (this_mount_key,))
+                    asw_weap_column_headings = [description[0] for description in cursor.description]
+                    this_weapon_data = cursor.fetchall()
+                    this_weapon_damage = this_weapon_data[asw_weap_column_headings.index('Damage Points')]
+                this_damage = (this_mount_rounds * this_weapon_damage) / 2
+                if this_damage < this_weapon_damage:
+                    this_damage = this_weapon_damage
+
+            else:
+                #Mine mounts not included since that part of the database is not currently filled out.
+                explosion_happens = False
+
+            if explosion_happens:
+                new_crit_string += damage_ship(target, this_damage, True, 'magazine explosion')[0] #Not interested in the remaining points, at least not now
+            else:
+                new_crit_string += 'Magazine explodes, but no magazine is present.  Whew! '
+
+    #After all the possible crits
+    crit_string_to_write = current_crits + new_crit_string #new_crit_string is filled in by the appropriate if...elif block
+    cursor.execute("""UPDATE 'Game Ship Formation Ship SET [Critical Hits] = ?;""",(crit_string_to_write,))
+    conn.commit()
+    close_connection(cursor)
+    return new_crit_string
 
 
 

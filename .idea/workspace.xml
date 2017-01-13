@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GameManagement.py" afterPath="$PROJECT_DIR$/GameManagement.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/InGameWindow.py" afterPath="$PROJECT_DIR$/InGameWindow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/excluded cases.rtf" afterPath="$PROJECT_DIR$/excluded cases.rtf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webcasdata2016.sqlite" afterPath="$PROJECT_DIR$/webcasdata2016.sqlite" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
@@ -29,7 +30,7 @@
       <file leaf-file-name="InGameWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/InGameWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2280">
+            <state relative-caret-position="165">
               <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -41,7 +42,7 @@
       <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scratchpad.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
+            <state relative-caret-position="1965">
               <caret line="134" column="0" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
               <folding />
             </state>
@@ -51,7 +52,7 @@
       <file leaf-file-name="Tkinter.py" pinned="false" current-in-tab="false">
         <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
+            <state relative-caret-position="42810">
               <caret line="2854" column="12" selection-start-line="2854" selection-start-column="8" selection-end-line="2854" selection-end-column="12" />
               <folding />
             </state>
@@ -61,8 +62,8 @@
       <file leaf-file-name="GameManagement.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GameManagement.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="920">
-              <caret line="227" column="99" selection-start-line="227" selection-start-column="99" selection-end-line="227" selection-end-column="99" />
+            <state relative-caret-position="620">
+              <caret line="312" column="32" selection-start-line="312" selection-start-column="32" selection-end-line="312" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -71,17 +72,19 @@
       <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DamageRules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1433">
-              <caret line="504" column="12" selection-start-line="504" selection-start-column="12" selection-end-line="504" selection-end-column="12" />
+            <state relative-caret-position="-299">
+              <caret line="119" column="35" selection-start-line="119" selection-start-column="35" selection-end-line="119" selection-end-column="35" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
-                <element signature="e#4852#5248#0" expanded="false" />
-                <element signature="e#5308#6874#0" expanded="false" />
-                <element signature="e#6946#9691#0" expanded="false" />
-                <element signature="e#9693#12368#1" expanded="false" />
-                <element signature="e#12553#13577#0" expanded="false" />
-                <element signature="e#13630#14964#0" expanded="false" />
-                <element signature="e#16677#17939#0" expanded="false" />
+                <element signature="e#4458#5284#0" expanded="false" />
+                <element signature="e#5766#7332#0" expanded="false" />
+                <element signature="e#7404#10149#0" expanded="false" />
+                <element signature="e#10151#12826#1" expanded="false" />
+                <element signature="e#12877#18664#0" expanded="false" />
+                <element signature="e#13011#14035#0" expanded="false" />
+                <element signature="e#14088#15422#0" expanded="false" />
+                <element signature="e#17135#18397#0" expanded="false" />
+                <element signature="e#21330#33669#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -90,7 +93,7 @@
       <file leaf-file-name="EditSideInfoWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EditSideInfoWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-475">
+            <state relative-caret-position="1170">
               <caret line="79" column="91" selection-start-line="79" selection-start-column="91" selection-end-line="79" selection-end-column="91" />
               <folding />
             </state>
@@ -100,7 +103,7 @@
       <file leaf-file-name="helperfunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helperfunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-475">
+            <state relative-caret-position="2880">
               <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
               <folding />
             </state>
@@ -110,7 +113,7 @@
       <file leaf-file-name="helperclasses.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helperclasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3413">
+            <state relative-caret-position="5355">
               <caret line="413" column="54" selection-start-line="413" selection-start-column="54" selection-end-line="413" selection-end-column="54" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -160,13 +163,14 @@
         <option value="$PROJECT_DIR$/helperclasses.py" />
         <option value="$PROJECT_DIR$/InGameWindow.py" />
         <option value="$PROJECT_DIR$/GameManagement.py" />
+        <option value="$PROJECT_DIR$/excluded cases.rtf" />
         <option value="$PROJECT_DIR$/DamageRules.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="34" />
-    <option name="y" value="260" />
+    <option name="x" value="213" />
+    <option name="y" value="255" />
     <option name="width" value="1619" />
     <option name="height" value="953" />
   </component>
@@ -195,8 +199,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -225,6 +227,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -486,27 +490,27 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="34" y="260" width="1619" height="953" extended-state="0" />
+    <frame x="213" y="255" width="1619" height="953" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1951822" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.10006177" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.8999382" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44683257" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.8999382" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900944" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44683257" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -649,7 +653,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>75</line>
+          <line>66</line>
           <option name="timeStamp" value="491" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -684,7 +688,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>26</line>
+          <line>17</line>
           <option name="timeStamp" value="505" />
         </line-breakpoint>
       </breakpoints>
@@ -693,13 +697,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Library/Python/2.7/lib/python/site-packages/lxml/_elementpath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="287" column="0" selection-start-line="287" selection-start-column="0" selection-end-line="287" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Python/2.7/lib/python/site-packages/docx/oxml/xmlchemy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
@@ -911,7 +908,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="155">
           <caret line="337" column="0" selection-start-line="337" selection-start-column="0" selection-end-line="337" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -919,7 +915,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6675">
           <caret line="491" column="0" selection-start-line="491" selection-start-column="0" selection-end-line="491" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -951,7 +946,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -967,7 +961,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -975,7 +968,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -983,7 +975,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2175">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -991,15 +982,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="706">
           <caret line="80" column="34" selection-start-line="80" selection-start-column="34" selection-end-line="80" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#26#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scratchpad.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
+        <state relative-caret-position="1965">
           <caret line="134" column="0" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
           <folding />
         </state>
@@ -1009,7 +997,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
           <caret line="33" column="12" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1017,13 +1004,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
+        <state relative-caret-position="42810">
           <caret line="2854" column="12" selection-start-line="2854" selection-start-column="8" selection-end-line="2854" selection-end-column="12" />
           <folding />
         </state>
@@ -1033,13 +1019,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/helperclasses.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3413">
+        <state relative-caret-position="5355">
           <caret line="413" column="54" selection-start-line="413" selection-start-column="54" selection-end-line="413" selection-end-column="54" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -1050,7 +1035,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/helperfunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-475">
+        <state relative-caret-position="2880">
           <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
           <folding />
         </state>
@@ -1058,23 +1043,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/EditSideInfoWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-475">
+        <state relative-caret-position="1170">
           <caret line="79" column="91" selection-start-line="79" selection-start-column="91" selection-end-line="79" selection-end-column="91" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GameManagement.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="920">
-          <caret line="227" column="99" selection-start-line="227" selection-start-column="99" selection-end-line="227" selection-end-column="99" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/InGameWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2280">
+        <state relative-caret-position="165">
           <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -1082,19 +1059,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GameManagement.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="620">
+          <caret line="312" column="32" selection-start-line="312" selection-start-column="32" selection-end-line="312" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/excluded cases.rtf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DamageRules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1433">
-          <caret line="504" column="12" selection-start-line="504" selection-start-column="12" selection-end-line="504" selection-end-column="12" />
+        <state relative-caret-position="-299">
+          <caret line="119" column="35" selection-start-line="119" selection-start-column="35" selection-end-line="119" selection-end-column="35" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
-            <element signature="e#4852#5248#0" expanded="false" />
-            <element signature="e#5308#6874#0" expanded="false" />
-            <element signature="e#6946#9691#0" expanded="false" />
-            <element signature="e#9693#12368#1" expanded="false" />
-            <element signature="e#12553#13577#0" expanded="false" />
-            <element signature="e#13630#14964#0" expanded="false" />
-            <element signature="e#16677#17939#0" expanded="false" />
+            <element signature="e#4458#5284#0" expanded="false" />
+            <element signature="e#5766#7332#0" expanded="false" />
+            <element signature="e#7404#10149#0" expanded="false" />
+            <element signature="e#10151#12826#1" expanded="false" />
+            <element signature="e#12877#18664#0" expanded="false" />
+            <element signature="e#13011#14035#0" expanded="false" />
+            <element signature="e#14088#15422#0" expanded="false" />
+            <element signature="e#17135#18397#0" expanded="false" />
+            <element signature="e#21330#33669#0" expanded="false" />
           </folding>
         </state>
       </provider>

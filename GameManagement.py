@@ -287,6 +287,31 @@ class NewGamePicker(Frame):
                     asw_mount_data_to_submit = tuple(asw_mount_data_to_submit)
                     cursor.execute("""INSERT INTO 'Game Ship ASW Mount' VALUES(?,?,?,?,?,?,?,?,?,?,?)""",asw_mount_data_to_submit)
                     conn.commit()
+            cursor.execute("""SELECT * FROM 'Ship Mine' WHERE [Ship Key]=?""", (annex_a_key,))
+            mine_data = cursor.fetchall()
+            if len(mine_data) > 0:
+                mine_columns = [description[0] for description in cursor.description]
+                cursor.execute("""SELECT * FROM 'Game Ship Mine'""")
+                ship_mine_columns_needed = [description[0] for description in cursor.description]
+                for this_mine in mine_data:
+                    mount_data = {}
+                    mount_data_to_submit = []
+                    for this_column in ship_mine_columns_needed:
+                        if this_column in mine_columns:
+                            mount_data[this_column] = this_mine[mine_columns.index(this_column)]
+                        elif this_column in scenario_columns:
+                            mount_data[this_column] = scenario_data[i][scenario_columns.index(this_column)]
+                        elif this_column == 'Game ID':
+                            mount_data[this_column] = self.this_game_index
+                        else:
+                            mount_data[this_column] = 0
+                    for k in range(len(ship_mine_columns_needed)):
+                        this_column = ship_mine_columns_needed[k]
+                        mount_data_to_submit.append(mount_data[this_column])
+                    mount_data_to_submit = tuple(mount_data_to_submit)
+                    cursor.execute("""INSERT INTO 'Game Ship Mine' VALUES(?,?,?,?,?,?)""",mount_data_to_submit)
+                    conn.commit()
+
             # Now we do the same thing with fire directors
             cursor.execute("""SELECT * FROM 'Ship FC Director' WHERE [Ship Key]=?""", (annex_a_key,))
             fc_director_data = cursor.fetchall()
