@@ -84,7 +84,7 @@ class GameWindow(Frame):
 
 
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts','25% Threshold Crossed', '10% Threshold Crossed']
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts','25% Threshold Crossed', '10% Threshold Crossed', 'Crit Engineering']
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'Side Name': 'text', 'default': 'number'}
         self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed', 'Damage Pts': 'Damage Pts Left'})
 
@@ -109,6 +109,7 @@ class GameWindow(Frame):
         self.shipsTable.hide_column('Speed')
         self.shipsTable.hide_column('25% Threshold Crossed')
         self.shipsTable.hide_column('10% Threshold Crossed')
+        self.shipsTable.hide_column('Crit Engineering')
 
         ships_table_canvas.redrawVisible()
         #Need to store the columns and their indexes for later reference.
@@ -206,22 +207,22 @@ class GameWindow(Frame):
         self.d6_entry = Entry(dice_entry_frame, width=2)
         self.d6_entry.pack(side='left')
         self.d6_entry.config(state='disabled')
-        d20_label = Label(dice_entry_frame, text="D20")
-        d20_label.pack(side='left')
-        self.d20_entry = Entry(dice_entry_frame, width=2)
-        self.d20_entry.pack(side='left')
-        self.d20_entry.config(state='disabled')
+        d100_label = Label(dice_entry_frame, text="D100 Rolls")
+        d100_label.pack(side='left')
+        self.d100_entry = Entry(dice_entry_frame, width=2)
+        self.d100_entry.pack(side='left')
+        self.d100_entry.config(state='disabled')
 
     def toggle_debug_frame(self):
         new_val = self.debug_frame_armed.get()
         if new_val == 1:
             self.d6_entry.config(state='normal')
-            self.d20_entry.config(state='normal')
+            self.d100_entry.config(state='normal')
         else:
             self.d6_entry.delete(0, END)
             self.d6_entry.config(state='disabled')
-            self.d20_entry.delete(0, END)
-            self.d20_entry.config(state='disabled')
+            self.d100_entry.delete(0, END)
+            self.d100_entry.config(state='disabled')
 
     def close_window(self):
         self.destroy()
@@ -291,10 +292,10 @@ class GameWindow(Frame):
         debug = self.debug_frame_armed.get()
         if debug == 1:
             d6 = self.d6_entry.get()
-            d20_list = parse_comma_separated_numbers(self.d20_entry.get())
+            d100_list = parse_comma_separated_numbers(self.d100_entry.get())
         else:
             d6 = None
-            d20_list = None
+            d100_list = None
         if hit_type == 'Shell' or hit_type == 'Bomb':
             if self.armor_pen_picker.get() == 'Yes':
                 armor_pen = True
@@ -304,7 +305,7 @@ class GameWindow(Frame):
 
             self.write_game_log(target['Ship Name'] + " takes " + dp + " DP from " + hit_type + " hit.")
             print type(target['Speed'])
-            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d20_list)
+            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d100_list)
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:
