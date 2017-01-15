@@ -238,7 +238,7 @@ class GameWindow(Frame):
         self.write_game_log("Game turn advanced to " + str(self.game_turn + 1))
         self.game_turn += 1
         self.update_turn_readout()
-
+        self.apply_fire_flooding_tac_turn()
 
     def update_turn_readout(self):
         self.turn_readout.config(state='normal')
@@ -285,10 +285,13 @@ class GameWindow(Frame):
         #Need to be able to read from multiple databases.  Need to write those as we go along
         pass
 
-    def apply_this_hit(self):
-        target = self.shipsTable.get_currentRecord()
-        dp = self.hit_dp_amount.get()
-        hit_type = self.damage_type_picker.get()
+    def apply_this_hit(self, target = None, dp = None, hit_type = None): #Will usually be None, but occasionally we'll need to send in hits from fire/flooding
+        if target == None:
+            target = self.shipsTable.get_currentRecord()
+        if dp == None:
+            dp = self.hit_dp_amount.get()
+        if hit_type == None:
+            hit_type = self.damage_type_picker.get()
         debug = self.debug_frame_armed.get()
         if debug == 1:
             d6 = self.d6_entry.get()
@@ -302,7 +305,6 @@ class GameWindow(Frame):
             #default is no armor pen
             else:
                 armor_pen = False
-
             self.write_game_log(target['Ship Name'] + " takes " + dp + " DP from " + hit_type + " hit.")
             print type(target['Speed'])
             critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d100_list)
@@ -314,4 +316,25 @@ class GameWindow(Frame):
             depth = self.depth_picker.get()
             aspect = self.aspect_picker.get()
             #torpedo_hit(target, dp, depth, aspect)
+        if hit_type == 'Fire' or hit_type == 'Flood':
+            armor_pen = True
 
+    def apply_fire_flooding_tac_turn(self):
+        cursor, conn = connect_to_db(returnConnection=True)
+
+        cursor.execute("""SELECT * FROM 'Game Ship Fire/Flood' WHERE [Game ID] = ? AND [Turns Remaining] > 0;""")
+        fire_flood_data = cursor.fetchall
+        fire_flood_columns = [description[0] for description in cursor.description]
+        for i in xrange(len(fire_flood_data)):
+            this_turns_remaining = fire_flood_data[i][fire_flood_columns.index('Turns Remaining')]
+            this_turns_remaining -= 1
+            if this_turns_remaining == 0:
+                this_value = fire_flood_data[i][fire_flood_columns.index('Value')]
+                this_type = fire_flood_data[i][fire_flood_columns.index('Type')]
+                cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (fire_flood_data[i][fire_flood_columns.index('Game ID')], fire_flood_data[i][fire_flood_columns.index('Scenario Side')], fire_flood_data[i][fire_flood_columns.index('Formation ID')], fire_flood_data[i][fire_flood_columns.index('Formation Ship Key')],))
+                target_data = cursor.fetchall()
+                assert len(ship_data) == 1
+                self.apply_this_hit(target_data, dp = this_value, hit_type = this_type)
+
+
+            cursor.execute("""UPDATE 'Game Ship Fire/Flood' SET [Turns Remaining] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_turns_remaining, fire_flood_data[i][fire_flood_columns.index('Game ID')], fire_flood_data[i][fire_flood_columns.index('Scenario Side')], fire_flood_data[i][fire_flood_columns.index('Formation ID')], fire_flood_data[i][fire_flood_columns.index('Formation Ship Key')],))

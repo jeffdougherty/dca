@@ -23,7 +23,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
     else:
         log_string += massive_damage_result
     #Now we start checking for crits
-
+    ship_id_info = get_ship_id_info(target)
     #!!!Auto crits first
     if hit_type == 'Bomb' and target['Ship Type'] in AVIATION_SHIPS and armor_pen:
         if tkMessageBox.askyesno(title='Bomb', message='Is the bomb 100 lb/50 kg or more?'):
@@ -73,7 +73,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         # !!! Massive damage kicks in
         log_string += 'Reduced to 10% DP by massive damage.  '
         new_dp = 0.1 * target['Damage Pts Start']
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;;""",(new_dp,ship_info[0], ship_info[1], ship_info[2], ship_info[3],))
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;;""",(new_dp,ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         return log_string
 
     if d6 == None: #No value supplied for debug mode
@@ -235,7 +235,7 @@ def roll_for_crits(target, armor_pen, d100):
         if d100 <= 9:
             this_crit = 'Weapon - Mount Lost'
         elif d100 == 10:
-            this_crit = 'Weapon - Magazine Detonates'
+            this_crit = 'Weapon - Magazine explodes'
         elif d100 <= 45:
             this_crit = 'Cargo'
         elif d100 <= 50:
@@ -243,9 +243,9 @@ def roll_for_crits(target, armor_pen, d100):
         elif d100 <= 59:
             this_crit = 'Engineering'
         elif d100 == 60:
-            this_crit = 'Boiler Explosion'
+            this_crit = 'Engineering - Boiler Explosion'
         elif d100 <= 75:
-            this_crit = 'Floodinig'
+            this_crit = 'Flooding'
         elif d100 <= 90:
             this_crit = 'Fire'
         elif d100 <= 92:
@@ -273,11 +273,11 @@ def roll_for_crits(target, armor_pen, d100):
         elif d100 <= 24:
             this_crit = 'Weapon - Mount Lost*'
         elif d100 == 25:
-            this_crit = 'Weapon - Magazine Detonates*'
+            this_crit = 'Weapon - Magazine explodes*'
         elif d100 <= 28:
-            this_crit = 'Aviation Ammo - Explodes*'
+            this_crit = 'Aviation Ammo - explodes*'
         elif d100 == 29:
-            this_crit = 'Aviation Ammo - Explodes, Ship Sunk*'
+            this_crit = 'Aviation Ammo - explodes, Ship Sunk*'
         elif d100 <= 35:
             this_crit = 'Aviation Fuel*'
         elif d100 <= 45:
@@ -285,7 +285,7 @@ def roll_for_crits(target, armor_pen, d100):
         elif d100 <= 59:
             this_crit = 'Engineering*'
         elif d100 == 60:
-            this_crit = 'Boiler Explosion*'
+            this_crit = 'Engineering - Boiler Explosion*'
         elif d100 <= 75:
             this_crit = 'Flooding*'
         elif d100 <= 90:
@@ -330,7 +330,7 @@ def roll_for_crits(target, armor_pen, d100):
         elif d100 <= 59:
             this_crit = 'Engineering*'
         elif d100 == 60:
-            this_crit = 'Boiler Explosion*'
+            this_crit = 'Engineering - Boiler Explosion*'
         elif d100 <= 75:
             this_crit = 'Flooding*'
         elif d100 <= 90:
@@ -369,7 +369,7 @@ def roll_for_crits(target, armor_pen, d100):
         elif d100 <= 59:
             this_crit = 'Engineering*'
         elif d100 == 60:
-            this_crit = 'Boiler Explosion*'
+            this_crit = 'Engineering - Boiler Explosion*'
         elif d100 <= 75:
             this_crit = 'Flooding*'
         elif d100 <= 90:
@@ -415,7 +415,10 @@ def apply_crit(target, this_crit):
     #Deal with the crits in the order they happen in the tables.  Got to handle it somehow.
 
     if 'Ship Sunk' in this_crit:
-        pass
+        if this_ship_record[ship_column_names.index('Ship Type')] in AVIATION_SHIPS:
+            return 'Aviation bomb magazine explodes, ' + sink_ship(target)
+        else:
+            return 'Main battery magazine explodes, ' + sink_ship(target)
 
     if 'director' in this_crit:
         if 'Main battery' in this_crit:
@@ -428,6 +431,7 @@ def apply_crit(target, this_crit):
         eligible_directors = [this_director[ship_column_names.index('Director Number')] for this_director in directors]
         this_director = choice(eligible_directors)
         cursor.execute("""UPDATE 'Game Ship FC Director' SET [Director Crit] = 1 WHERE [Director Number] = ? AND SELECT * IN 'Game Ship FC Director WHERE [Gun Battery Class] = 'M' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+        conn.commit()
         cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit FC] = 1 WHERE [Primary Director = ? AND [Alternative Director] IS NULL AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         conn.commit()
         #For those annoying mounts with 2 directors...
@@ -460,6 +464,7 @@ def apply_crit(target, this_crit):
             asw_mount_column_headings = [description[0] for description in cursor.description]
             asw_mounts = cursor.fetchall()
             # !!! Need to figure out how to deal with mine mounts- how are they affected if there's no magazine explosion?
+            # !!! How about light AA guns- do they have to go in here?
             mounts = other_mounts + torp_mounts + asw_mounts
         else:
             #General 'Weapon' - need to combine mounts of all types
@@ -477,6 +482,7 @@ def apply_crit(target, this_crit):
             asw_mount_column_headings = [description[0] for description in cursor.description]
             asw_mounts = cursor.fetchall()
             # !!! Need to figure out how to deal with mine mounts- how are they affected if there's no magazine explosion?
+            # !!! How about light AA guns- do they have to go in here?
             mounts = gun_mounts + other_mounts + torp_mounts + asw_mounts
 
         mount_hit = choice(mounts)
@@ -581,6 +587,31 @@ def apply_crit(target, this_crit):
             else:
                 new_crit_string += 'Magazine explodes, but no magazine is present.  Whew! '
 
+    elif 'Lt AA' in this_crit:
+        current_rating = this_ship_record['Light AA Damaged Rating']
+        if current_rating > 0:
+            new_rating = current_rating - 0.5
+            if new_rating < 0:
+                new_rating = 0
+            new_crit_string = 'Light AA hit, rating reduced to ' + str(new_rating) + ' '
+            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Light AA Damaged Rating] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (new_rating, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+            conn.commit()
+        else:
+            new_crit_string = "Light AA hit, but rating already reduced to 0. "
+
+    elif 'Engineering' in this_crit:
+        current_engineering_crits = this_ship_record[ship_column_names.index('Crit Engineering')]
+        current_engineering_crits += 1
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Engineering] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (current_engineering_crits, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+        conn.commit()
+        new_crit_string = 'Engineering hit, ' + check_speed_reduction(target, this_ship_record[ship_column_names.index('Speed Damaged')])
+
+        if 'Boiler Explosion' in this_crit:
+            boiler_damage = this_ship_record[ship_column_names.index('Damage Pts Start')] * 0.10
+            new_crit_string += 'Boiler explodes, ' + damage_ship(target, boiler_damage, True, 'Boiler Explosion ')
+
+        #Fire critical- d6 / 2
+
     #After all the possible crits
     crit_string_to_write = current_crits + new_crit_string #new_crit_string is filled in by the appropriate if...elif block
     cursor.execute("""UPDATE 'Game Ship Formation Ship SET [Critical Hits] = ?;""",(crit_string_to_write,))
@@ -588,8 +619,57 @@ def apply_crit(target, this_crit):
     close_connection(cursor)
     return new_crit_string
 
+def start_fire(this_ship_record, ship_column_names, armor_pen, this_strength_mod):
+    this_in_service_date = int(this_ship_record[ship_column_names.index('In Service')])
+    # !!! Code goes here to adjust in-service date if the ship's been rebuilt
+
+    cursor, conn = connect_to_db(returnConnection= True)
+    ship_info = get_ship_id_info(this_ship_record)
+
+    if this_in_service_date <= 1907:
+        this_severity = rolld6() + rolld6() + 2
+    elif this_in_service_date <= 1924:
+        this_severity = rolld6() + 2
+    else:
+        this_severity = rolld6()
+
+    if armor_pen == False:
+        this_severity = int(this_severity * 0.5) #Should convert to an integer and round down.
+
+    if "-" in this_strength_mod or "+" in this_strength_mod:
+        this_severity += convert_mod_to_number(this_strength_mod)
+    elif "/" in this_strength_mod or "*" in this_strength_mod:
+        this_severity *= convert_mod_to_number(this_strength_mod)
+
+    #First, update the overall fire severity
+
+    current_fire = int(this_ship_record[ship_column_names.index('Crit Fire')])
+    current_fire += this_severity
+    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_info[0], ship_info[1], ship_info[2], ship_info[3]))
+    conn.commit()
+
+    #Make an entry for damage that will hit on the third tac turn after this one
+
+    cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,3);""",(ship_info[0], ship_info[1], ship_info[2], ship_info[3], this_severity))
+    conn.commit()
 
 
+def convert_mod_to_number(this_mod):
+    #Takes a modifier in the form of "+2", "-2", "/2", etc and returns the number in question
+    subtract = False
+    divide = False
+    if '-' in this_mod:
+        subtract = True
+    elif '/' in this_mod:
+        divide = True
+    while str.isnumeric(this_mod) == False:
+        this_mod = this_mod[1:]
+    this_mod = int(this_mod)
+    if subtract:
+        this_mod = this_mod * -1
+    elif divide:
+        this_mod = 1.0/this_mod
+    return this_mod
 
 def get_ship_id_info(target):
     game_id = target['Game ID']

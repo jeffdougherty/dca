@@ -10,6 +10,7 @@ def cleanup_game_db():
     cursor.execute("""DELETE FROM 'Game Ship Other Mounts'""")
     cursor.execute("""DELETE FROM 'Game Ship FC Director'""")
     cursor.execute("""DELETE FROM 'Game Ship Sensor'""")
+    cursor.execute("""DELETE FROM 'Game Ship Fire/Flood'""")
     conn.commit()
 
 cleanup_game_db()
