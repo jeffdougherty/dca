@@ -135,4 +135,12 @@ def string_tests():
     return digits
 
 
-print string_tests()
+#print string_tests()
+
+def fire_flood_test():
+    cursor = connect_to_db()
+    cursor.execute("""SELECT * FROM 'Game Ship Fire/Flood' WHERE [Turns Remaining] > 0;""")
+    a = cursor.fetchall()
+    print a
+
+fire_flood_test()
