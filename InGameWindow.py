@@ -286,6 +286,7 @@ class GameWindow(Frame):
         pass
 
     def apply_this_hit(self, target = None, dp = None, hit_type = None): #Will usually be None, but occasionally we'll need to send in hits from fire/flooding
+        #Note that when these values are set to None they're automatically initialized from where those values will *usually* be.
         if target == None:
             target = self.shipsTable.get_currentRecord()
         if dp == None:

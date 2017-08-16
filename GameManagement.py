@@ -499,7 +499,7 @@ class LoadGamePicker(Frame):
         print_docs_button.pack(side='left')
         quit_button = Button(button_frame, text="Quit", command=self.quit)
         quit_button.pack(side='right')
-        close_button = Button(button_frame, text="Close", command=lambda: self.close_picker())
+        close_button = Button(button_frame, text="Main Menu", command=lambda: self.close_picker())
         close_button.pack(side='right')
 
 

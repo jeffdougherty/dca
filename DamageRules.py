@@ -428,7 +428,8 @@ def apply_crit(target, this_crit):
             batt_type = 'Secondary battery '
             cursor.execute("""SELECT * IN 'Game Ship FC Director WHERE [Gun Battery Class] = 'A' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
         directors = cursor.fetchall()
-        eligible_directors = [this_director[ship_column_names.index('Director Number')] for this_director in directors]
+        director_column_names = [description[0] for description in cursor.description]
+        eligible_directors = [this_director[director_column_names.index('Director Number')] for this_director in directors]
         this_director = choice(eligible_directors)
         cursor.execute("""UPDATE 'Game Ship FC Director' SET [Director Crit] = 1 WHERE [Director Number] = ? AND SELECT * IN 'Game Ship FC Director WHERE [Gun Battery Class] = 'M' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         conn.commit()
@@ -542,7 +543,7 @@ def apply_crit(target, this_crit):
                 this_mount_data = cursor.fetchall()
                 this_torp_key = this_mount_data[torp_mount_column_headings.index('Torpedo')]
                 this_mount_tubes = this_mount_data[torp_mount_column_headings.index('Tubes')]
-                cursor.execute("""SELECT * IN 'Torpedo' WHERE [Torp Key]=?;"""(this_torp_key,))
+                cursor.execute("""SELECT * IN 'Torpedo' WHERE [Torp Key]=?;""",(this_torp_key,))
                 torp_record = cursor.fetchall()
                 torp_columns = [description[0] for description in cursor.description]
                 this_torp_damage = torp_record[torp_columns.index('Damage Points')]
@@ -612,6 +613,62 @@ def apply_crit(target, this_crit):
 
         #Fire critical- d6 / 2
 
+    elif 'Sensor' in this_crit:
+        cursor.execute("""SELECT * IN 'Game Ship Sensor WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
+        eligible_sensors = cursor.fetchall()
+        sensor_column_names = [description[0] for description in cursor.description]
+        #Going to try a different approach here- select a table entry rather than a number
+        this_sensor = choice(eligible_sensors)
+        sensor_number = this_sensor[sensor_column_names.index('Sensor Number')]
+        cursor.execute("""UPDATE 'Game Ship Sensor' SET [Crit Sensor] = 1 WHERE [Sensor Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (sensor_number, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+        conn.commit()
+        sensor_name = this_sensor[sensor_column_names.index('Sensor Name')]
+        new_crit_string = sensor_name + " hit, sensor out of action."
+
+    elif 'Comms' in this_crit:
+        comms_type = rolld6()
+        if comms_type == 1 or comms_type == 2:
+            if 'Long-range radio communications' in current_crits:
+                #If you roll a given type of comms when they're already hit, you get a free pass
+                new_crit_string = ""
+            else:
+                new_crit_string = 'Long-range radio communications knocked out, no OTH communications.'
+        elif comms_type == 3 or comms_type == 4:
+            if 'Short-range radio communications' in current_crits:
+                new_crit_string = ""
+            else:
+                new_crit_string = "Short-range radio communications knocked out, no communications with ships in same formation."
+        elif comms_type == 5 or comms_type == 6:
+            if 'Aircraft radio communications' in current_crits:
+                new_crit_string = ""
+            else:
+                new_crit_string = 'Aircraft radio communications knocked out, ship cannot communicate with aircraft.'
+
+    elif 'Bridge' in this_crit:
+        # !!! Assuming that the stuff with fire doesn't happen, since it's not in the expanded crit tables.  Need to query
+        direction_start = this_crit.index('-') + 2 #1 for the space, 1 for the first letter
+        this_direction = this_crit[direction_start:]
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Bridge] = 1, [Crit Bridge Direction] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_direction, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+        if this_direction == 'straight':
+            new_crit_string = "Bridge hit, ship maintains current movement"
+        else:
+            new_crit_string = "Bridge hit, ship circles to the " + this_direction
+
+    elif 'Rudder' in this_crit:
+        direction_start = this_crit.index('-') + 2  # 1 for the space, 1 for the first letter
+        this_direction = this_crit[direction_start:]
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Rudder] = 1, [Crit Rudder Direction] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_direction, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+        if this_direction == 'straight':
+            new_crit_string = "Rudder hit, ship maintains current movement"
+        else:
+            new_crit_string = "Rudder hit, ship circles to the " + this_direction
+
+    #Many more crit types need to go here.
+
+    else:
+        new_crit_string = "Error, could not find matching handler for this critical hit in the if...elif statement"
+        raise Exception("Could not find a matching handler in the big if...elif statement")
+
     #After all the possible crits
     crit_string_to_write = current_crits + new_crit_string #new_crit_string is filled in by the appropriate if...elif block
     cursor.execute("""UPDATE 'Game Ship Formation Ship SET [Critical Hits] = ?;""",(crit_string_to_write,))
@@ -638,8 +695,10 @@ def start_fire(this_ship_record, ship_column_names, armor_pen, this_strength_mod
 
     if "-" in this_strength_mod or "+" in this_strength_mod:
         this_severity += convert_mod_to_number(this_strength_mod)
-    elif "/" in this_strength_mod or "*" in this_strength_mod:
+    elif "*" in this_strength_mod:
         this_severity *= convert_mod_to_number(this_strength_mod)
+    elif "/" in this_strength_mod:
+        this_severity = this_severity / convert_mod_to_number(this_strength_mod)
 
     #First, update the overall fire severity
 
