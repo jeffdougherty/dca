@@ -129,7 +129,7 @@ def string_tests():
         except:
             comma_posit = len(number_list) #No comma, so we're at the end of the string
         next_digit = number_list[start:comma_posit]
-        if str.isnumeric(next_digit):
+        if str.isdigit(next_digit):
             digits.append(int(next_digit))
         number_list = number_list[comma_posit+1:]
     return digits
@@ -143,4 +143,13 @@ def fire_flood_test():
     a = cursor.fetchall()
     print a
 
-fire_flood_test()
+#fire_flood_test()
+
+def test_isnumeric():
+    str1 = "When in the course of human events,"
+    str2 = "12345"
+    str3 = "Wh3n, in t3h c0u4s3 0f hum4n 3v3nt5,"
+    for this_string in [str1, str2, str3]:
+        print str.isdigit(this_string)
+
+test_isnumeric()
