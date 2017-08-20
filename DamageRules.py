@@ -13,6 +13,10 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
     cursor, conn = connect_to_db(returnConnection=True)
     print target
     (log_string, remaining_points) = damage_ship(target, dp, armor_pen, hit_type)
+    if d6 != None or d100_list != None:
+        debug_mode = True
+    else:
+        debug_mode = False
 
     #Check for speed reduction
     log_string += check_speed_reduction(target, remaining_points)
@@ -76,7 +80,9 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;;""",(new_dp,ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         return log_string
 
-    if d6 == None: #No value supplied for debug mode
+    if debug_mode:
+        log_string += "Damage ratio is " + str(damage_ratio) + " Using supplied d6 value of " + str(d6) + " for number of crits."
+    else:
         d6 = rolld6()
 
     if d6 in damage_ratio_dict.keys():
@@ -84,15 +90,22 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
     else:
         num_crits = 0
 
+    if debug_mode:
+        log_string += " Number of crits rolled is " + str(num_crits) + "."
+
     for i in range(num_crits):
         if d100_list != None:
-            this_crit = roll_for_crits(target, armor_pen, d100_list.pop(0))
+            this_d100 = d100_list.pop(0)
+            log_string += "Using supplied d100 value of " + str(this_d100) + " for critical hit."
+            this_crit = roll_for_crits(target, armor_pen, this_d100)
         else:
             this_crit = roll_for_crits(target, armor_pen, rolld100())
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
-        if this_crit != None:
-            log_string += apply_crit(target, this_crit)
+
+        log_string += apply_crit(target, this_crit)
+
+    return log_string
 
 def damage_ship(target, dp, armor_pen, hit_type):
     cursor, conn = connect_to_db(returnConnection=True)
@@ -611,7 +624,7 @@ def apply_crit(target, this_crit):
             boiler_damage = this_ship_record[ship_column_names.index('Damage Pts Start')] * 0.10
             new_crit_string += 'Boiler explodes, ' + damage_ship(target, boiler_damage, True, 'Boiler Explosion ')
 
-        #Fire critical- d6 / 2
+        #!!! Fire critical- d6 / 2
 
     elif 'Sensor' in this_crit:
         cursor.execute("""SELECT * IN 'Game Ship Sensor WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
@@ -628,21 +641,26 @@ def apply_crit(target, this_crit):
     elif 'Comms' in this_crit:
         comms_type = rolld6()
         if comms_type == 1 or comms_type == 2:
-            if 'Long-range radio communications' in current_crits:
-                #If you roll a given type of comms when they're already hit, you get a free pass
+            if this_ship_record[ship_column_names.index('Crit Radio Short Range')] == 1:
                 new_crit_string = ""
             else:
                 new_crit_string = 'Long-range radio communications knocked out, no OTH communications.'
+                cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Radio Short Range] = 1 WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
+                conn.commit()
         elif comms_type == 3 or comms_type == 4:
-            if 'Short-range radio communications' in current_crits:
+            if this_ship_record[ship_column_names.index('Crit Radio Long Range')] == 1:
                 new_crit_string = ""
             else:
                 new_crit_string = "Short-range radio communications knocked out, no communications with ships in same formation."
+                cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Radio Long Range] = 1 WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
+                conn.commit()
         elif comms_type == 5 or comms_type == 6:
-            if 'Aircraft radio communications' in current_crits:
+            if this_ship_record[ship_column_names.index('Crit Radio Aircraft')] == 1:
                 new_crit_string = ""
             else:
                 new_crit_string = 'Aircraft radio communications knocked out, ship cannot communicate with aircraft.'
+                cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Radio Aircraft] = 1 WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
+                conn.commit()
 
     elif 'Bridge' in this_crit:
         # !!! Assuming that the stuff with fire doesn't happen, since it's not in the expanded crit tables.  Need to query
@@ -663,7 +681,39 @@ def apply_crit(target, this_crit):
         else:
             new_crit_string = "Rudder hit, ship circles to the " + this_direction
 
-    #Many more crit types need to go here.
+    elif 'Elevator' in this_crit:
+        #!!! What does an elevator critical hit do, anyway?
+        pass
+
+    elif 'Flight Deck' in this_crit:
+        #Have already filtered to make sure the hit has penetrated the armor.
+        location = rolld6()
+        if location == 1 or location == 2:
+            hit_location = "Forward"
+        elif location == 3 or location == 4:
+            hit_location = "Midships"
+        else:
+            hit_location = "Aft"
+        new_crit_string = hit_location + "flight deck hit."
+        if tkMessageBox.askyesno(message=new_crit_string+' Were there aircraft stored in that location?'):
+            pass
+
+    elif 'Aviation Ammo' in this_crit:
+        #!!! Not sure yet what an aviation ammo hit does if the magazine doesn't explode.
+        new_crit_string = "Aviation Ammo hit rolled, no magazine explosion."
+
+    elif 'Aviation Fuel' in this_crit:
+        #start a fire.  Should probably write a function on how to do that, huh?
+        pass
+
+    elif 'Fire' in this_crit:
+        #Start a fire
+        pass
+
+    elif 'Flood' in this_crit:
+        #Start a flood
+        pass
+
 
     else:
         new_crit_string = "Error, could not find matching handler for this critical hit in the if...elif statement"
@@ -676,12 +726,15 @@ def apply_crit(target, this_crit):
     close_connection(cursor)
     return new_crit_string
 
-def start_fire(this_ship_record, ship_column_names, armor_pen, this_strength_mod):
-    this_in_service_date = int(this_ship_record[ship_column_names.index('In Service')])
-    # !!! Code goes here to adjust in-service date if the ship's been rebuilt
-
+def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mode=False):
     cursor, conn = connect_to_db(returnConnection= True)
-    ship_info = get_ship_id_info(this_ship_record)
+    #Find the ship entry in Annex A and get the in-service date
+    this_annex_a_key = target[ship_column_names.index('Annex A Key')]
+    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;"""(this_annex_a_key, ))
+    this_annex_a_entry = cursor.fetchone()
+    annex_a_column_names = [description[0] for description in cursor.description]
+    this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
+    ship_info = get_ship_id_info(target)
 
     if this_in_service_date <= 1907:
         this_severity = rolld6() + rolld6() + 2
@@ -689,6 +742,9 @@ def start_fire(this_ship_record, ship_column_names, armor_pen, this_strength_mod
         this_severity = rolld6() + 2
     else:
         this_severity = rolld6()
+
+    if debug_mode:
+        this_severity_original = this_severity
 
     if armor_pen == False:
         this_severity = int(this_severity * 0.5) #Should convert to an integer and round down.
@@ -698,19 +754,27 @@ def start_fire(this_ship_record, ship_column_names, armor_pen, this_strength_mod
     elif "*" in this_strength_mod:
         this_severity *= convert_mod_to_number(this_strength_mod)
     elif "/" in this_strength_mod:
-        this_severity = this_severity / convert_mod_to_number(this_strength_mod)
+        this_severity = this_severity / this_strength_mod
 
-    #First, update the overall fire severity
+    if this_severity > 0:
 
-    current_fire = int(this_ship_record[ship_column_names.index('Crit Fire')])
-    current_fire += this_severity
-    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_info[0], ship_info[1], ship_info[2], ship_info[3]))
-    conn.commit()
+        #First, update the overall fire severity
 
-    #Make an entry for damage that will hit on the third tac turn after this one
+        current_fire = int(target[ship_column_names.index('Crit Fire')])
+        current_fire += this_severity
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_info[0], ship_info[1], ship_info[2], ship_info[3]))
+        conn.commit()
 
-    cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,3);""",(ship_info[0], ship_info[1], ship_info[2], ship_info[3], this_severity))
-    conn.commit()
+        #Make an entry for damage that will hit on the third tac turn after this one
+
+        cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,3);""",(ship_info[0], ship_info[1], ship_info[2], ship_info[3], this_severity))
+        conn.commit()
+
+        return "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
+    elif debug_mode:
+        return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 0, no fire."
+    else:
+        return "No fire."
 
 
 def convert_mod_to_number(this_mod):
@@ -726,8 +790,6 @@ def convert_mod_to_number(this_mod):
     this_mod = int(this_mod)
     if subtract:
         this_mod = this_mod * -1
-    elif divide:
-        this_mod = 1.0/this_mod
     return this_mod
 
 def get_ship_id_info(target):

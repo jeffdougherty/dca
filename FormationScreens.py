@@ -105,7 +105,7 @@ class ShipFormationScreen(Frame):
         ship_window_column_names_list = ['Formation Ship Key', 'Ship Name', 'Annex A Key', 'Remarks']
         ship_window_column_types_dict = {'default': 'text', 'Annex A Key': 'number'}
         ship_window_additional_keys = {'Scenario Side': self.side_key, 'Formation ID': self.field_values[1]}
-        annex_a_column_names_list = ['Ship Type', 'Class', 'Class Variant', 'Damage Pts', 'Speed', 'Country']
+        annex_a_column_names_list = ['Ship Type', 'Class', 'Class Variant', 'Damage Pts', 'Speed', 'Country', 'In Service']
         ships_table_column_indexes = {}
         annex_a_column_types_dict = {'Damage Pts': 'number', 'Speed': 'number', 'default': 'text'}
         self.shipsTable = DataTable(parent=self.shipsFrame, scenario_key=self.scenario_key,
@@ -118,6 +118,7 @@ class ShipFormationScreen(Frame):
         self.shipsTable.hide_column('Country')
         self.shipsTable.hide_column('Annex A Key')
         self.shipsTable.hide_column('Remarks')
+        self.shipsTable.hide_column('In Service')
         self.shipsTable.thisTable.width = 64
         self.shipsTable.sort_data('Ship Key')
 

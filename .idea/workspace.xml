@@ -4,8 +4,7 @@
     <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GameManagement.py" afterPath="$PROJECT_DIR$/GameManagement.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/InGameWindow.py" afterPath="$PROJECT_DIR$/InGameWindow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FormationScreens.py" afterPath="$PROJECT_DIR$/FormationScreens.py" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,85 +25,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="FormationScreens.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/FormationScreens.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="120" column="47" selection-start-line="120" selection-start-column="47" selection-end-line="120" selection-end-column="47" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
+                <element signature="e#275#2495#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="InGameWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/InGameWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="826">
-              <caret line="288" column="129" selection-start-line="288" selection-start-column="129" selection-end-line="288" selection-end-column="129" />
+            <state relative-caret-position="-1505">
+              <caret line="178" column="23" selection-start-line="178" selection-start-column="18" selection-end-line="178" selection-end-column="23" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GNU LICENSE" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNU LICENSE">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="readme.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/readme.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EditScenarioWindow.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EditScenarioWindow.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4215">
-              <caret line="390" column="47" selection-start-line="390" selection-start-column="47" selection-end-line="390" selection-end-column="47" />
-              <folding>
-                <element signature="e#11984#12985#0" expanded="false" />
-                <element signature="e#15973#16976#0" expanded="false" />
-                <element signature="e#17050#17958#0" expanded="false" />
-                <element signature="e#18281#19350#0" expanded="false" />
-                <element signature="e#19405#20609#0" expanded="false" />
-                <element signature="e#20663#22026#0" expanded="false" />
-                <element signature="e#22074#22842#0" expanded="false" />
-                <element signature="e#27493#28047#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scratchpad.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2100">
-              <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="cleanup.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cleanup.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="56" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameManagement.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GameManagement.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="454" column="28" selection-start-line="454" selection-start-column="28" selection-end-line="454" selection-end-column="28" />
-              <folding>
-                <element signature="e#536#28137#0" expanded="false" />
-                <element signature="e#28172#35144#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -113,17 +53,21 @@
       <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DamageRules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="706">
-              <caret line="663" column="37" selection-start-line="663" selection-start-column="37" selection-end-line="663" selection-end-column="37" />
+            <state relative-caret-position="574">
+              <caret line="662" column="28" selection-start-line="662" selection-start-column="28" selection-end-line="662" selection-end-column="28" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
-                <element signature="e#4513#5339#0" expanded="false" />
-                <element signature="e#7459#10204#0" expanded="false" />
-                <element signature="e#10206#12881#1" expanded="false" />
-                <element signature="e#19649#19888#0" expanded="false" />
-                <element signature="e#21786#34262#0" expanded="false" />
-                <element signature="e#34303#34992#0" expanded="false" />
-                <element signature="e#35039#35902#0" expanded="false" />
+                <element signature="e#5794#6187#0" expanded="false" />
+                <element signature="e#6247#7813#0" expanded="false" />
+                <element signature="e#7885#10630#0" expanded="false" />
+                <element signature="e#10632#13307#1" expanded="false" />
+                <element signature="e#13358#19198#0" expanded="false" />
+                <element signature="e#20075#20314#0" expanded="false" />
+                <element signature="e#20356#22170#0" expanded="false" />
+                <element signature="e#22212#34688#0" expanded="false" />
+                <element signature="e#34729#35418#0" expanded="false" />
+                <element signature="e#36374#37336#0" expanded="false" />
+                <element signature="e#39099#39869#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -134,16 +78,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1170">
               <caret line="79" column="91" selection-start-line="79" selection-start-column="91" selection-end-line="79" selection-end-column="91" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="helperfunctions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/helperfunctions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2880">
-              <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -182,7 +116,6 @@
         <option value="$PROJECT_DIR$/EditSideInfoWindow.py" />
         <option value="$PROJECT_DIR$/EditScenarioWindow.py" />
         <option value="$PROJECT_DIR$/MainMenu.py" />
-        <option value="$PROJECT_DIR$/FormationScreens.py" />
         <option value="$PROJECT_DIR$/helperfunctions.py" />
         <option value="$PROJECT_DIR$/helperclasses.py" />
         <option value="$PROJECT_DIR$/excluded cases.rtf" />
@@ -192,6 +125,7 @@
         <option value="$PROJECT_DIR$/readme.txt" />
         <option value="$PROJECT_DIR$/GameManagement.py" />
         <option value="$PROJECT_DIR$/InGameWindow.py" />
+        <option value="$PROJECT_DIR$/FormationScreens.py" />
         <option value="$PROJECT_DIR$/DamageRules.py" />
       </list>
     </option>
@@ -263,6 +197,23 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Classes/Algorithmic Thinking/ScratchProject" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="261" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="271" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="276" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="1061" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="261" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="271" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="276" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="1061" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
+    <property name="ToolWindowVersion Control.ShowToolbar" value="false" />
   </component>
   <component name="RunManager" selected="Python.MainMenu">
     <configuration default="false" name="CreateScenario" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -522,7 +473,14 @@
       <option name="project" value="LOCAL" />
       <updated>1490561732810</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again.&#10;&#10;Added a few more crit types to the big statement.">
+      <created>1502923087699</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1502923087699</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -531,14 +489,14 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16898395" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.103743315" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34502262" sideWeight="0.17540108" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.027149322" sideWeight="0.8245989" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -580,8 +538,10 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="SHOW_FILE_HISTORY_DETAILS" value="false" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again." />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again." />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again.&#10;&#10;Added a few more crit types to the big statement." />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again.&#10;&#10;Added a few more crit types to the big statement." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -662,11 +622,6 @@
           <option name="timeStamp" value="448" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/cleanup.py</url>
-          <line>2</line>
-          <option name="timeStamp" value="453" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GameManagement.py</url>
           <line>132</line>
           <option name="timeStamp" value="454" />
@@ -693,7 +648,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>66</line>
+          <line>70</line>
           <option name="timeStamp" value="491" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -728,7 +683,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>17</line>
+          <line>21</line>
           <option name="timeStamp" value="505" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -736,8 +691,13 @@
           <line>143</line>
           <option name="timeStamp" value="508" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/FormationScreens.py</url>
+          <line>7</line>
+          <option name="timeStamp" value="511" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="509" />
+      <option name="time" value="512" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -949,13 +909,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FormationScreens.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/NewEditScenarioWindow.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1050,14 +1003,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cleanup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="56" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scratchpad.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2100">
@@ -1082,9 +1027,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GameManagement.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="454" column="28" selection-start-line="454" selection-start-column="28" selection-end-line="454" selection-end-column="28" />
+          <folding>
+            <element signature="e#536#28137#0" expanded="false" />
+            <element signature="e#28172#35144#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/EditScenarioWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4215">
+        <state relative-caret-position="-1343">
           <caret line="390" column="47" selection-start-line="390" selection-start-column="47" selection-end-line="390" selection-end-column="47" />
           <folding>
             <element signature="e#11984#12985#0" expanded="false" />
@@ -1099,40 +1055,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GameManagement.py">
+    <entry file="file://$PROJECT_DIR$/cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="454" column="28" selection-start-line="454" selection-start-column="28" selection-end-line="454" selection-end-column="28" />
-          <folding>
-            <element signature="e#536#28137#0" expanded="false" />
-            <element signature="e#28172#35144#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="225">
+          <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/InGameWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="826">
-          <caret line="288" column="129" selection-start-line="288" selection-start-column="129" selection-end-line="288" selection-end-column="129" />
+        <state relative-caret-position="-1505">
+          <caret line="178" column="23" selection-start-line="178" selection-start-column="18" selection-end-line="178" selection-end-column="23" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/FormationScreens.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="120" column="47" selection-start-line="120" selection-start-column="47" selection-end-line="120" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#275#2495#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DamageRules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="663" column="37" selection-start-line="663" selection-start-column="37" selection-end-line="663" selection-end-column="37" />
+        <state relative-caret-position="574">
+          <caret line="662" column="28" selection-start-line="662" selection-start-column="28" selection-end-line="662" selection-end-column="28" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
-            <element signature="e#4513#5339#0" expanded="false" />
-            <element signature="e#7459#10204#0" expanded="false" />
-            <element signature="e#10206#12881#1" expanded="false" />
-            <element signature="e#19649#19888#0" expanded="false" />
-            <element signature="e#21786#34262#0" expanded="false" />
-            <element signature="e#34303#34992#0" expanded="false" />
-            <element signature="e#35039#35902#0" expanded="false" />
+            <element signature="e#5794#6187#0" expanded="false" />
+            <element signature="e#6247#7813#0" expanded="false" />
+            <element signature="e#7885#10630#0" expanded="false" />
+            <element signature="e#10632#13307#1" expanded="false" />
+            <element signature="e#13358#19198#0" expanded="false" />
+            <element signature="e#20075#20314#0" expanded="false" />
+            <element signature="e#20356#22170#0" expanded="false" />
+            <element signature="e#22212#34688#0" expanded="false" />
+            <element signature="e#34729#35418#0" expanded="false" />
+            <element signature="e#36374#37336#0" expanded="false" />
+            <element signature="e#39099#39869#0" expanded="false" />
           </folding>
         </state>
       </provider>
