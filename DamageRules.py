@@ -97,9 +97,9 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         if d100_list != None:
             this_d100 = d100_list.pop(0)
             log_string += "Using supplied d100 value of " + str(this_d100) + " for critical hit."
-            this_crit = roll_for_crits(target, armor_pen, this_d100)
+            this_crit = roll_for_crits(target, armor_pen, this_d100, debug_mode)
         else:
-            this_crit = roll_for_crits(target, armor_pen, rolld100())
+            this_crit = roll_for_crits(target, armor_pen, rolld100(), debug_mode)
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
 
@@ -415,7 +415,7 @@ def roll_for_crits(target, armor_pen, d100):
 
     return this_crit
 
-def apply_crit(target, this_crit):
+def apply_crit(target, this_crit, debug_mode=False):
     #This is going to be the mother of all 'if...elif' statements
     #For each crit we need to: make any database changes needed, and return an appropriate entry for the log string
     #Need the full database entry for the ship
@@ -694,9 +694,20 @@ def apply_crit(target, this_crit):
             hit_location = "Midships"
         else:
             hit_location = "Aft"
-        new_crit_string = hit_location + "flight deck hit."
+        new_crit_string = hit_location + " flight deck hit. "
         if tkMessageBox.askyesno(message=new_crit_string+' Were there aircraft stored in that location?'):
-            pass
+            ac_hit = rolld6()
+            new_crit_string += str(ac_hit) + " aircraft hit. "
+            for ac in xrange(ac_hit):
+                start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
+        hangar_pen = rolld10()
+        if hangar_pen >= 6:
+            ac_hit = rolld6()
+            new_crit_string += str(ac_hit) + " aircraft hit. "
+            for ac in xrange(ac_hit):
+                start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
+        else:
+            new_crit_string += " Hangar not penetrated. "
 
     elif 'Aviation Ammo' in this_crit:
         #!!! Not sure yet what an aviation ammo hit does if the magazine doesn't explode.
@@ -773,8 +784,6 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mo
         return "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
     elif debug_mode:
         return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 0, no fire."
-    else:
-        return "No fire."
 
 
 def convert_mod_to_number(this_mod):
