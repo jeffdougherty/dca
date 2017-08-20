@@ -97,13 +97,13 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         if d100_list != None:
             this_d100 = d100_list.pop(0)
             log_string += "Using supplied d100 value of " + str(this_d100) + " for critical hit."
-            this_crit = roll_for_crits(target, armor_pen, this_d100, debug_mode)
+            this_crit = roll_for_crits(target, armor_pen, this_d100)
         else:
-            this_crit = roll_for_crits(target, armor_pen, rolld100(), debug_mode)
+            this_crit = roll_for_crits(target, armor_pen, rolld100())
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
 
-        log_string += apply_crit(target, this_crit)
+        log_string += apply_crit(target, this_crit, debug_mode)
 
     return log_string
 
@@ -131,7 +131,6 @@ def sink_ship(target):
     conn.commit()
     close_connection(cursor)
     return target['Ship Name'] + " sinks!"
-
 
 def check_speed_reduction(target, remaining_points):
     cursor, conn = connect_to_db(returnConnection=True)
@@ -203,44 +202,7 @@ def check_massive_damage(target, dp, remaining_points, hit_type):
             log_string += ' reaches 10% of original DP, all weapons out. '
     return log_string
 
-"""
-This functions were written using the critical hit tables in the written CaS 4.1 rules.  roll_for_crits is complete, apply_crit is not.
-Being superseded by a revised function using the expanded CaS crit tables
-
-def roll_for_crits(target, armor_pen, d20_list):
-    d20_list = d20_list #Defensive programming to make sure we have a local copy to mutate
-    this_ship_type = target['Ship Type']
-    this_size_class = target['Size Class']
-    if this_ship_type in MERCHANT_AUXILIARY:
-        crit_dict = {1: 'Cargo', 2: 'Cargo', 3: 'Cargo', 4: 'Cargo', 5: 'Cargo', 6: 'Cargo', 7: 'Cargo', 8: 'Weapon', 9: 'Weapon', 10: 'Engineering', 11: 'Engineering', 12: 'Flooding', 13: 'Flooding', 14: 'Flooding', 15: 'Fire', 16: 'Fire', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder'}
-    elif this_ship_type in AVIATION_SHIPS:
-        crit_dict = {1: 'Flight Deck*', 2: 'Flight Deck*', 3: 'Flight Deck*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Ammo/Fuel*', 7:'Ammo/Fuel*', 8:'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding', 13: 'Flooding', 14: 'Flooding', 15: 'Fire', 16: 'Fire', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge*', 20: 'Rudder*'}
-        #RAW indicate you need to penetrate armor to do a sensor/comms hit on an aviation ship, but I think that's a misprint
-    elif this_size_class == 'A' or this_size_class == 'B':
-        #Major surface combatant
-        crit_dict = {1: 'Main Battery*', 2: 'Main Battery*', 3: 'Main Battery*', 4: 'Sec Battery', 5: 'Sec Battery', 6: 'Other Wpn*', 7: 'Other Wpn*', 8: 'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding*', 13: 'Flooding*', 14: 'Flooding*', 15: 'Fire*', 16: 'Fire*', 17: 'Fire*', 18: 'Sensor/Comms', 19: 'Bridge*', 20: 'Rudder*'}
-    elif this_size_class == 'C' or this_size_class == 'D':
-        #Minor surface combatant
-        crit_dict = {1: 'Main Battery*', 2: 'Main Battery*', 3: 'Main Battery*', 4: 'Other Wpn', 5: 'Other Wpn', 6: 'Other Wpn', 7: 'Other Wpn', 8: 'Light AA', 9: 'Light AA', 10: 'Engineering*', 11: 'Engineering*', 12: 'Flooding*', 13: 'Flooding*', 14: 'Flooding*', 15: 'Fire*', 16: 'Fire*', 17: 'Fire', 18: 'Sensor/Comms', 19: 'Bridge', 20: 'Rudder*'}
-    else:
-        return 'Unsupported Ship'
-    if d20_list != None:
-        d20 = d20_list.pop(0)
-    else:
-        d20 = rolld20()
-    this_critical_hit = crit_dict[d20]
-    if '*' in this_critical_hit:
-        if armor_pen == False:
-            this_critical_hit = None
-        else:
-            this_critical_hit = this_critical_hit[:-1] #Takes off the '*'
-    if d20_list != None:
-        return (this_critical_hit, d20_list)
-    else:
-        return this_critical_hit
-"""
-
-def roll_for_crits(target, armor_pen, d100):
+def roll_for_crits(target, armor_pen, d100, debug_mode=False):
     this_ship_type = target['Ship Type']
     this_size_class = target['Size Class']
 
@@ -569,7 +531,7 @@ def apply_crit(target, this_crit, debug_mode=False):
                 this_mount_data = cursor.fetchall()
                 this_mount_key = this_mount_data[asw_mount_column_headings.index('DC Key')]
                 this_mount_rounds = this_mount_data[asw_mount_column_headings.index('Ready Rounds')]
-                if str.isnumeric(str(this_mount_rounds)) == False:
+                if str.isdigit(str(this_mount_rounds)) == False:
                     # Hack: if there's a NULL, default to 1.0 Ready rounds
                     this_mount_rounds = 1.0
                 asw_weap_type = 'DC'
@@ -623,8 +585,11 @@ def apply_crit(target, this_crit, debug_mode=False):
         if 'Boiler Explosion' in this_crit:
             boiler_damage = this_ship_record[ship_column_names.index('Damage Pts Start')] * 0.10
             new_crit_string += 'Boiler explodes, ' + damage_ship(target, boiler_damage, True, 'Boiler Explosion ')
+            new_crit_string += start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='0', debug_mode=debug_mode)
+        else:
+            new_crit_string += start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='/2', debug_mode=debug_mode)
+        #Fire critical- d6 / 2, d6 if a boiler explosion
 
-        #!!! Fire critical- d6 / 2
 
     elif 'Sensor' in this_crit:
         cursor.execute("""SELECT * IN 'Game Ship Sensor WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
@@ -683,7 +648,8 @@ def apply_crit(target, this_crit, debug_mode=False):
 
     elif 'Elevator' in this_crit:
         #!!! What does an elevator critical hit do, anyway?
-        pass
+        if debug_mode:
+            new_crit_string = "Elevator crit rolled, not yet represented."
 
     elif 'Flight Deck' in this_crit:
         #Have already filtered to make sure the hit has penetrated the armor.
@@ -699,13 +665,13 @@ def apply_crit(target, this_crit, debug_mode=False):
             ac_hit = rolld6()
             new_crit_string += str(ac_hit) + " aircraft hit. "
             for ac in xrange(ac_hit):
-                start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
+                new_crit_string += start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
         hangar_pen = rolld10()
         if hangar_pen >= 6:
             ac_hit = rolld6()
             new_crit_string += str(ac_hit) + " aircraft hit. "
             for ac in xrange(ac_hit):
-                start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
+                new_crit_string += start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
         else:
             new_crit_string += " Hangar not penetrated. "
 
@@ -714,17 +680,15 @@ def apply_crit(target, this_crit, debug_mode=False):
         new_crit_string = "Aviation Ammo hit rolled, no magazine explosion."
 
     elif 'Aviation Fuel' in this_crit:
-        #start a fire.  Should probably write a function on how to do that, huh?
-        pass
+        new_crit_string = start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='+2', debug_mode=debug_mode)
 
     elif 'Fire' in this_crit:
         #Start a fire
-        pass
+        new_crit_string = start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='0', debug_mode=debug_mode)
 
     elif 'Flood' in this_crit:
         #Start a flood
         pass
-
 
     else:
         new_crit_string = "Error, could not find matching handler for this critical hit in the if...elif statement"
@@ -741,7 +705,7 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mo
     cursor, conn = connect_to_db(returnConnection= True)
     #Find the ship entry in Annex A and get the in-service date
     this_annex_a_key = target[ship_column_names.index('Annex A Key')]
-    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;"""(this_annex_a_key, ))
+    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;""",(this_annex_a_key, ))
     this_annex_a_entry = cursor.fetchone()
     annex_a_column_names = [description[0] for description in cursor.description]
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
@@ -784,6 +748,8 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mo
         return "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
     elif debug_mode:
         return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 0, no fire."
+    else:
+        return ""
 
 
 def convert_mod_to_number(this_mod):
@@ -794,7 +760,7 @@ def convert_mod_to_number(this_mod):
         subtract = True
     elif '/' in this_mod:
         divide = True
-    while str.isnumeric(this_mod) == False:
+    while str.isdigit(this_mod) == False:
         this_mod = this_mod[1:]
     this_mod = int(this_mod)
     if subtract:

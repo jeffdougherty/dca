@@ -314,15 +314,16 @@ class GameWindow(Frame):
             else:
                 self.write_game_log(critical_hit_result)
         if hit_type == 'Torpedo':
+            #!!! Finish me!
             depth = self.depth_picker.get()
             aspect = self.aspect_picker.get()
             #torpedo_hit(target, dp, depth, aspect)
         if hit_type == 'Fire' or hit_type == 'Flood':
+            #!!! Finish me!
             armor_pen = True
 
     def apply_fire_flooding_tac_turn(self):
         cursor, conn = connect_to_db(returnConnection=True)
-
         cursor.execute("""SELECT * FROM 'Game Ship Fire/Flood' WHERE [Game ID] = ? AND [Turns Remaining] > 0;""")
         fire_flood_data = cursor.fetchall
         fire_flood_columns = [description[0] for description in cursor.description]
@@ -333,9 +334,9 @@ class GameWindow(Frame):
                 this_value = fire_flood_data[i][fire_flood_columns.index('Value')]
                 this_type = fire_flood_data[i][fire_flood_columns.index('Type')]
                 cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (fire_flood_data[i][fire_flood_columns.index('Game ID')], fire_flood_data[i][fire_flood_columns.index('Scenario Side')], fire_flood_data[i][fire_flood_columns.index('Formation ID')], fire_flood_data[i][fire_flood_columns.index('Formation Ship Key')],))
-                target_data = cursor.fetchall()
-                assert len(ship_data) == 1
+                target_data = cursor.fetchone()
                 self.apply_this_hit(target_data, dp = this_value, hit_type = this_type)
 
 
             cursor.execute("""UPDATE 'Game Ship Fire/Flood' SET [Turns Remaining] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_turns_remaining, fire_flood_data[i][fire_flood_columns.index('Game ID')], fire_flood_data[i][fire_flood_columns.index('Scenario Side')], fire_flood_data[i][fire_flood_columns.index('Formation ID')], fire_flood_data[i][fire_flood_columns.index('Formation Ship Key')],))
+            conn.commit()

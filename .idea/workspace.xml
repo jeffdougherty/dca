@@ -4,7 +4,9 @@
     <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FormationScreens.py" afterPath="$PROJECT_DIR$/FormationScreens.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/InGameWindow.py" afterPath="$PROJECT_DIR$/InGameWindow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helperfunctions.py" afterPath="$PROJECT_DIR$/helperfunctions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scratchpad.py" afterPath="$PROJECT_DIR$/scratchpad.py" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,8 +43,8 @@
       <file leaf-file-name="InGameWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/InGameWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1505">
-              <caret line="178" column="23" selection-start-line="178" selection-start-column="18" selection-end-line="178" selection-end-column="23" />
+            <state relative-caret-position="700">
+              <caret line="341" column="24" selection-start-line="341" selection-start-column="24" selection-end-line="341" selection-end-column="24" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -53,21 +55,26 @@
       <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DamageRules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="574">
-              <caret line="662" column="28" selection-start-line="662" selection-start-column="28" selection-end-line="662" selection-end-column="28" />
+            <state relative-caret-position="-10">
+              <caret line="379" column="52" selection-start-line="379" selection-start-column="52" selection-end-line="379" selection-end-column="52" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
-                <element signature="e#5794#6187#0" expanded="false" />
-                <element signature="e#6247#7813#0" expanded="false" />
-                <element signature="e#7885#10630#0" expanded="false" />
-                <element signature="e#10632#13307#1" expanded="false" />
-                <element signature="e#13358#19198#0" expanded="false" />
-                <element signature="e#20075#20314#0" expanded="false" />
-                <element signature="e#20356#22170#0" expanded="false" />
-                <element signature="e#22212#34688#0" expanded="false" />
-                <element signature="e#34729#35418#0" expanded="false" />
-                <element signature="e#36374#37336#0" expanded="false" />
-                <element signature="e#39099#39869#0" expanded="false" />
+                <element signature="e#683#4895#0" expanded="false" />
+                <element signature="e#4951#5777#0" expanded="false" />
+                <element signature="e#5806#6199#0" expanded="false" />
+                <element signature="e#6258#7824#0" expanded="false" />
+                <element signature="e#7896#10641#0" expanded="false" />
+                <element signature="e#10710#16550#0" expanded="false" />
+                <element signature="e#16609#40789#0" expanded="false" />
+                <element signature="e#17445#17684#0" expanded="false" />
+                <element signature="e#17726#19540#0" expanded="false" />
+                <element signature="e#32097#32786#0" expanded="false" />
+                <element signature="e#32833#33998#0" expanded="false" />
+                <element signature="e#34041#35003#0" expanded="false" />
+                <element signature="e#35044#36724#0" expanded="false" />
+                <element signature="e#36766#37536#0" expanded="false" />
+                <element signature="e#37578#38227#0" expanded="false" />
+                <element signature="e#40886#43150#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -78,6 +85,33 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1170">
               <caret line="79" column="91" selection-start-line="79" selection-start-column="91" selection-end-line="79" selection-end-column="91" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scratchpad.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="545">
+              <caret line="154" column="15" selection-start-line="154" selection-start-column="15" selection-end-line="154" selection-end-column="15" />
+              <folding>
+                <element signature="e#136#815#0" expanded="false" />
+                <element signature="e#877#2089#0" expanded="false" />
+                <element signature="e#2107#2282#0" expanded="false" />
+                <element signature="e#2344#2829#0" expanded="false" />
+                <element signature="e#2866#3405#0" expanded="false" />
+                <element signature="e#3623#3962#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="helperfunctions.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/helperfunctions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="461">
+              <caret line="257" column="23" selection-start-line="257" selection-start-column="23" selection-end-line="257" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -116,17 +150,17 @@
         <option value="$PROJECT_DIR$/EditSideInfoWindow.py" />
         <option value="$PROJECT_DIR$/EditScenarioWindow.py" />
         <option value="$PROJECT_DIR$/MainMenu.py" />
-        <option value="$PROJECT_DIR$/helperfunctions.py" />
         <option value="$PROJECT_DIR$/helperclasses.py" />
         <option value="$PROJECT_DIR$/excluded cases.rtf" />
         <option value="$PROJECT_DIR$/cleanup.py" />
-        <option value="$PROJECT_DIR$/scratchpad.py" />
         <option value="$PROJECT_DIR$/Damage Control Assistant License" />
         <option value="$PROJECT_DIR$/readme.txt" />
         <option value="$PROJECT_DIR$/GameManagement.py" />
-        <option value="$PROJECT_DIR$/InGameWindow.py" />
         <option value="$PROJECT_DIR$/FormationScreens.py" />
+        <option value="$PROJECT_DIR$/InGameWindow.py" />
         <option value="$PROJECT_DIR$/DamageRules.py" />
+        <option value="$PROJECT_DIR$/helperfunctions.py" />
+        <option value="$PROJECT_DIR$/scratchpad.py" />
       </list>
     </option>
   </component>
@@ -215,7 +249,7 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
     <property name="ToolWindowVersion Control.ShowToolbar" value="false" />
   </component>
-  <component name="RunManager" selected="Python.MainMenu">
+  <component name="RunManager" selected="Python.scratchpad">
     <configuration default="false" name="CreateScenario" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -444,8 +478,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.MainMenu" />
-        <item index="1" class="java.lang.String" itemvalue="Python.scratchpad" />
+        <item index="0" class="java.lang.String" itemvalue="Python.scratchpad" />
+        <item index="1" class="java.lang.String" itemvalue="Python.MainMenu" />
         <item index="2" class="java.lang.String" itemvalue="Python.cleanup" />
         <item index="3" class="java.lang.String" itemvalue="Python.docx_demo" />
         <item index="4" class="java.lang.String" itemvalue="Python.CreateScenario" />
@@ -480,7 +514,21 @@
       <option name="project" value="LOCAL" />
       <updated>1502923087699</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Stubbed out the rest of the crit types, added some debugging stuff, rewrote how communications hits are tracked to match how the DB actually works.">
+      <created>1503189811124</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1503189811124</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Finished the flight deck hits, figured out how to represent aircraft being hit.">
+      <created>1503190743205</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1503190743205</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -491,20 +539,20 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34502262" sideWeight="0.17540108" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3280543" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.027149322" sideWeight="0.8245989" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.027149322" sideWeight="0.8245989" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.8962567" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44683257" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.8962567" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900944" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44683257" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -541,7 +589,9 @@
     <option name="SHOW_FILE_HISTORY_DETAILS" value="false" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again." />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again.&#10;&#10;Added a few more crit types to the big statement." />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Couple housekeeping items as I get ready to start working on this again.&#10;&#10;Added a few more crit types to the big statement." />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Stubbed out the rest of the crit types, added some debugging stuff, rewrote how communications hits are tracked to match how the DB actually works." />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Finished the flight deck hits, figured out how to represent aircraft being hit." />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Finished the flight deck hits, figured out how to represent aircraft being hit." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -617,11 +667,6 @@
           <option name="timeStamp" value="447" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>84</line>
-          <option name="timeStamp" value="448" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/GameManagement.py</url>
           <line>132</line>
           <option name="timeStamp" value="454" />
@@ -642,11 +687,6 @@
           <option name="timeStamp" value="488" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>110</line>
-          <option name="timeStamp" value="489" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
           <line>70</line>
           <option name="timeStamp" value="491" />
@@ -655,11 +695,6 @@
           <url>file://$PROJECT_DIR$/GameManagement.py</url>
           <line>243</line>
           <option name="timeStamp" value="494" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>121</line>
-          <option name="timeStamp" value="495" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
@@ -687,17 +722,12 @@
           <option name="timeStamp" value="505" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>143</line>
-          <option name="timeStamp" value="508" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/FormationScreens.py</url>
           <line>7</line>
           <option name="timeStamp" value="511" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="512" />
+      <option name="time" value="513" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -980,14 +1010,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/helperfunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2880">
-          <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/EditSideInfoWindow.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1170">
@@ -1000,14 +1022,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scratchpad.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2100">
-          <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1063,16 +1077,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/InGameWindow.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1505">
-          <caret line="178" column="23" selection-start-line="178" selection-start-column="18" selection-end-line="178" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/FormationScreens.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
@@ -1084,23 +1088,61 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/InGameWindow.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="700">
+          <caret line="341" column="24" selection-start-line="341" selection-start-column="24" selection-end-line="341" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helperfunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="461">
+          <caret line="257" column="23" selection-start-line="257" selection-start-column="23" selection-end-line="257" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scratchpad.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="545">
+          <caret line="154" column="15" selection-start-line="154" selection-start-column="15" selection-end-line="154" selection-end-column="15" />
+          <folding>
+            <element signature="e#136#815#0" expanded="false" />
+            <element signature="e#877#2089#0" expanded="false" />
+            <element signature="e#2107#2282#0" expanded="false" />
+            <element signature="e#2344#2829#0" expanded="false" />
+            <element signature="e#2866#3405#0" expanded="false" />
+            <element signature="e#3623#3962#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DamageRules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="574">
-          <caret line="662" column="28" selection-start-line="662" selection-start-column="28" selection-end-line="662" selection-end-column="28" />
+        <state relative-caret-position="-10">
+          <caret line="379" column="52" selection-start-line="379" selection-start-column="52" selection-end-line="379" selection-end-column="52" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
-            <element signature="e#5794#6187#0" expanded="false" />
-            <element signature="e#6247#7813#0" expanded="false" />
-            <element signature="e#7885#10630#0" expanded="false" />
-            <element signature="e#10632#13307#1" expanded="false" />
-            <element signature="e#13358#19198#0" expanded="false" />
-            <element signature="e#20075#20314#0" expanded="false" />
-            <element signature="e#20356#22170#0" expanded="false" />
-            <element signature="e#22212#34688#0" expanded="false" />
-            <element signature="e#34729#35418#0" expanded="false" />
-            <element signature="e#36374#37336#0" expanded="false" />
-            <element signature="e#39099#39869#0" expanded="false" />
+            <element signature="e#683#4895#0" expanded="false" />
+            <element signature="e#4951#5777#0" expanded="false" />
+            <element signature="e#5806#6199#0" expanded="false" />
+            <element signature="e#6258#7824#0" expanded="false" />
+            <element signature="e#7896#10641#0" expanded="false" />
+            <element signature="e#10710#16550#0" expanded="false" />
+            <element signature="e#16609#40789#0" expanded="false" />
+            <element signature="e#17445#17684#0" expanded="false" />
+            <element signature="e#17726#19540#0" expanded="false" />
+            <element signature="e#32097#32786#0" expanded="false" />
+            <element signature="e#32833#33998#0" expanded="false" />
+            <element signature="e#34041#35003#0" expanded="false" />
+            <element signature="e#35044#36724#0" expanded="false" />
+            <element signature="e#36766#37536#0" expanded="false" />
+            <element signature="e#37578#38227#0" expanded="false" />
+            <element signature="e#40886#43150#0" expanded="false" />
           </folding>
         </state>
       </provider>
