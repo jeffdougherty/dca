@@ -693,7 +693,8 @@ def apply_crit(target, this_crit, armor_pen, debug_mode=False):
             new_crit_string = start_fire(target, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
 
     elif 'Flood' in this_crit:
-        #Start a flood
+        if debug_mode:
+            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(target, ship_column_names, armor_pen=armor_pen, debug_mode=debug_mode)
         pass
 
     elif 'Cargo' in this_crit:
@@ -739,12 +740,7 @@ def apply_crit(target, this_crit, armor_pen, debug_mode=False):
     return new_crit_string
 
 def start_fire(target, ship_column_names, armor_pen, this_strength_mod, this_reduction_mod='0', debug_mode=False):
-    cursor, conn = connect_to_db(returnConnection= True)
-    #Find the ship entry in Annex A and get the in-service date
-    this_annex_a_key = target[ship_column_names.index('Annex A Key')]
-    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;""",(this_annex_a_key, ))
-    this_annex_a_entry = cursor.fetchone()
-    annex_a_column_names = [description[0] for description in cursor.description]
+    this_annex_a_entry, annex_a_column_names = get_annex_a_entry(target, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
     ship_id_info = get_ship_id_info(target)
 
@@ -769,7 +765,7 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, this_red
         this_severity = this_severity / this_strength_mod
 
     if this_severity >= 1:
-
+        cursor, conn = connect_to_db(returnConnection=True)
         #First, update the overall fire severity
 
         current_fire = int(target[ship_column_names.index('Crit Fire')])
@@ -791,11 +787,7 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, this_red
         return ""
 
 def start_flooding(target, ship_column_names, armor_pen, debug_mode = False):
-    cursor, conn = connect_to_db(returnConnection=True)
-    this_annex_a_key = target[ship_column_names.index('Annex A Key')]
-    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;""", (this_annex_a_key,))
-    this_annex_a_entry = cursor.fetchone()
-    annex_a_column_names = [description[0] for description in cursor.description]
+    this_annex_a_entry, annex_a_column_names = get_annex_a_entry(target, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
     ship_id_info = get_ship_id_info(target)
 
@@ -815,7 +807,7 @@ def start_flooding(target, ship_column_names, armor_pen, debug_mode = False):
     #Don't think there are modifiers to flooding the same way there are to fire, but could still roll 1 and have it be halved to 0.
 
     if this_severity >= 1:
-
+        cursor, conn = connect_to_db(returnConnection=True)
         #First, update the overall flooding severity
         current_flooding = int(target[ship_column_names.index('Crit Flooding')])
         current_flooding += this_severity
@@ -831,6 +823,12 @@ def start_flooding(target, ship_column_names, armor_pen, debug_mode = False):
         return "Flooding severity of " + str(this_severity) + "% rolled, reduced by modifiers to less than 1, no flooding."
     else:
         return ""
+
+def check_severity_levels(target, ship_column_names, this_fire_severity=None, this_flooding_severity=None, debug_mode=False):
+
+    annex_a_entry, annex_a_column_names = get_annex_a_entry(target, ship_column_names)
+    ship_id_info = get_ship_id_info(target)
+
 
 def convert_mod_to_number(this_mod):
     #Takes a modifier in the form of "+2", "-2", "/2", etc and returns the number in question
@@ -853,6 +851,15 @@ def get_ship_id_info(target):
     formation_id = target['Formation ID']
     formation_ship_key = target['Formation Ship Key']
     return (game_id, side_index, formation_id, formation_ship_key,)
+
+def get_annex_a_entry(target, ship_column_names):
+    cursor = connect_to_db()
+    this_annex_a_key = target[ship_column_names.index('Annex A Key')]
+    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;""", (this_annex_a_key,))
+    this_annex_a_entry = cursor.fetchone()
+    annex_a_column_names = [description[0] for description in cursor.description]
+    cursor.close()
+    return this_annex_a_entry, annex_a_column_names
 
 def rolld6():
     return randrange(1, 6)
