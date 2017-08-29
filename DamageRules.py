@@ -709,7 +709,7 @@ def apply_crit(target, this_crit, armor_pen, debug_mode=False):
                 new_crit_string += 'Ammo explodes, ship sunk! ' + sink_ship(target)
             elif ammo_effects_roll >= 3:
                 new_crit_string += 'Starting fire, risk of explosion on Intermediate Turns.  ' + start_fire(target, ship_column_names, armor_pen, this_strength_mod='+1', this_reduction_mod='+1', debug_mode=debug_mode)
-                cursor.execute("""UPDATE 'Game Ship Fire Flood' INSERT VALUES (?,?,?,?,'Non-cumulative explosion check',25,0,1);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+                cursor.execute("""UPDATE 'Game Ship Fire Flood' INSERT VALUES (?,?,?,?,'Non-cumulative explosion check',25,0,1);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
                 conn.commit()
             else:
                 new_crit_string += 'Some ammo lost, no other effect.'
@@ -768,29 +768,69 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, this_red
     elif "/" in this_strength_mod:
         this_severity = this_severity / this_strength_mod
 
-    if this_severity > 0:
+    if this_severity >= 1:
 
         #First, update the overall fire severity
 
         current_fire = int(target[ship_column_names.index('Crit Fire')])
         current_fire += this_severity
         this_reduction_mod = convert_mod_to_number(this_reduction_mod)
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
         if this_reduction_mod != 0:
-            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Fire Reduction Mod] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_reduction_mod, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
-        conn.commit()
+            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Fire Reduction Mod] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_reduction_mod, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
 
         #Make an entry for damage that will hit on the third tac turn after this one
 
-        cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,?,3);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], this_severity, this_reduction_mod))
+        cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,?,3);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], this_severity, this_reduction_mod,))
         conn.commit()
 
         return "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
     elif debug_mode:
-        return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 0, no fire."
+        return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 1, no fire."
     else:
         return ""
 
+def start_flooding(target, ship_column_names, armor_pen, debug_mode = False):
+    cursor, conn = connect_to_db(returnConnection=True)
+    this_annex_a_key = target[ship_column_names.index('Annex A Key')]
+    cursor.execute("""SELECT * FROM 'Ship' WHERE [Ship Key]=?;""", (this_annex_a_key,))
+    this_annex_a_entry = cursor.fetchone()
+    annex_a_column_names = [description[0] for description in cursor.description]
+    this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
+    ship_id_info = get_ship_id_info(target)
+
+    if this_in_service_date <= 1907:
+        this_severity = rolld6() + rolld6() + 2
+    elif this_in_service_date <= 1924:
+        this_severity = rolld6() + 2
+    else:
+        this_severity = rolld6()
+
+    if debug_mode:
+        this_severity_original = this_severity
+
+    if armor_pen == False:
+        this_severity = int(this_severity * 0.5)  # Should convert to an integer and round down.
+
+    #Don't think there are modifiers to flooding the same way there are to fire, but could still roll 1 and have it be halved to 0.
+
+    if this_severity >= 1:
+
+        #First, update the overall flooding severity
+        current_flooding = int(target[ship_column_names.index('Crit Flooding')])
+        current_flooding += this_severity
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Flooding]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(current_flooding, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
+
+        #Make an entry for the damage that's going to hit
+
+        cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Flooding',?,0,3);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], this_severity, ))
+        conn.commit()
+
+        return "Flooding increases by " + str(this_severity) + "%, total now " + str(current_flooding)
+    elif debug_mode:
+        return "Flooding severity of " + str(this_severity) + "% rolled, reduced by modifiers to less than 1, no flooding."
+    else:
+        return ""
 
 def convert_mod_to_number(this_mod):
     #Takes a modifier in the form of "+2", "-2", "/2", etc and returns the number in question
