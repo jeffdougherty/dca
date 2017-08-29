@@ -31,7 +31,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
     #!!!Auto crits first
     if hit_type == 'Bomb' and target['Ship Type'] in AVIATION_SHIPS and armor_pen:
         if tkMessageBox.askyesno(title='Bomb', message='Is the bomb 100 lb/50 kg or more?'):
-            apply_crit('Flight Deck')
+            apply_crit(target, 'Flight Deck', armor_pen, debug_mode)
     elif hit_type == 'Shell' and target['Ship Type'] in AVIATION_SHIPS and armor_pen:
         if tkMessageBox.askyesno(message='Was the ship hit by >= 120mm fire at Long or Extreme range?'):
             die = rolld10()
@@ -40,7 +40,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
             else:
                 deck_hit = (die <= 6)
             if deck_hit:
-                log_string += apply_crit('Flight Deck')
+                log_string += apply_crit(target, 'Flight Deck', armor_pen, debug_mode)
 
     #Regular crit rolling
     damage_ratio = float(dp / remaining_points)
@@ -103,7 +103,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
 
-        log_string += apply_crit(target, this_crit, debug_mode)
+        log_string += apply_crit(target, this_crit, armor_pen, debug_mode)
 
     return log_string
 
@@ -377,7 +377,7 @@ def roll_for_crits(target, armor_pen, d100, debug_mode=False):
 
     return this_crit
 
-def apply_crit(target, this_crit, debug_mode=False):
+def apply_crit(target, this_crit, armor_pen, debug_mode=False):
     #This is going to be the mother of all 'if...elif' statements
     #For each crit we need to: make any database changes needed, and return an appropriate entry for the log string
     #Need the full database entry for the ship
@@ -585,9 +585,9 @@ def apply_crit(target, this_crit, debug_mode=False):
         if 'Boiler Explosion' in this_crit:
             boiler_damage = this_ship_record[ship_column_names.index('Damage Pts Start')] * 0.10
             new_crit_string += 'Boiler explodes, ' + damage_ship(target, boiler_damage, True, 'Boiler Explosion ')
-            new_crit_string += start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='0', debug_mode=debug_mode)
+            new_crit_string += start_fire(target, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
         else:
-            new_crit_string += start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='/2', debug_mode=debug_mode)
+            new_crit_string += start_fire(target, ship_column_names, armor_pen=armor_pen, this_strength_mod='/2', debug_mode=debug_mode)
         #Fire critical- d6 / 2, d6 if a boiler explosion
 
 
@@ -680,15 +680,52 @@ def apply_crit(target, this_crit, debug_mode=False):
         new_crit_string = "Aviation Ammo hit rolled, no magazine explosion."
 
     elif 'Aviation Fuel' in this_crit:
-        new_crit_string = start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='+2', debug_mode=debug_mode)
+        if debug_mode:
+            new_crit_string = "Aviation Fuel hit, starting fire.  "  + start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode)
+        else:
+            new_crit_string = start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode)
 
     elif 'Fire' in this_crit:
         #Start a fire
-        new_crit_string = start_fire(target, ship_column_names, armor_pen=True, this_strength_mod='0', debug_mode=debug_mode)
+        if debug_mode:
+            new_crit_string = "Fire crit rolled, starting fire. " + start_fire(target, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
+        else:
+            new_crit_string = start_fire(target, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
 
     elif 'Flood' in this_crit:
         #Start a flood
         pass
+
+    elif 'Cargo' in this_crit:
+        #May add a function to search Remarks field for ammo, fuel, or troops
+        #new_crit_string = "Cargo hit, effect not currently modeled"
+        new_crit_string = "Cargo hit.  "
+        this_ship_remarks = this_ship_record[ship_column_names.index('Remarks')].lower() #convert to lower-case string to avoid case problems
+        if 'ammo' in this_ship_remarks or 'ammunition' in this_ship_remarks:
+            ammo_effects_roll = rolld10()
+            if debug_mode:
+                new_crit_string += 'Ammo effects roll is ' + str(ammo_effects_roll)
+            if ammo_effects_roll >= 8:
+                new_crit_string += 'Ammo explodes, ship sunk! ' + sink_ship(target)
+            elif ammo_effects_roll >= 3:
+                new_crit_string += 'Starting fire, risk of explosion on Intermediate Turns.  ' + start_fire(target, ship_column_names, armor_pen, this_strength_mod='+1', this_reduction_mod='+1', debug_mode=debug_mode)
+                cursor.execute("""UPDATE 'Game Ship Fire Flood' INSERT VALUES (?,?,?,?,'Non-cumulative explosion check',25,0,1);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+                conn.commit()
+            else:
+                new_crit_string += 'Some ammo lost, no other effect.'
+            pass
+        elif 'petroleum' in this_ship_remarks or 'fuel' or 'pol' in this_ship_remarks:
+            #Default is crude oil
+            if 'avgas' in this_ship_remarks or 'aviation' in this_ship_remarks:
+                cargo_fire_mod = '+' + str(rolld6() + rolld6())
+            elif 'refined' or 'gasoline' or 'lubricants' in this_ship_remarks:
+                cargo_fire_mod = '+' + str(rolld6())
+            else:
+                cargo_fire_mod = '+2'
+            new_crit_string += 'Petroleum cargo hit, starting fire. ' + start_fire(target, ship_column_names, armor_pen, this_strength_mod=cargo_fire_mod, this_reduction_mod=cargo_fire_mod, debug_mode=debug_mode)
+        else:
+            new_crit_string += 'No other effect.'
+
 
     else:
         new_crit_string = "Error, could not find matching handler for this critical hit in the if...elif statement"
@@ -696,12 +733,12 @@ def apply_crit(target, this_crit, debug_mode=False):
 
     #After all the possible crits
     crit_string_to_write = current_crits + new_crit_string #new_crit_string is filled in by the appropriate if...elif block
-    cursor.execute("""UPDATE 'Game Ship Formation Ship SET [Critical Hits] = ?;""",(crit_string_to_write,))
+    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Critical Hits] = ?;""",(crit_string_to_write,))
     conn.commit()
     close_connection(cursor)
     return new_crit_string
 
-def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mode=False):
+def start_fire(target, ship_column_names, armor_pen, this_strength_mod, this_reduction_mod='0', debug_mode=False):
     cursor, conn = connect_to_db(returnConnection= True)
     #Find the ship entry in Annex A and get the in-service date
     this_annex_a_key = target[ship_column_names.index('Annex A Key')]
@@ -709,7 +746,7 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mo
     this_annex_a_entry = cursor.fetchone()
     annex_a_column_names = [description[0] for description in cursor.description]
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
-    ship_info = get_ship_id_info(target)
+    ship_id_info = get_ship_id_info(target)
 
     if this_in_service_date <= 1907:
         this_severity = rolld6() + rolld6() + 2
@@ -737,12 +774,15 @@ def start_fire(target, ship_column_names, armor_pen, this_strength_mod, debug_mo
 
         current_fire = int(target[ship_column_names.index('Crit Fire')])
         current_fire += this_severity
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_info[0], ship_info[1], ship_info[2], ship_info[3]))
+        this_reduction_mod = convert_mod_to_number(this_reduction_mod)
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Fire] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_severity, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+        if this_reduction_mod != 0:
+            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Fire Reduction Mod] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(this_reduction_mod, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
         conn.commit()
 
         #Make an entry for damage that will hit on the third tac turn after this one
 
-        cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,3);""",(ship_info[0], ship_info[1], ship_info[2], ship_info[3], this_severity))
+        cursor.execute("""UPDATE 'Game Ship Fire/Flood' INSERT VALUES (?,?,?,?,'Fire',?,?,3);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], this_severity, this_reduction_mod))
         conn.commit()
 
         return "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
