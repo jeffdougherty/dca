@@ -4,8 +4,10 @@ Helper functions I decided I wanted to be able to access from more than one Pyth
 Also includes an expanded class, because it ended up being a reused invisible widget
 """
 
+DATABASE_NAME = 'webcasdata2016.sqlite'
+
 def connect_to_db(returnConnection=False):
-    conn = _sqlite3.connect('webcasdata2016.sqlite')
+    conn = _sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
     if returnConnection:
         return c, conn
