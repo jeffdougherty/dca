@@ -69,12 +69,6 @@ def main():
     cursor.execute("SELECT * FROM Scenario")
     print cursor.fetchall()
     """
-    cursor = connect_to_db()
-    cursor.execute(
-        """SELECT * FROM 'Ship' WHERE [Ship Key]=309""")  # Get an example record so we can get the column headings.
-    record_retrieved = cursor.fetchall()
-    global SHIP_TABLE_HEADINGS
-    SHIP_TABLE_HEADINGS = [description[0] for description in cursor.description]
 
     root = Tk()
 
