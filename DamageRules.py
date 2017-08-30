@@ -43,7 +43,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
 
     #Regular crit rolling
     damage_ratio = float(dp) / float(remaining_points)
-    if dp / target['Damage Pts Start'] <= 0.01:
+    if dp / float(target['Damage Pts Start']) <= 0.01:
         damage_ratio_dict = {}
     elif damage_ratio < 0.10:
         damage_ratio_dict = {6: 1}
@@ -79,10 +79,13 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
         cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_dp,ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         return log_string
 
-    if verbose_mode:
-        log_string += "Damage ratio is " + str(damage_ratio) + " Using supplied d6 value of " + str(d6) + " for number of crits."
+    if debug_mode:
+        log_string += "Damage ratio is " + str(damage_ratio) + ". Using supplied d6 value of " + str(d6) + " for number of crits."
     else:
         d6 = rolld6()
+
+    if verbose_mode:
+       log_string += "Damage ratio is " + str(damage_ratio) + ". D6 value is " + str(d6) + ". "
 
     if d6 in damage_ratio_dict.keys():
         num_crits = damage_ratio_dict[d6]
@@ -387,7 +390,8 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
     ship_id_info = get_ship_id_info(target)
     cursor, conn = connect_to_db(returnConnection=True)
     #Getting a new copy of the ship record in case it's changed due to the last crit
-    this_ship_record = cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+    cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+    this_ship_record = cursor.fetchone()
     current_crits = this_ship_record[ship_column_names.index('Critical Hits')]
     new_crit_string = ""
     #Deal with the crits in the order they happen in the tables.  Got to handle it somehow.
