@@ -24,7 +24,7 @@ class GameWindow(Frame):
         self.debug_frame_armed = IntVar()
         self.debug_frame_armed.set(0)
         self.verbose_mode = BooleanVar()
-        self.verbose_mode.set(False)
+        self.verbose_mode.set(True)
         Frame.__init__(self, parent, background='white')
         self.pack(fill=BOTH, expand=1)
         #Create the frames for holding the UI
@@ -215,7 +215,7 @@ class GameWindow(Frame):
     def draw_debug_controls(self, parent):
         verbose_mode_frame = Frame(parent)
         verbose_mode_frame.pack(side='top')
-        verbose_mode_button = Checkbutton(verbose_mode_frame, text="VERBOSE", command = lambda: self.toggle_verbose(), variable=self.verbose_mode)
+        verbose_mode_button = Checkbutton(verbose_mode_frame, text="VERBOSE", command = lambda: None, variable=self.verbose_mode)
         verbose_mode_button.pack(side='top')
         debug_arm_frame = Frame(parent)
         debug_arm_frame.pack(side='top')

@@ -42,7 +42,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
                 log_string += apply_crit(target, 'Flight Deck', armor_pen, debug_mode, verbose_mode)
 
     #Regular crit rolling
-    damage_ratio = float(dp / remaining_points)
+    damage_ratio = float(dp) / float(remaining_points)
     if dp / target['Damage Pts Start'] <= 0.01:
         damage_ratio_dict = {}
     elif damage_ratio < 0.10:
@@ -135,7 +135,7 @@ def check_speed_reduction(target, remaining_points, current_flooding_severity):
     cursor, conn = connect_to_db(returnConnection=True)
     addl_log_string = ""
     target_speed_start = float(to_precision(float(target['Speed']), 3))
-    target_speed_current = float(to_precision(float(target['Speed Damaged'])))
+    target_speed_current = float(to_precision(float(target['Speed Damaged']), 3))
     target_speed_thresholds = [target_speed_start, float(to_precision(target_speed_start * 0.75, 3)), float(to_precision(target_speed_start * 0.5, 3)), float(to_precision(target_speed_start * 0.25, 3)), 0.0]
     if remaining_points <= 0.25 * target['Damage Pts Start']:
         #new_speed = float(to_precision(target['Speed'] * 0.25, 3))
@@ -156,7 +156,7 @@ def check_speed_reduction(target, remaining_points, current_flooding_severity):
     if current_speed_index > 4:
         current_speed_index = 4 #Can't be reduced to less than 0 knots.
 
-    if target_speed_thresholds[current_speed_index] != target['Speed Damaged']:
+    if target_speed_thresholds[current_speed_index] != target_speed_current:
         ship_id_info = get_ship_id_info(target)
         new_speed = target_speed_thresholds[current_speed_index]
         if new_speed > 15 and current_flooding_severity >= 2: #Speed limited by flooding
