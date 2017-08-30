@@ -393,6 +393,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
     #Getting a new copy of the ship record in case it's changed due to the last crit
     this_ship_record = cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation Ship Key]=?;""", ship_id_info)
     current_crits = this_ship_record[ship_column_names.index('Critical Hits')]
+    new_crit_string = ""
     #Deal with the crits in the order they happen in the tables.  Got to handle it somehow.
 
     if 'Ship Sunk' in this_crit:
@@ -915,6 +916,11 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
             this_ship_remarks = this_ship_record[ship_column_names.index('Remarks')]
             new_ship_remarks = this_ship_remarks + 'Ship illuminated by fire.'
             cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Remarks]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_ship_remarks, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
+        elif this_fire_severity < 2 and 'Ship illuminated by fire' in this_ship_record[ship_column_names.index('Remarks')]:
+            #Remove illumination remark
+            new_ship_remarks = this_ship_record[ship_column_names.index('Remarks')].replace('Ship illuminated by fire', '')
+            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Remarks]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_ship_remarks, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+
         elif this_fire_severity == 4:
             explosion_check = rolld100()
             if explosion_check <= 25:
