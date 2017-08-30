@@ -173,4 +173,14 @@ def test_iteration_2():
         the_list[i] = the_list[i] + 2
     print(the_list)
 
-test_iteration_2()
+#test_iteration_2()
+
+def test_toggle():
+    a = True
+    print(a)
+    a = not a
+    print(a)
+    a = not a
+    print(a)
+
+test_toggle()

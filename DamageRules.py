@@ -8,7 +8,7 @@ MERCHANT_AUXILIARY = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', '
 # If a new type of aviation ship/merchant is added to Annex A, it must be added to the appropriate list
 # Otherwise, it will be treated as a surface combatant.
 
-def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
+def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, verbose_mode=False):
 
     cursor, conn = connect_to_db(returnConnection=True)
     print target
@@ -35,7 +35,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
     #!!!Auto crits first
     if hit_type == 'Bomb' and target['Ship Type'] in AVIATION_SHIPS and armor_pen:
         if tkMessageBox.askyesno(title='Bomb', message='Is the bomb 100 lb/50 kg or more?'):
-            apply_crit(target, 'Flight Deck', armor_pen, debug_mode)
+            apply_crit(target, 'Flight Deck', armor_pen, debug_mode, verbose_mode)
     elif hit_type == 'Shell' and target['Ship Type'] in AVIATION_SHIPS and armor_pen:
         if tkMessageBox.askyesno(message='Was the ship hit by >= 120mm fire at Long or Extreme range?'):
             die = rolld10()
@@ -44,7 +44,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
             else:
                 deck_hit = (die <= 6)
             if deck_hit:
-                log_string += apply_crit(target, 'Flight Deck', armor_pen, debug_mode)
+                log_string += apply_crit(target, 'Flight Deck', armor_pen, debug_mode, verbose_mode)
 
     #Regular crit rolling
     damage_ratio = float(dp / remaining_points)
@@ -81,10 +81,10 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         # !!! Massive damage kicks in
         log_string += 'Reduced to 10% DP by massive damage.  '
         new_dp = 0.1 * target['Damage Pts Start']
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;;""",(new_dp,ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_dp,ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         return log_string
 
-    if debug_mode:
+    if verbose_mode:
         log_string += "Damage ratio is " + str(damage_ratio) + " Using supplied d6 value of " + str(d6) + " for number of crits."
     else:
         d6 = rolld6()
@@ -94,7 +94,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
     else:
         num_crits = 0
 
-    if debug_mode:
+    if verbose_mode:
         log_string += " Number of crits rolled is " + str(num_crits) + "."
 
     for i in range(num_crits):
@@ -107,7 +107,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None):
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
 
-        log_string += apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode)
+        log_string += apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode, verbose_mode)
 
     return log_string
 
@@ -123,7 +123,7 @@ def damage_ship(target, dp, armor_pen, hit_type):
     # else
     log_string = target['Ship Name'] + " hit for " + str(dp) + " DP by " + str(hit_type)
     ship_info = get_ship_id_info(target)
-    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""",(remaining_points, ship_info[0], ship_info[1], ship_info[2], ship_info[3],))
+    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(remaining_points, ship_info[0], ship_info[1], ship_info[2], ship_info[3],))
     conn.commit()
     close_connection(cursor)
     return (log_string, remaining_points)
@@ -165,7 +165,7 @@ def check_speed_reduction(target, remaining_points, current_flooding_severity):
         new_speed = target_speed_thresholds[current_speed_index]
         if new_speed > 15 and current_flooding_severity >= 2: #Speed limited by flooding
             new_speed = 15
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Speed Damaged]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation Ship Key]=?;""", (new_speed, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Speed Damaged]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", (new_speed, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
         addl_log_string = "Max speed is now " + str(new_speed) + "knots. "
         conn.commit()
         close_connection(cursor)
@@ -209,7 +209,7 @@ def check_massive_damage(target, dp, remaining_points, hit_type):
             log_string += ' reaches 10% of original DP, all weapons out. '
     return log_string
 
-def roll_for_crits(target, armor_pen, d100, debug_mode=False):
+def roll_for_crits(target, armor_pen, d100):
     this_ship_type = target['Ship Type']
     this_size_class = target['Size Class']
 
@@ -391,7 +391,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
     ship_id_info = get_ship_id_info(target)
     cursor, conn = connect_to_db(returnConnection=True)
     #Getting a new copy of the ship record in case it's changed due to the last crit
-    this_ship_record = cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation Ship Key]=?;""", ship_id_info)
+    this_ship_record = cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
     current_crits = this_ship_record[ship_column_names.index('Critical Hits')]
     new_crit_string = ""
     #Deal with the crits in the order they happen in the tables.  Got to handle it somehow.
@@ -577,7 +577,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
             if new_rating < 0:
                 new_rating = 0
             new_crit_string = 'Light AA hit, rating reduced to ' + str(new_rating) + ' '
-            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Light AA Damaged Rating] = ? WHERE [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (new_rating, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
+            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Light AA Damaged Rating]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", (new_rating, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3]))
             conn.commit()
         else:
             new_crit_string = "Light AA hit, but rating already reduced to 0. "

@@ -23,6 +23,8 @@ class GameWindow(Frame):
         self.torpedo_depth_string.set('Shallow')
         self.debug_frame_armed = IntVar()
         self.debug_frame_armed.set(0)
+        self.verbose_mode = BooleanVar()
+        self.verbose_mode.set(False)
         Frame.__init__(self, parent, background='white')
         self.pack(fill=BOTH, expand=1)
         #Create the frames for holding the UI
@@ -84,7 +86,7 @@ class GameWindow(Frame):
 
 
     def draw_tables(self, parent):
-        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts','25% Threshold Crossed', '10% Threshold Crossed', 'Crit Engineering']
+        game_ship_table_column_names_list = ['Ship Name', 'Scenario Side', 'Ship Type', 'Size Class', 'Annex A Key', 'UWP Port Dmg', 'UWP Stbd Dmg', 'Critical Hits', 'Damage Pts Start', 'Side Name', 'Speed', 'Speed Damaged', 'Damage Pts','25% Threshold Crossed', '10% Threshold Crossed', 'Crit Engineering', 'Crit Flood Magazines', 'Extra DC', 'Game ID', 'Formation ID', 'Formation Ship Key']
         ship_table_column_types_dict = {'Ship Name': 'text', 'Scenario Side': 'text', 'Critical Hits': 'text', 'Side Name': 'text', 'default': 'number'}
         self.shipsTable = DataTable(parent, scenario_key=self.scenario_key, column_types_dict=ship_table_column_types_dict, table_name='Game Ship Formation Ship', column_names_list = game_ship_table_column_names_list, sig_figs=3, column_title_alias_dict={'Speed Damaged': 'Max Speed', 'Damage Pts': 'Damage Pts Left'})
 
@@ -106,10 +108,15 @@ class GameWindow(Frame):
         self.shipsTable.hide_column('Starting Damage Pts')
         self.shipsTable.hide_column('Annex A Key')
         self.shipsTable.hide_column('Scenario Side')
+        self.shipsTable.hide_column('Formation ID')
+        self.shipsTable.hide_column('Formation Ship Key')
         self.shipsTable.hide_column('Speed')
         self.shipsTable.hide_column('25% Threshold Crossed')
         self.shipsTable.hide_column('10% Threshold Crossed')
         self.shipsTable.hide_column('Crit Engineering')
+        self.shipsTable.hide_column('Crit Flood Magazines')
+        self.shipsTable.hide_column('Extra DC')
+        self.shipsTable.hide_column('Game ID')
 
         ships_table_canvas.redrawVisible()
         #Need to store the columns and their indexes for later reference.
@@ -136,6 +143,16 @@ class GameWindow(Frame):
         close_connection(cursor)
 
     def draw_hit_controls(self, parent):
+        dc_label_frame = Frame(parent)
+        dc_label_frame.pack(side='top')
+        dc_label = Label(dc_label_frame, text='Damage Control')
+        dc_label.pack(side='top')
+        dc_buttons_frame = Frame(parent)
+        dc_buttons_frame.pack(side='top')
+        flood_button = Button(dc_buttons_frame, text='Flood Magazines', command=lambda: self.flood_this_magazine())
+        flood_button.pack(side='left')
+        extra_dc_button = Button(dc_buttons_frame, text='Toggle Extra DC', command=lambda: self.toggle_extra_dc())
+        extra_dc_button.pack(side='right')
         hit_label_frame = Frame(parent)
         hit_label_frame.pack(side='top')
         panel_label = Label(hit_label_frame, text='Hit Controls')
@@ -196,6 +213,10 @@ class GameWindow(Frame):
                 this_widget.config(state=torpedo_val)
 
     def draw_debug_controls(self, parent):
+        verbose_mode_frame = Frame(parent)
+        verbose_mode_frame.pack(side='top')
+        verbose_mode_button = Checkbutton(verbose_mode_frame, text="VERBOSE", command = lambda: self.toggle_verbose(), variable=self.verbose_mode)
+        verbose_mode_button.pack(side='top')
         debug_arm_frame = Frame(parent)
         debug_arm_frame.pack(side='top')
         debug_arm_button = Checkbutton(debug_arm_frame, text="DEBUG", command = lambda: self.toggle_debug_frame(), variable=self.debug_frame_armed)
@@ -223,6 +244,9 @@ class GameWindow(Frame):
             self.d6_entry.config(state='disabled')
             self.d100_entry.delete(0, END)
             self.d100_entry.config(state='disabled')
+
+    def toggle_verbose(self):
+        self.verbose_mode.set(not self.verbose_mode)
 
     def close_window(self):
         self.destroy()
@@ -306,9 +330,8 @@ class GameWindow(Frame):
             #default is no armor pen
             else:
                 armor_pen = False
-            self.write_game_log(target['Ship Name'] + " takes " + dp + " DP from " + hit_type + " hit.")
-            print type(target['Speed'])
-            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d100_list)
+            self.write_game_log(target['Ship Name'] + " takes " + dp + " DP from " + hit_type + " hit. ")
+            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d100_list, self.verbose_mode.get())
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:
@@ -321,6 +344,26 @@ class GameWindow(Frame):
         if hit_type == 'Fire' or hit_type == 'Flood':
             #!!! Finish me!
             armor_pen = True
+
+    def flood_this_magazine(self):
+        target = self.shipsTable.get_currentRecord()
+        if target['Crit Flood Magazines'] == 0:
+            cursor, conn = connect_to_db(returnConnection=True)
+            cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Crit Flood Magazines]=1 WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(self.game_id, target['Scenario Side'], target['Formation ID'], target['Formation Ship Key'], ))
+            self.shipsTable.update()
+            conn.commit()
+            close_connection(cursor)
+
+    def toggle_extra_dc(self):
+        target = self.shipsTable.get_currentRecord()
+        cursor, conn = connect_to_db(returnConnection=True)
+        if target['Extra DC'] == 0:
+            new_val = 1
+        else:
+            new_val = 0
+        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Extra DC]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_val, self.game_id, target['Scenario Side'], target['Formation ID'], target['Formation Ship Key'], ))
+        conn.commit()
+        close_connection(cursor)
 
     def apply_fire_flooding_tac_turn(self):
         cursor, conn = connect_to_db(returnConnection=True)
