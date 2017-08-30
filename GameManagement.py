@@ -175,6 +175,8 @@ class NewGamePicker(Frame):
                     this_data[this_column] = ""
                 elif this_column == 'Damage Pts Start':
                     pass #Already set while we were on 'Damage Pts, but don't want it set to 0
+                elif 'Severity' in this_column:
+                    this_data[this_column] = 0
                 else:
                     this_data[this_column] = 0
             # Dictionary is done, now we need to get it into a list in the proper order
@@ -182,7 +184,7 @@ class NewGamePicker(Frame):
                 this_column = columns_needed[j]
                 data_to_submit.append(this_data[this_column])
             data_to_submit = tuple(data_to_submit)
-            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
+            cursor.execute("""INSERT INTO 'Game Ship Formation Ship' VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", data_to_submit)
             conn.commit()
             # Now we need to check for mounts and sensors associated with that ship.
             cursor = conn.cursor()

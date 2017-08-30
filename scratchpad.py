@@ -152,4 +152,25 @@ def test_isnumeric():
     for this_string in [str1, str2, str3]:
         print str.isdigit(this_string)
 
-test_isnumeric()
+#test_isnumeric()
+
+def test_iteration():
+    a = 2
+    b = 5
+    c = 7
+    for i in [a, b, c]:
+        i += 2
+    print a, b, c
+
+#test_iteration()
+
+def test_iteration_2():
+    a = 2
+    b = 5
+    c = 7
+    the_list = [a, b, c]
+    for i in xrange(len(the_list)):
+        the_list[i] = the_list[i] + 2
+    print(the_list)
+
+test_iteration_2()
