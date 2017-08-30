@@ -246,7 +246,8 @@ class GameWindow(Frame):
             self.d100_entry.config(state='disabled')
 
     def toggle_verbose(self):
-        self.verbose_mode.set(not self.verbose_mode)
+        print("Verbose mode is now " + str(self.verbose_mode.get()))
+        pass
 
     def close_window(self):
         self.destroy()
@@ -303,6 +304,7 @@ class GameWindow(Frame):
         cursor.execute("""INSERT INTO 'Game Log' VALUES (?,?,?,?);""", (self.game_id, self.log_sequence, self.game_turn, message,))
         conn.commit()
         close_connection(cursor)
+        self.log_sequence += 1
 
     def generate_crits_statement(self, this_record):
         #this_record is a ship record from the database.  Renders into readable string form
@@ -331,7 +333,7 @@ class GameWindow(Frame):
             else:
                 armor_pen = False
             self.write_game_log(target['Ship Name'] + " takes " + dp + " DP from " + hit_type + " hit. ")
-            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d100_list, self.verbose_mode.get())
+            critical_hit_result = shell_bomb_hit(target, int(dp), hit_type, armor_pen, d6, d100_list, self.debug_frame_armed.get(), self.verbose_mode.get())
             if critical_hit_result == 'Unsupported Ship':
                 tkMessageBox.showinfo('Unsupported Ship', 'Critical Hits for this ship are not yet supported by Damage Control Assistant')
             else:

@@ -8,16 +8,12 @@ MERCHANT_AUXILIARY = ['AM', 'LSI', 'LCF', 'LCG', 'LCI(L)', 'LCS(L)', 'LCT(R)', '
 # If a new type of aviation ship/merchant is added to Annex A, it must be added to the appropriate list
 # Otherwise, it will be treated as a surface combatant.
 
-def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, verbose_mode=False):
+def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, debug_mode=False, verbose_mode=False):
 
     cursor, conn = connect_to_db(returnConnection=True)
     print target
 
     (log_string, remaining_points) = damage_ship(target, dp, armor_pen, hit_type)
-    if d6 != None or d100_list != None:
-        debug_mode = True
-    else:
-        debug_mode = False
     ship_id_info = get_ship_id_info(target)
     cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",ship_id_info)
     this_ship_record = cursor.fetchone()
@@ -31,7 +27,6 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, ver
     else:
         log_string += massive_damage_result
     #Now we start checking for crits
-    ship_id_info = get_ship_id_info(target)
     #!!!Auto crits first
     if hit_type == 'Bomb' and target['Ship Type'] in AVIATION_SHIPS and armor_pen:
         if tkMessageBox.askyesno(title='Bomb', message='Is the bomb 100 lb/50 kg or more?'):
@@ -98,7 +93,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, ver
         log_string += " Number of crits rolled is " + str(num_crits) + "."
 
     for i in range(num_crits):
-        if d100_list != None:
+        if debug_mode:
             this_d100 = d100_list.pop(0)
             log_string += "Using supplied d100 value of " + str(this_d100) + " for critical hit."
             this_crit = roll_for_crits(target, armor_pen, this_d100)
@@ -121,7 +116,7 @@ def damage_ship(target, dp, armor_pen, hit_type):
         log_string = target['Ship Name'] + 'runs out of DP ' + sink_ship(target)
         return log_string
     # else
-    log_string = target['Ship Name'] + " hit for " + str(dp) + " DP by " + str(hit_type)
+    log_string = target['Ship Name'] + " hit for " + str(dp) + " DP by " + str(hit_type) + ". "
     ship_info = get_ship_id_info(target)
     cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(remaining_points, ship_info[0], ship_info[1], ship_info[2], ship_info[3],))
     conn.commit()
@@ -140,11 +135,12 @@ def check_speed_reduction(target, remaining_points, current_flooding_severity):
     cursor, conn = connect_to_db(returnConnection=True)
     addl_log_string = ""
     target_speed_start = float(to_precision(float(target['Speed']), 3))
-    target_speed_thresholds = [target_speed_start, to_precision(target_speed_start * 0.75, 3), to_precision(target_speed_start * 0.5, 3), to_precision(target_speed_start * 0.25, 3), 0]
+    target_speed_current = float(to_precision(float(target['Speed Damaged'])))
+    target_speed_thresholds = [target_speed_start, float(to_precision(target_speed_start * 0.75, 3)), float(to_precision(target_speed_start * 0.5, 3)), float(to_precision(target_speed_start * 0.25, 3)), 0.0]
     if remaining_points <= 0.25 * target['Damage Pts Start']:
         #new_speed = float(to_precision(target['Speed'] * 0.25, 3))
         #new_speed = target_speed_start * 0.25
-        current_speed_index = 1
+        current_speed_index = 3
     elif remaining_points <= 0.5 * target['Damage Pts Start']:
         #new_speed = float(to_precision(target['Speed'] * 0.5, 3))
         #new_speed = target_speed_start * 0.5
@@ -152,7 +148,7 @@ def check_speed_reduction(target, remaining_points, current_flooding_severity):
     elif remaining_points <= 0.75 * target['Damage Pts Start']:
         #new_speed = float(to_precision(target['Speed'] * 0.75, 3))
         #new_speed = target_speed_start * 0.75
-        current_speed_index = 3
+        current_speed_index = 1
     else:
         current_speed_index = 0
 
@@ -166,7 +162,7 @@ def check_speed_reduction(target, remaining_points, current_flooding_severity):
         if new_speed > 15 and current_flooding_severity >= 2: #Speed limited by flooding
             new_speed = 15
         cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Speed Damaged]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", (new_speed, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
-        addl_log_string = "Max speed is now " + str(new_speed) + "knots. "
+        addl_log_string = "Max speed is now " + str(new_speed) + " knots. "
         conn.commit()
         close_connection(cursor)
     return addl_log_string
@@ -384,7 +380,7 @@ def roll_for_crits(target, armor_pen, d100):
 
     return this_crit
 
-def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False):
+def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False, verbose_mode=False):
     #This is going to be the mother of all 'if...elif' statements
     #For each crit we need to: make any database changes needed, and return an appropriate entry for the log string
     #Need the full database entry for the ship
@@ -592,9 +588,9 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
         if 'Boiler Explosion' in this_crit:
             boiler_damage = this_ship_record[ship_column_names.index('Damage Pts Start')] * 0.10
             new_crit_string += 'Boiler explodes, ' + damage_ship(target, boiler_damage, True, 'Boiler Explosion ')
-            new_crit_string += start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
+            new_crit_string += start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
-            new_crit_string += start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='/2', debug_mode=debug_mode)
+            new_crit_string += start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='/2', debug_mode=debug_mode, verbose_mode=verbose_mode)
         #Fire critical- d6 / 2, d6 if a boiler explosion
 
 
@@ -655,7 +651,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
 
     elif 'Elevator' in this_crit:
         #!!! What does an elevator critical hit do, anyway?
-        if debug_mode:
+        if debug_mode or verbose_mode:
             new_crit_string = "Elevator crit rolled, not yet represented."
 
     elif 'Flight Deck' in this_crit:
@@ -672,13 +668,13 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
             ac_hit = rolld6()
             new_crit_string += str(ac_hit) + " aircraft hit. "
             for ac in xrange(ac_hit):
-                new_crit_string += start_fire(this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
+                new_crit_string += start_fire(this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode, verbose_mode=verbose_mode)
         hangar_pen = rolld10()
         if hangar_pen >= 6:
             ac_hit = rolld6()
             new_crit_string += str(ac_hit) + " aircraft hit. "
             for ac in xrange(ac_hit):
-                new_crit_string += start_fire(this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode)
+                new_crit_string += start_fire(this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='-2', debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
             new_crit_string += " Hangar not penetrated. "
 
@@ -687,21 +683,21 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
         new_crit_string = "Aviation Ammo hit rolled, no magazine explosion."
 
     elif 'Aviation Fuel' in this_crit:
-        if debug_mode:
-            new_crit_string = "Aviation Fuel hit, starting fire.  "  + start_fire(target, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode)
+        if debug_mode or verbose_mode:
+            new_crit_string = "Aviation Fuel hit, starting fire.  "  + start_fire(target, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
-            new_crit_string = start_fire(target, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode)
+            new_crit_string = start_fire(target, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode, verbose_mode=verbose_mode)
 
     elif 'Fire' in this_crit:
         #Start a fire
-        if debug_mode:
-            new_crit_string = "Fire crit rolled, starting fire. " + start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
+        if debug_mode or verbose_mode:
+            new_crit_string = "Fire crit rolled, starting fire. " + start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
-            new_crit_string = start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode)
+            new_crit_string = start_fire(target, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
 
     elif 'Flood' in this_crit:
-        if debug_mode:
-            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(target, this_ship_record, ship_column_names, armor_pen=armor_pen, debug_mode=debug_mode)
+        if debug_mode or verbose_mode:
+            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(target, this_ship_record, ship_column_names, armor_pen=armor_pen, debug_mode=debug_mode, verbose_mode=verbose_mode)
         pass
 
     elif 'Cargo' in this_crit:
@@ -711,12 +707,12 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
         this_ship_remarks = this_ship_record[ship_column_names.index('Remarks')].lower() #convert to lower-case string to avoid case problems
         if 'ammo' in this_ship_remarks or 'ammunition' in this_ship_remarks:
             ammo_effects_roll = rolld10()
-            if debug_mode:
+            if debug_mode or verbose_mode:
                 new_crit_string += 'Ammo effects roll is ' + str(ammo_effects_roll)
             if ammo_effects_roll >= 8:
                 new_crit_string += 'Ammo explodes, ship sunk! ' + sink_ship(target)
             elif ammo_effects_roll >= 3:
-                new_crit_string += 'Starting fire, risk of explosion on Intermediate Turns.  ' + start_fire(target, this_ship_record, ship_column_names, armor_pen, this_strength_mod='+1', this_reduction_mod='+1', debug_mode=debug_mode)
+                new_crit_string += 'Starting fire, risk of explosion on Intermediate Turns.  ' + start_fire(target, this_ship_record, ship_column_names, armor_pen, this_strength_mod='+1', this_reduction_mod='+1', debug_mode=debug_mode, verbose_mode=verbose_mode)
                 cursor.execute("""UPDATE 'Game Ship Fire Flood' INSERT VALUES (?,?,?,?,'Non-cumulative explosion check',25,0,1);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
                 conn.commit()
             else:
@@ -730,7 +726,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
                 cargo_fire_mod = '+' + str(rolld6())
             else:
                 cargo_fire_mod = '+2'
-            new_crit_string += 'Petroleum cargo hit, starting fire. ' + start_fire(target, this_ship_record, ship_column_names, armor_pen, this_strength_mod=cargo_fire_mod, this_reduction_mod=cargo_fire_mod, debug_mode=debug_mode)
+            new_crit_string += 'Petroleum cargo hit, starting fire. ' + start_fire(target, this_ship_record, ship_column_names, armor_pen, this_strength_mod=cargo_fire_mod, this_reduction_mod=cargo_fire_mod, debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
             new_crit_string += 'No other effect.'
 
@@ -746,7 +742,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
     close_connection(cursor)
     return new_crit_string
 
-def start_fire(target, this_ship_record, ship_column_names, armor_pen, this_strength_mod, this_reduction_mod='0', debug_mode=False):
+def start_fire(target, this_ship_record, ship_column_names, armor_pen, this_strength_mod, this_reduction_mod='0', debug_mode=False, verbose_mode=False):
     this_annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
     ship_id_info = get_ship_id_info(this_ship_record)
@@ -758,7 +754,7 @@ def start_fire(target, this_ship_record, ship_column_names, armor_pen, this_stre
     else:
         this_severity = rolld6()
 
-    if debug_mode:
+    if debug_mode or verbose_mode:
         this_severity_original = this_severity
 
     if armor_pen == False:
@@ -788,14 +784,14 @@ def start_fire(target, this_ship_record, ship_column_names, armor_pen, this_stre
         conn.commit()
 
         return_string = "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
-        return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_fire=current_fire, this_flooding=None, debug_mode=debug_mode)
+        return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_fire=current_fire, this_flooding=None, debug_mode=debug_mode, verbose_mode=verbose_mode)
         return return_string
-    elif debug_mode:
+    elif debug_mode or verbose_mode:
         return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 1, no fire."
     else:
         return ""
 
-def start_flooding(target, this_ship_record, ship_column_names, armor_pen, debug_mode = False):
+def start_flooding(target, this_ship_record, ship_column_names, armor_pen, debug_mode = False, verbose_mode=False):
     this_annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
     ship_id_info = get_ship_id_info(this_ship_record)
@@ -807,7 +803,7 @@ def start_flooding(target, this_ship_record, ship_column_names, armor_pen, debug
     else:
         this_severity = rolld6()
 
-    if debug_mode:
+    if debug_mode or verbose_mode:
         this_severity_original = this_severity
 
     if armor_pen == False:
@@ -828,14 +824,18 @@ def start_flooding(target, this_ship_record, ship_column_names, armor_pen, debug
         conn.commit()
 
         return_string = "Flooding increases by " + str(this_severity) + "%, total now " + str(current_flooding)
-        return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_fire=None, this_flooding=current_flooding, debug_mode=debug_mode)
+        return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_fire=None, this_flooding=current_flooding, debug_mode=debug_mode, verbose_mode=verbose_mode)
         return return_string
-    elif debug_mode:
-        return "Flooding severity of " + str(this_severity) + "% rolled, reduced by modifiers to less than 1, no flooding."
+    elif debug_mode or verbose_mode:
+        return "Flooding severity of " + str(this_severity_original) + "% rolled, reduced by modifiers to less than 1, no flooding."
     else:
         return ""
 
-def check_severity_levels(target, this_ship_record, ship_column_names, this_fire=None, this_flooding=None, debug_mode=False):
+def check_severity_levels(target, this_ship_record, ship_column_names, this_fire=None, this_flooding=None, debug_mode=False, verbose_mode=False):
+
+    #Translates current fire/flooding percentage into Minor/Major/Severe/Overwhelmed and stores this data in the ship record as an integer, then applies consequences for fire/flooding.
+    #See severity_dict for how integer values in 'Game Ship Formation Ship' fields translate into severity levels.
+    #Severity levels will also be used by the function handling intermediate turns to do damage reduction, just as soon as it's written
 
     severity_dict = {0: 'None', 1: 'Minor', 2: 'Major', 3: 'Severe', 4: 'Overwhelmed'}
     annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
