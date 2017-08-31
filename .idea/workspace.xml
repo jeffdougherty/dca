@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -702,7 +701,14 @@
       <option name="project" value="LOCAL" />
       <updated>1504208582548</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Now correctly computes flooding/fire severity levels.">
+      <created>1504212480078</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1504212480078</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -784,7 +790,8 @@
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Notes on how debug mode works, in anticipation of this actually being seen by someone other than me.&#10;- Added a note about how scratchpad is really irrelevant" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- One quick readme revision" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Resized in-game window&#10;- Fixed a bug where ships were always recorded as having at least minor fire/flooding&#10;- Added a feature where debug mode now goes to random d100 rolls if you don't supply enough rolls, rather than crashing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Resized in-game window&#10;- Fixed a bug where ships were always recorded as having at least minor fire/flooding&#10;- Added a feature where debug mode now goes to random d100 rolls if you don't supply enough rolls, rather than crashing." />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Now correctly computes flooding/fire severity levels." />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Now correctly computes flooding/fire severity levels." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
