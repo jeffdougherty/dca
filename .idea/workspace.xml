@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Checking in the XML, in case it matters.">
+    <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
@@ -715,7 +715,14 @@
       <option name="project" value="LOCAL" />
       <updated>1504212787970</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Checking in the XML, in case it matters.">
+      <created>1504213239981</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1504213239981</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="ToolWindowManager">
