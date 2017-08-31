@@ -4,7 +4,7 @@
     <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/InGameWindow.py" afterPath="$PROJECT_DIR$/InGameWindow.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/readme.txt" afterPath="$PROJECT_DIR$/readme.txt" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,7 +28,7 @@
       <file leaf-file-name="InGameWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/InGameWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-510">
+            <state relative-caret-position="2880">
               <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -40,7 +40,7 @@
       <file leaf-file-name="EditScenarioWindow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EditScenarioWindow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
+            <state relative-caret-position="5730">
               <caret line="500" column="36" selection-start-line="500" selection-start-column="30" selection-end-line="500" selection-end-column="36" />
               <folding>
                 <element signature="e#11984#12985#0" expanded="false" />
@@ -56,21 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tkinter.py" pinned="false" current-in-tab="false">
-        <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="1124" column="0" selection-start-line="1124" selection-start-column="0" selection-end-line="1124" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DamageRules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2494">
-              <caret line="961" column="16" selection-start-line="961" selection-start-column="16" selection-end-line="961" selection-end-column="16" />
+            <state relative-caret-position="690">
+              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -78,11 +68,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="random.py" pinned="false" current-in-tab="false">
-        <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/random.py">
+      <file leaf-file-name="readme.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/readme.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="184" column="0" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
+            <state relative-caret-position="225">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PrintScenarioDocs.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PrintScenarioDocs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3690">
+              <caret line="249" column="106" selection-start-line="249" selection-start-column="106" selection-end-line="249" selection-end-column="106" />
               <folding />
             </state>
           </provider>
@@ -91,21 +91,9 @@
       <file leaf-file-name="MainMenu.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MainMenu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="371">
+            <state relative-caret-position="1095">
               <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameManagement.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GameManagement.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2700">
-              <caret line="186" column="163" selection-start-line="186" selection-start-column="163" selection-end-line="186" selection-end-column="163" />
-              <folding>
-                <element signature="e#28277#35249#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -113,7 +101,7 @@
       <file leaf-file-name="helperclasses.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helperclasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2670">
+            <state relative-caret-position="2640">
               <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -125,7 +113,7 @@
       <file leaf-file-name="helperfunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helperfunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
+            <state relative-caret-position="-2350">
               <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding />
             </state>
@@ -135,7 +123,7 @@
       <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scratchpad.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
+            <state relative-caret-position="1305">
               <caret line="178" column="12" selection-start-line="178" selection-start-column="12" selection-end-line="178" selection-end-column="12" />
               <folding>
                 <element signature="e#136#815#0" expanded="false" />
@@ -185,7 +173,6 @@
         <option value="$PROJECT_DIR$/excluded cases.rtf" />
         <option value="$PROJECT_DIR$/cleanup.py" />
         <option value="$PROJECT_DIR$/Damage Control Assistant License" />
-        <option value="$PROJECT_DIR$/readme.txt" />
         <option value="$PROJECT_DIR$/FormationScreens.py" />
         <option value="$PROJECT_DIR$/helperfunctions.py" />
         <option value="$PROJECT_DIR$/GameManagement.py" />
@@ -193,6 +180,7 @@
         <option value="$PROJECT_DIR$/MainMenu.py" />
         <option value="$PROJECT_DIR$/InGameWindow.py" />
         <option value="$PROJECT_DIR$/DamageRules.py" />
+        <option value="$PROJECT_DIR$/readme.txt" />
       </list>
     </option>
   </component>
@@ -227,6 +215,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -274,11 +263,10 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Classes/Algorithmic Thinking/ScratchProject" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="261" />
@@ -299,6 +287,14 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
     <property name="ToolWindowVersion Control.ShowToolbar" value="false" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/jeffdougherty/Documents/Consulting/DCA/Damage Control Assistant/InGameWindow.py" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Damage Control Assistant" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="Damage Control Assistant" />
+      </console-settings>
+    </option>
   </component>
   <component name="RunManager" selected="Python.MainMenu">
     <configuration default="false" name="CreateScenario" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -670,7 +666,14 @@
       <option name="project" value="LOCAL" />
       <updated>1504137234141</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- More bugfixing.  Fixed some incorrect SQL syntax.&#10;- Explode/capsize checks now go away if the conflagration/flooding is sufficiently reduced&#10;- When converting mods to integer values, early exit if it's a 0.">
+      <created>1504141714682</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1504141714683</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -679,16 +682,16 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20855615" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34502262" sideWeight="0.17540108" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.027149322" sideWeight="0.8245989" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.8962567" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.8962567" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28846154" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28846154" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -746,7 +749,8 @@
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Final bugfixes on speed reduction" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Now correctly calculates the number of critical hits." />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Removed pointless global calculation from MainMenu.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Removed pointless global calculation from MainMenu.py" />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- More bugfixing.  Fixed some incorrect SQL syntax.&#10;- Explode/capsize checks now go away if the conflagration/flooding is sufficiently reduced&#10;- When converting mods to integer values, early exit if it's a 0." />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- More bugfixing.  Fixed some incorrect SQL syntax.&#10;- Explode/capsize checks now go away if the conflagration/flooding is sufficiently reduced&#10;- When converting mods to integer values, early exit if it's a 0." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -888,17 +892,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="525" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>74</line>
-          <option name="timeStamp" value="527" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>89</line>
+          <line>63</line>
           <option name="timeStamp" value="529" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -1067,16 +1061,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrintScenarioDocs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2100">
-          <caret line="140" column="25" selection-start-line="140" selection-start-column="25" selection-end-line="140" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#18#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Python/2.7/site-packages/tkintertable-1.2-py2.7/tkintertable/Tables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
@@ -1158,7 +1142,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1170">
           <caret line="79" column="91" selection-start-line="79" selection-start-column="91" selection-end-line="79" selection-end-column="91" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1167,13 +1150,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/readme.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1192,7 +1168,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1208,7 +1183,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scratchpad.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
+        <state relative-caret-position="1305">
           <caret line="178" column="12" selection-start-line="178" selection-start-column="12" selection-end-line="178" selection-end-column="12" />
           <folding>
             <element signature="e#136#815#0" expanded="false" />
@@ -1225,13 +1200,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="281">
           <caret line="1529" column="0" selection-start-line="1529" selection-start-column="0" selection-end-line="1529" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/helperclasses.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2670">
+        <state relative-caret-position="2640">
           <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -1239,25 +1213,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/random.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="184" column="0" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/helperfunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk/Tkinter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
+        <state relative-caret-position="16860">
           <caret line="1124" column="0" selection-start-line="1124" selection-start-column="0" selection-end-line="1124" selection-end-column="0" />
           <folding />
         </state>
@@ -1265,7 +1223,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MainMenu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
+        <state relative-caret-position="1095">
           <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
           <folding />
         </state>
@@ -1273,7 +1231,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/EditScenarioWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
+        <state relative-caret-position="5730">
           <caret line="500" column="36" selection-start-line="500" selection-start-column="30" selection-end-line="500" selection-end-column="36" />
           <folding>
             <element signature="e#11984#12985#0" expanded="false" />
@@ -1290,7 +1248,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/InGameWindow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-510">
+        <state relative-caret-position="2880">
           <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="192" selection-end-column="0" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -1298,13 +1256,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/random.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="184" column="0" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PrintScenarioDocs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3690">
+          <caret line="249" column="106" selection-start-line="249" selection-start-column="106" selection-end-line="249" selection-end-column="106" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DamageRules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2494">
-          <caret line="961" column="16" selection-start-line="961" selection-start-column="16" selection-end-line="961" selection-end-column="16" />
+        <state relative-caret-position="690">
+          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helperfunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2350">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
