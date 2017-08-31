@@ -10,8 +10,8 @@ class GameWindow(Frame):
         self.parent = parent
 
         #Set up the window
-        self.width = 900
-        self.height = 480
+        self.width = 1280
+        self.height = 800
         self.center_window()
         self.damage_type_string = StringVar()
         self.damage_type_string.set('Bomb')
@@ -230,7 +230,7 @@ class GameWindow(Frame):
         self.d6_entry.config(state='disabled')
         d100_label = Label(dice_entry_frame, text="D100 Rolls")
         d100_label.pack(side='left')
-        self.d100_entry = Entry(dice_entry_frame, width=2)
+        self.d100_entry = Entry(dice_entry_frame, width=20)
         self.d100_entry.pack(side='left')
         self.d100_entry.config(state='disabled')
 

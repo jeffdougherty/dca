@@ -41,7 +41,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
             if deck_hit:
                 log_string += apply_crit(target, 'Flight Deck', armor_pen, debug_mode, verbose_mode)
 
-    damage_ratio_dict, damage_ratio = determine_crit_table_row(target, dp, remaining_points, verbose_mode)
+    damage_ratio_dict, damage_ratio = determine_crit_table_row(target, dp, remaining_points)
 
     #Check to see if the ship was reduced to 10% of DP by massive damage
 
@@ -70,15 +70,18 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
         log_string += " Number of crits rolled is " + str(num_crits) + ". "
 
     for i in range(num_crits):
-        if debug_mode:
+        if debug_mode and len(d100_list) > 0:
             this_d100 = d100_list.pop(0)
             log_string += "Using supplied d100 value of " + str(this_d100) + " for critical hit. "
-            this_crit = roll_for_crits(target, armor_pen, this_d100, verbose_mode)
+        elif debug_mode:
+            this_d100 = rolld100()
+            log_string += "d100 list depleted, using random value of " + str(this_d100) + ". "
         else:
             this_d100 = rolld100()
-            this_crit = roll_for_crits(target, armor_pen, this_d100, verbose_mode)
             if verbose_mode:
                 log_string += "D100 roll is " + str(this_d100) + ". "
+        this_crit = roll_for_crits(target, armor_pen, this_d100, verbose_mode)
+
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
 
@@ -756,7 +759,6 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
 
 
     else:
-        new_crit_string = "Error, could not find matching handler for this critical hit in the if...elif statement"
         raise Exception("Could not find a matching handler in the big if...elif statement")
 
     #After all the possible crits
@@ -769,7 +771,6 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
 def start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_pen, this_strength_mod, this_reduction_mod='0', debug_mode=False, verbose_mode=False):
     this_annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
-    #ship_id_info = get_ship_id_info(this_ship_record)
 
     if this_in_service_date <= 1907:
         this_severity = rolld6() + rolld6() + 2
@@ -807,7 +808,7 @@ def start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_
         cursor.execute("""INSERT INTO 'Game Ship Fire/Flood' VALUES (?,?,?,?,'Fire',?,?,3);""",(ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], this_severity, this_reduction_mod,))
         conn.commit()
 
-        return_string = "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire)
+        return_string = "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire) + "%. "
         return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_fire=current_fire, this_flooding=None, debug_mode=debug_mode, verbose_mode=verbose_mode)
         return return_string
     elif debug_mode or verbose_mode:
@@ -818,7 +819,6 @@ def start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_
 def start_flooding(target, ship_id_info, this_ship_record, ship_column_names, armor_pen, debug_mode = False, verbose_mode=False):
     this_annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
-    #ship_id_info = get_ship_id_info(this_ship_record)
 
     if this_in_service_date <= 1907:
         this_severity = rolld6() + rolld6() + 2
@@ -863,17 +863,17 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
 
     severity_dict = {0: 'None', 1: 'Minor', 2: 'Major', 3: 'Severe', 4: 'Overwhelmed'}
     annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
-    ship_id_info = get_ship_id_info(this_ship_record)
-    this_in_service_date = annex_a_entry[annex_a_column_names.index('In Service')] #Retrieving instead of passing because we need to go into Annex A anyway, so avoid the overhead of passing params
+    ship_id_info = get_ship_id_info(target)
+    this_in_service_date = int(annex_a_entry[annex_a_column_names.index('In Service')]) #Retrieving instead of passing because we need to go into Annex A anyway, so avoid the overhead of passing params
     this_size_class = annex_a_entry[annex_a_column_names.index('Size Class')]
-    current_fire_severity = this_ship_record[ship_column_names.index('Fire Severity')]
-    current_flooding_severity = this_ship_record[ship_column_names.index('Flooding Severity')]
-    current_combined_severity = this_ship_record[ship_column_names.index('Combined Severity')]
+    current_fire_severity = int(this_ship_record[ship_column_names.index('Fire Severity')])
+    current_flooding_severity = int(this_ship_record[ship_column_names.index('Flooding Severity')])
+    current_combined_severity = int(this_ship_record[ship_column_names.index('Combined Severity')])
     return_string = ""
     if this_fire == None:
-        this_fire = this_ship_record[ship_column_names.index('Crit Fire')]
+        this_fire = int(this_ship_record[ship_column_names.index('Crit Fire')])
     if this_flooding == None:
-        this_flooding = this_ship_record[ship_column_names.index('Crit Flooding')]
+        this_flooding = int(this_ship_record[ship_column_names.index('Crit Flooding')])
     this_combined = this_fire + this_flooding
     this_fire_severity = ""
     this_flooding_severity = ""
@@ -908,7 +908,7 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
 
     if this_svc_mod != 0:
         this_svc_mod = convert_mod_to_number(this_svc_mod)
-        for threshold in [major_threshold, severe_threshold, overwhelmed_threshold]:
+        for i, threshold in enumerate([major_threshold, severe_threshold, overwhelmed_threshold]):
             threshold += this_svc_mod
 
     #Now we check to see where the values stand relative to the thresholds
@@ -920,8 +920,10 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
             severity_level_vars[i] = 3
         elif severity >= major_threshold:
             severity_level_vars[i] = 2
-        else:
+        elif severity > 0:
             severity_level_vars[i] = 1
+        else:
+            severity_level_vars[i] = 0
 
     if this_combined_severity != current_combined_severity:
         #All we have to do is pass on the new value
