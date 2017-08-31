@@ -3,6 +3,10 @@ from tkintertable import *
 from ttk import *
 from InGameWindow import GameWindow
 
+#Various test code functions written when I wanted to make sure something would work in Python the way I wanted it to.  Kept in project in case I need to go back and re-verify for myself.
+#Can be safely ignored, and probably should be.
+#Remove before creating release candidate.
+
 class TestDummy():
 
     def __init__(self):
@@ -183,4 +187,11 @@ def test_toggle():
     a = not a
     print(a)
 
-test_toggle()
+#test_toggle()
+
+def test_value_change():
+    this_crit = "Fire"
+    this_crit = 'Crit was ' + this_crit + ' but lack of armor pen changed to None - No AP'
+    print this_crit
+
+test_value_change()

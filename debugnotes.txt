@@ -1,0 +1,3 @@
+- "Debug" mode enables expanded notes in the log and lets you specify D6 and D100 values.
+- D100 values should be added as a series of comma-separated numbers, no spaces, in the appropriate field.
+- "Verbose" mode enables the expanded notes but keeps random D6 and D100 values.

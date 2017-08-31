@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
+    <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Notes on how debug mode works, in anticipation of this actually being seen by someone other than me.">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/debugnotes.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scratchpad.py" afterPath="$PROJECT_DIR$/scratchpad.py" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
@@ -67,7 +66,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DamageRules.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="329">
@@ -119,18 +118,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scratchpad.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="541">
-              <caret line="190" column="19" selection-start-line="190" selection-start-column="19" selection-end-line="190" selection-end-column="19" />
+            <state relative-caret-position="60">
+              <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
               <folding>
-                <element signature="e#136#815#0" expanded="false" />
-                <element signature="e#877#2089#0" expanded="false" />
-                <element signature="e#2107#2282#0" expanded="false" />
-                <element signature="e#2344#2829#0" expanded="false" />
-                <element signature="e#2866#3405#0" expanded="false" />
-                <element signature="e#3623#3962#0" expanded="false" />
+                <element signature="e#416#1095#0" expanded="false" />
+                <element signature="e#1157#2369#0" expanded="false" />
+                <element signature="e#2387#2562#0" expanded="false" />
+                <element signature="e#2624#3109#0" expanded="false" />
+                <element signature="e#3146#3685#0" expanded="false" />
+                <element signature="e#3903#4242#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -189,8 +188,8 @@
         <option value="$PROJECT_DIR$/InGameWindow.py" />
         <option value="$PROJECT_DIR$/readme.txt" />
         <option value="$PROJECT_DIR$/debugnotes.txt" />
-        <option value="$PROJECT_DIR$/scratchpad.py" />
         <option value="$PROJECT_DIR$/DamageRules.py" />
+        <option value="$PROJECT_DIR$/scratchpad.py" />
       </list>
     </option>
   </component>
@@ -690,7 +689,14 @@
       <option name="project" value="LOCAL" />
       <updated>1504192336805</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Spun rolling for the number of crits off into a separate function, for when we do bomb/torpedo hits.&#10;- Added an exiter for crits negated by lack of armor pen, so we don't go through the whole process with them, only to do nothing at the end. (Oy vey)">
+      <created>1504194028410</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1504194028410</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -768,7 +774,8 @@
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Removed pointless global calculation from MainMenu.py" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- More bugfixing.  Fixed some incorrect SQL syntax.&#10;- Explode/capsize checks now go away if the conflagration/flooding is sufficiently reduced&#10;- When converting mods to integer values, early exit if it's a 0." />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Updated readme with version and external dependency information." />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Updated readme with version and external dependency information." />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Spun rolling for the number of crits off into a separate function, for when we do bomb/torpedo hits.&#10;- Added an exiter for crits negated by lack of armor pen, so we don't go through the whole process with them, only to do nothing at the end. (Oy vey)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Spun rolling for the number of crits off into a separate function, for when we do bomb/torpedo hits.&#10;- Added an exiter for crits negated by lack of armor pen, so we don't go through the whole process with them, only to do nothing at the end. (Oy vey)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -815,7 +822,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>75</line>
+          <line>79</line>
           <option name="timeStamp" value="426" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -860,7 +867,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>113</line>
+          <line>117</line>
           <option name="timeStamp" value="497" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -875,22 +882,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>156</line>
+          <line>160</line>
           <option name="timeStamp" value="513" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>166</line>
+          <line>170</line>
           <option name="timeStamp" value="514" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>177</line>
+          <line>181</line>
           <option name="timeStamp" value="516" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/scratchpad.py</url>
-          <line>179</line>
+          <line>183</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -1303,27 +1310,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scratchpad.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
-          <caret line="190" column="19" selection-start-line="190" selection-start-column="19" selection-end-line="190" selection-end-column="19" />
-          <folding>
-            <element signature="e#136#815#0" expanded="false" />
-            <element signature="e#877#2089#0" expanded="false" />
-            <element signature="e#2107#2282#0" expanded="false" />
-            <element signature="e#2344#2829#0" expanded="false" />
-            <element signature="e#2866#3405#0" expanded="false" />
-            <element signature="e#3623#3962#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DamageRules.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="329">
           <caret line="84" column="38" selection-start-line="84" selection-start-column="38" selection-end-line="84" selection-end-column="38" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scratchpad.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
+          <folding>
+            <element signature="e#416#1095#0" expanded="false" />
+            <element signature="e#1157#2369#0" expanded="false" />
+            <element signature="e#2387#2562#0" expanded="false" />
+            <element signature="e#2624#3109#0" expanded="false" />
+            <element signature="e#3146#3685#0" expanded="false" />
+            <element signature="e#3903#4242#0" expanded="false" />
           </folding>
         </state>
       </provider>
