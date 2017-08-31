@@ -321,7 +321,7 @@ class GameWindow(Frame):
             hit_type = self.damage_type_picker.get()
         debug = self.debug_frame_armed.get()
         if debug == 1:
-            d6 = self.d6_entry.get()
+            d6 = int(self.d6_entry.get())
             d100_list = parse_comma_separated_numbers(self.d100_entry.get())
         else:
             d6 = None
