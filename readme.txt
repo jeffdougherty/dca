@@ -6,6 +6,8 @@ NOTE: DCA is written in Python 2.7 to take advantage of some older packages that
 
 External dependencies: tkintertable-1.2-py2.7 (https://pypi.python.org/pypi/tkintertable), python-docx (https://python-docx.readthedocs.io/en/latest/user/install.html).
 
+Also requires a MySQLite database with the required Command at Sea reference data, which is proprietary.  Will be supplied to approved contributors on request.
+
 Damage Control Assistant is free software.  It is released in accordance with the GNU Public License v 3.0, with source code freely available on GitHub.  You may freely copy, distribute, and modify the code as long
 as the GNU License is distributed with it and no money is being made from the endeavor.
 
