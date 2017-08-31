@@ -41,42 +41,16 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
             if deck_hit:
                 log_string += apply_crit(target, 'Flight Deck', armor_pen, debug_mode, verbose_mode)
 
-    #Regular crit rolling
-    damage_ratio = float(dp) / float(remaining_points)
-    if dp / float(target['Damage Pts Start']) <= 0.01:
-        damage_ratio_dict = {}
-    elif damage_ratio < 0.10:
-        damage_ratio_dict = {6: 1}
-    elif damage_ratio < 0.20:
-        damage_ratio_dict = {5: 1, 6: 2}
-    elif damage_ratio < 0.30:
-        damage_ratio_dict = {4: 1, 5: 2, 6: 3}
-    elif damage_ratio < 0.40:
-        damage_ratio_dict = {3: 1, 4: 2, 5: 3, 6: 4}
-    elif damage_ratio < 0.50:
-        damage_ratio_dict = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5}
-    elif damage_ratio < 0.60:
-        damage_ratio_dict = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
-    elif damage_ratio < 0.70:
-        damage_ratio_dict = {1: 2, 2: 3, 3: 4, 5: 6, 6: 7}
-    elif damage_ratio < 0.80:
-        damage_ratio_dict = {1: 3, 2: 4, 3: 5, 4: 6, 5: 7, 6: 8}
-    elif damage_ratio < 0.90:
-        damage_ratio_dict = {1: 4, 2: 5, 3: 6, 4: 7, 5: 8, 6: 9}
-    elif damage_ratio < 1.00:
-        damage_ratio_dict = {1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10}
-    elif damage_ratio < 1.20:
-        damage_ratio_dict = {1: 6, 2: 7, 3: 8, 4: 9, 5: 10, 6: 11}
-    elif damage_ratio < 3.00:
-        damage_ratio_dict = {1: 6, 2: 7, 3: 8, 4: 9, 5: 10, 6: 11}
-        addl_crits = int((damage_ratio - 1.00) / 0.2)
-        for this_key in damage_ratio_dict.keys():
-            damage_ratio_dict[this_key] = damage_ratio_dict[this_key] + addl_crits
-    else:
-        # !!! Massive damage kicks in
+    damage_ratio_dict, damage_ratio = determine_crit_table_row(target, dp, remaining_points, verbose_mode)
+
+    #Check to see if the ship was reduced to 10% of DP by massive damage
+
+    if 'massive damage' in damage_ratio_dict.keys():
         log_string += 'Reduced to 10% DP by massive damage.  '
         new_dp = 0.1 * target['Damage Pts Start']
-        cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_dp,ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+        cursor.execute(
+            """UPDATE 'Game Ship Formation Ship' SET [Damage Pts]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",
+            (new_dp, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
         return log_string
 
     if debug_mode:
@@ -99,16 +73,19 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
         if debug_mode:
             this_d100 = d100_list.pop(0)
             log_string += "Using supplied d100 value of " + str(this_d100) + " for critical hit. "
-            this_crit = roll_for_crits(target, armor_pen, this_d100)
+            this_crit = roll_for_crits(target, armor_pen, this_d100, verbose_mode)
         else:
             this_d100 = rolld100()
-            this_crit = roll_for_crits(target, armor_pen, this_d100)
+            this_crit = roll_for_crits(target, armor_pen, this_d100, verbose_mode)
             if verbose_mode:
-                this_crit += "D100 roll is " + str(this_d100) + ". "
+                log_string += "D100 roll is " + str(this_d100) + ". "
         if this_crit == 'Unsupported Ship':
             return 'Unsupported Ship'
 
-        log_string += apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode, verbose_mode)
+        if 'None - No AP' in this_crit:
+            log_string += this_crit
+        else:
+            log_string += apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode, verbose_mode)
 
     return log_string
 
@@ -211,7 +188,45 @@ def check_massive_damage(target, dp, remaining_points, hit_type):
             log_string += ' reaches 10% of original DP, all weapons out. '
     return log_string
 
-def roll_for_crits(target, armor_pen, d100):
+def determine_crit_table_row(target, dp, remaining_points):
+    # Regular crit rolling
+    damage_ratio = float(dp) / float(remaining_points)
+    if dp / float(target['Damage Pts Start']) <= 0.01:
+        damage_ratio_dict = {}
+    elif damage_ratio < 0.10:
+        damage_ratio_dict = {6: 1}
+    elif damage_ratio < 0.20:
+        damage_ratio_dict = {5: 1, 6: 2}
+    elif damage_ratio < 0.30:
+        damage_ratio_dict = {4: 1, 5: 2, 6: 3}
+    elif damage_ratio < 0.40:
+        damage_ratio_dict = {3: 1, 4: 2, 5: 3, 6: 4}
+    elif damage_ratio < 0.50:
+        damage_ratio_dict = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5}
+    elif damage_ratio < 0.60:
+        damage_ratio_dict = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
+    elif damage_ratio < 0.70:
+        damage_ratio_dict = {1: 2, 2: 3, 3: 4, 5: 6, 6: 7}
+    elif damage_ratio < 0.80:
+        damage_ratio_dict = {1: 3, 2: 4, 3: 5, 4: 6, 5: 7, 6: 8}
+    elif damage_ratio < 0.90:
+        damage_ratio_dict = {1: 4, 2: 5, 3: 6, 4: 7, 5: 8, 6: 9}
+    elif damage_ratio < 1.00:
+        damage_ratio_dict = {1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10}
+    elif damage_ratio < 1.20:
+        damage_ratio_dict = {1: 6, 2: 7, 3: 8, 4: 9, 5: 10, 6: 11}
+    elif damage_ratio < 3.00:
+        damage_ratio_dict = {1: 6, 2: 7, 3: 8, 4: 9, 5: 10, 6: 11}
+        addl_crits = int((damage_ratio - 1.00) / 0.2)
+        for this_key in damage_ratio_dict.keys():
+            damage_ratio_dict[this_key] = damage_ratio_dict[this_key] + addl_crits
+    else:
+        # !!! Massive damage kicks in
+        damage_ratio_dict = {'massive damage': 0}
+
+    return damage_ratio_dict, damage_ratio
+
+def roll_for_crits(target, armor_pen, d100, verbose_mode):
     this_ship_type = target['Ship Type']
     this_size_class = target['Size Class']
 
@@ -379,8 +394,10 @@ def roll_for_crits(target, armor_pen, d100):
     #Screen out crits not allowed due to lack of AP
 
     if '*' in this_crit:
-        if armor_pen == False:
-            this_crit = 'None - No AP'
+        if not armor_pen and verbose_mode:
+            this_crit = 'Crit was ' + this_crit + ' but lack of armor pen changed to None - No AP. '
+        elif not armor_pen:
+            this_crit = 'None - No AP. '
         else:
             this_crit = this_crit[:-1]
 
@@ -744,7 +761,7 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
 
     #After all the possible crits
     crit_string_to_write = current_crits + new_crit_string #new_crit_string is filled in by the appropriate if...elif block
-    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Critical Hits] = ?;""",(crit_string_to_write,))
+    cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Critical Hits] = ? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(crit_string_to_write,ship_id_info[0],ship_id_info[1],ship_id_info[2],ship_id_info[3]))
     conn.commit()
     close_connection(cursor)
     return new_crit_string
