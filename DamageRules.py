@@ -431,24 +431,29 @@ def apply_crit(target, ship_column_names, this_crit, armor_pen, debug_mode=False
         #Will then do a query to turn on [Crit FC] for any mounts that have both primary and secondary FC set to NULL.
         if 'Main battery' in this_crit:
             batt_type = 'Main battery '
+            batt_code = 'M'
             cursor.execute("""SELECT * IN 'Game Ship FC Director' WHERE [Gun Battery Class] = 'M' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
         else:
             batt_type = 'Secondary battery '
+            batt_code = 'A'
             cursor.execute("""SELECT * IN 'Game Ship FC Director' WHERE [Gun Battery Class] = 'A' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", ship_id_info)
         directors = cursor.fetchall()
         director_column_names = [description[0] for description in cursor.description]
         eligible_directors = [this_director[director_column_names.index('Director Number')] for this_director in directors]
         this_director = choice(eligible_directors)
-        #Record the crit on the director itself
-        cursor.execute("""UPDATE 'Game Ship FC Director' SET [Director Crit] = 1 WHERE [Director Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
-        #Now knock it out from the gun mount listing and see if anyone's lost fire control.  Done in three queries here, will try to get it down to 2 with more advanced sql-fu
-        cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Primary Director]=NULL WHERE [Primary Director]=? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
-        cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Alternate Director]=NULL WHERE [Alternate Director]=? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
-        cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit FC] = 1 WHERE [Primary Director] = NULL AND [Alternative Director] IS NULL AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
-        conn.commit()
-        #For those annoying mounts with 2 directors...
-        #May code that later, will be ugly and require multiple SQL lookups
-        new_crit_string = batt_type + "director # " + str(this_director) + "hit, linked guns lose FC."
+        if this_director != 0: #Assuming director hasn't already been hit...
+            #Record the crit on the director itself
+            cursor.execute("""UPDATE 'Game Ship FC Director' SET [Director Crit] = 1 WHERE [Director Number] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+            #Now knock it out from the gun mount listing and see if anyone's lost fire control.  Done in three queries here, will try to get it down to 2 with more advanced sql-fu
+
+            cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Primary Director] = CASE WHEN [Primary Director] = ? THEN NULL ELSE [Primary Director] END, [Alternative Director] = CASE WHEN [Alternative Director] = ? THEN NULL ELSE [Alternative Director] END WHERE [Gun Battery Class] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ? AND ([Primary Director] = ? OR [Alternative Director] = ?);""", (this_director, this_director, batt_code, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], this_director, this_director, ))
+
+            #cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Primary Director]=NULL WHERE [Primary Director]=? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+            #cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Alternate Director]=NULL WHERE [Alternate Director]=? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (this_director, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+            cursor.execute("""UPDATE 'Game Ship Gun Mount' SET [Crit FC] = 1 WHERE [Primary Director] = NULL AND [Alternative Director] IS NULL AND [Gun Battery Class] = ? AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ?;""", (batt_code, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
+            conn.commit()
+
+            new_crit_string = batt_type + "director # " + str(this_director) + "hit, linked guns lose FC."
 
     elif 'Weapon' in this_crit:
 

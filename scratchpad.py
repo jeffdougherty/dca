@@ -194,4 +194,11 @@ def test_value_change():
     this_crit = 'Crit was ' + this_crit + ' but lack of armor pen changed to None - No AP'
     print this_crit
 
-test_value_change()
+#test_value_change()
+
+def test_sql_code():
+    cursor, conn = connect_to_db(returnConnection=True)
+    cursor.execute("""UPDATE [Game Ship Gun Mount] SET [Primary Director] = CASE WHEN [Primary Director] = ? THEN NULL ELSE [Primary Director] END, [Alternative Director] = CASE WHEN [Alternative Director] = ? THEN NULL ELSE [Alternative Director] END WHERE [Mount Class] = 'M' AND [Game ID] = ? AND [Scenario Side] = ? AND [Formation ID] = ? AND [Formation Ship Key] = ? AND ([Primary Director] = ? OR [Alternative Director] = ?);""", (1, 1, 1, 2, 1, 1, 1, 1))
+    conn.commit()
+
+test_sql_code()
