@@ -18,7 +18,6 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
     this_ship_record = cursor.fetchone()
     ship_column_names = [description[0] for description in cursor.description]
     #Check for speed reduction
-    log_string += check_speed_reduction(this_ship_record, ship_column_names, remaining_points) #Don't need to re-sample to see if we've had new eng crits from this hit, hit just started.
     #Check for massive damage
     massive_damage_result = check_massive_damage(target, dp, remaining_points, hit_type)
     if 'sinks' in massive_damage_result:
@@ -93,7 +92,7 @@ def shell_bomb_hit(target, dp, hit_type, armor_pen, d6=None, d100_list=None, deb
             log_string += apply_crit(this_ship_record, ship_column_names, this_crit, armor_pen, debug_mode, verbose_mode)
 
     #After all crits are applied, check once for reduction in speed, making sure to resample the record
-    log_string += check_speed_reduction(resample_ship_record=True, ship_id_info=ship_id_info)
+    log_string += check_speed_reduction(ship_id_info)
 
     return log_string
 
@@ -137,22 +136,17 @@ def sink_ship(this_ship_record=None, ship_column_names=None, target=None):
     close_connection(cursor)
     return target['Ship Name'] + " sinks!"
 
-def check_speed_reduction(this_ship_record=None, ship_column_names=None, remaining_points=None, resample_ship_record=False, ship_id_info=None):
-    #There are two times we might need to call this function
-    #One is just after we've taken the starting DP at the very beginning at the hit.
-    #The other is after we've a) taken additional damage from crits (magazine explosions etc) or b) taken some engineering criticals
-    #In the latter case, we don't know if other crits from this hit have changed the ship's current DP or engineering crit status.  If so, that wouldn't be reflected in this_ship_record, which is taken at the start of the hit immediately after DP are subtracted.
-    #So we resample the ship record from the database
+def check_speed_reduction(ship_id_info):
+    #Rewriting this to be simpler- we call it only once, at the END of the hit.  No reason the speed needs to be updated *during* the hit!  Can just do it at the end and take into account everything that's happened
 
-    assert (this_ship_record != None and ship_column_names != None and remaining_points != None) or (resample_ship_record==True and ship_id_info != None) #Check to make sure we have a set of valid parameters for one of the cases above
     cursor, conn = connect_to_db(returnConnection=True)
     addl_log_string = ""
+    limited_by_flooding = False
 
-    if resample_ship_record:
-        cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
-        this_ship_record = cursor.fetchone()
-        ship_column_names = [description[0] for description in cursor.description]
-        remaining_points = this_ship_record[ship_column_names.index('Damage Pts')]
+    cursor.execute("""SELECT * FROM 'Game Ship Formation Ship' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", ship_id_info)
+    this_ship_record = cursor.fetchone()
+    ship_column_names = [description[0] for description in cursor.description]
+    remaining_points = this_ship_record[ship_column_names.index('Damage Pts')]
 
     target_speed_start = float(to_precision(this_ship_record[ship_column_names.index('Speed')], 3))
     target_speed_current = float(to_precision(this_ship_record[ship_column_names.index('Speed Damaged')], 3))
@@ -169,17 +163,18 @@ def check_speed_reduction(this_ship_record=None, ship_column_names=None, remaini
     current_speed_index += this_ship_record[ship_column_names.index('Crit Engineering')]
 
     if current_speed_index > 4:
-        current_speed_index = 4 #Can't be reduced to less than 0 knots.
+        current_speed_index = 4 #Can't be reduced to less than 0 knots.  Or more to the point, can't be forced off the end of the [list] by multiple Engineering crits
 
     if target_speed_thresholds[current_speed_index] != target_speed_current:
-        if ship_id_info == None: #Might already have it from function parameters
-            ship_id_info = get_ship_id_info(this_ship_record, ship_column_names)
         new_speed = target_speed_thresholds[current_speed_index]
         if new_speed > 15 and this_ship_record[ship_column_names.index('Flooding Severity')] >= 2: #Speed limited by flooding
             new_speed = 15
+            limited_by_flooding = True
         cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Speed Damaged]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""", (new_speed, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3], ))
-        addl_log_string = "Max speed is now " + str(new_speed) + " knots. "
         conn.commit()
+        addl_log_string = "Max speed is now " + str(new_speed) + " knots. "
+        if limited_by_flooding:
+            addl_log_string += "(Limited by flooding) "
 
     close_connection(cursor)
     return addl_log_string
@@ -766,7 +761,7 @@ def apply_crit(this_ship_record, ship_column_names, this_crit, armor_pen, debug_
 
     elif 'Flood' in this_crit:
         if debug_mode or verbose_mode:
-            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(this_ship_record, ship_column_names, ship_id_info, armor_pen=armor_pen, debug_mode=debug_mode, verbose_mode=verbose_mode)
         pass
 
     elif 'Cargo' in this_crit:
@@ -851,14 +846,14 @@ def start_fire(this_ship_record, ship_column_names, ship_id_info, armor_pen, thi
         conn.commit()
 
         return_string = "Fire increases in severity by " + str(this_severity) + "%, total now " + str(current_fire) + "%. "
-        return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_fire=current_fire)
+        return_string += check_severity_levels(this_ship_record, ship_column_names, ship_id_info, this_fire=current_fire)
         return return_string
     elif debug_mode or verbose_mode:
         return "Fire severity of " + str(this_severity_original) + " rolled, reduced by modifiers to less than 1, no fire."
     else:
         return ""
 
-def start_flooding(target, ship_id_info, this_ship_record, ship_column_names, armor_pen, debug_mode = False, verbose_mode=False):
+def start_flooding(this_ship_record, ship_column_names, ship_id_info, armor_pen, debug_mode = False, verbose_mode=False):
     this_annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
     this_in_service_date = int(this_annex_a_entry[annex_a_column_names.index('In Service')])
 
@@ -890,14 +885,14 @@ def start_flooding(target, ship_id_info, this_ship_record, ship_column_names, ar
         conn.commit()
 
         return_string = "Flooding increases by " + str(this_severity) + "%, total now " + str(current_flooding)
-        return_string += check_severity_levels(target, this_ship_record, ship_column_names, this_flooding=current_flooding)
+        return_string += check_severity_levels(this_ship_record, ship_column_names, ship_id_info, this_flooding=current_flooding)
         return return_string
     elif debug_mode or verbose_mode:
         return "Flooding severity of " + str(this_severity_original) + "% rolled, reduced by modifiers to less than 1, no flooding."
     else:
         return ""
 
-def check_severity_levels(target, this_ship_record, ship_column_names, this_fire=None, this_flooding=None):
+def check_severity_levels(this_ship_record, ship_column_names, ship_id_info, this_fire=None, this_flooding=None):
 
     #Translates old fire/flooding percentage into Minor/Major/Severe/Overwhelmed and stores this data in the ship record as an integer, then applies consequences for fire/flooding.
     #See severity_dict for how integer values in 'Game Ship Formation Ship' fields translate into severity levels.
@@ -906,7 +901,6 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
 
     severity_labels_dict = {0: 'None', 1: 'Minor', 2: 'Major', 3: 'Severe', 4: 'Overwhelmed'}
     annex_a_entry, annex_a_column_names = get_annex_a_entry(this_ship_record, ship_column_names)
-    ship_id_info = get_ship_id_info(target)
     this_in_service_date = int(annex_a_entry[annex_a_column_names.index('In Service')]) #Retrieving instead of passing because we need to go into Annex A anyway, so avoid the overhead of passing params
     this_size_class = annex_a_entry[annex_a_column_names.index('Size Class')]
     old_severity_levels_dict = {'Fire': int(this_ship_record[ship_column_names.index('Fire Severity')]), 'Flooding': int(this_ship_record[ship_column_names.index('Flooding Severity')]), 'Combined': int(this_ship_record[ship_column_names.index('Combined Severity')])}
@@ -986,14 +980,14 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
             new_ship_remarks = this_ship_record[ship_column_names.index('Remarks')].replace('Ship illuminated by fire', '')
             cursor.execute("""UPDATE 'Game Ship Formation Ship' SET [Remarks]=? WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=?;""",(new_ship_remarks, ship_id_info[0], ship_id_info[1], ship_id_info[2], ship_id_info[3],))
 
-        elif new_severity_levels_dict['Fire'] == 4 and old_severity_levels_dict['Fire'] < 4 and target['Crit Flood Magazines'] == 0:
+        elif new_severity_levels_dict['Fire'] == 4 and old_severity_levels_dict['Fire'] < 4 and this_ship_record[ship_column_names.index('Crit Flood Magazines')] == 0:
             explosion_check = rolld100()
             if explosion_check <= 25:
-                return_string += "Conflagration causes explosion, " + sink_ship(target)
+                return_string += "Conflagration causes explosion, " + sink_ship(this_ship_record, ship_column_names)
             else:
                 cursor.execute("""INSERT INTO 'Game Ship Fire/Flood' VALUES (?,?,?,?,'Cumulative Explosion Check',25,0,0);""", ship_id_info)
 
-        elif old_severity_levels_dict['Fire'] == 4: #Severity was 4, now it's gone down (or we would have exited already)
+        elif old_severity_levels_dict['Fire'] == 4 and new_severity_levels_dict['Fire'] < 4: #Severity was 4, now it's gone down
             cursor.execute("""DELETE FROM 'Game Ship Fire/Flood' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=? AND [Type]='Cumulative Explosion Check';""", ship_id_info)
 
         conn.commit()
@@ -1008,10 +1002,10 @@ def check_severity_levels(target, this_ship_record, ship_column_names, this_fire
             if new_severity_levels_dict['Flooding'] == 4 and old_severity_levels_dict['Flooding'] < 4:
                 capsize_check = rolld100()
                 if capsize_check <= 25:
-                    return_string += "Ship capsizes, " + sink_ship(target)
+                    return_string += "Ship capsizes, " + sink_ship(this_ship_record, ship_column_names)
                 else:
                     cursor.execute("""INSERT INTO 'Game Ship Fire/Flood' VALUES (?,?,?,?,'Capsize Check',25,0,0);""", ship_id_info)
-            elif new_severity_levels_dict['Flooding'] < 4 and old_severity_levels_dict['Flooding'] == 4:
+            elif old_severity_levels_dict['Flooding'] == 4 and new_severity_levels_dict['Flooding'] < 4:
                 cursor.execute("""DELETE FROM 'Game Ship Fire/Flood' WHERE [Game ID]=? AND [Scenario Side]=? AND [Formation ID]=? AND [Formation Ship Key]=? AND [Type]='Capsize Check';""", ship_id_info)
 
         conn.commit()
