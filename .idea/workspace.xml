@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Rewrote director code for multiple mounts, reducing the number of database queries per director hit required by one.&#10;- scratchpad now has a test case that was used to validate that this new syntax">
+    <list default="true" id="7c30f5e4-674d-4a2a-824f-754cf9364c4c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DamageRules.py" afterPath="$PROJECT_DIR$/DamageRules.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scratchpad.py" afterPath="$PROJECT_DIR$/scratchpad.py" />
     </list>
     <ignored path="Damage Control Assistant.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DamageRules.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DamageRules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2115">
-              <caret line="601" column="17" selection-start-line="601" selection-start-column="17" selection-end-line="601" selection-end-column="17" />
+            <state relative-caret-position="-1868">
+              <caret line="139" column="21" selection-start-line="139" selection-start-column="4" selection-end-line="139" selection-end-column="21" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -111,7 +110,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="scratchpad.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scratchpad.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="500">
@@ -171,14 +170,14 @@
         <option value="$PROJECT_DIR$/debugnotes.txt" />
         <option value="$PROJECT_DIR$/InGameWindow.py" />
         <option value="$PROJECT_DIR$/readme.txt" />
-        <option value="$PROJECT_DIR$/DamageRules.py" />
         <option value="$PROJECT_DIR$/scratchpad.py" />
+        <option value="$PROJECT_DIR$/DamageRules.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="21" />
-    <option name="y" value="48" />
+    <option name="x" value="29" />
+    <option name="y" value="79" />
     <option name="width" value="1870" />
     <option name="height" value="953" />
   </component>
@@ -749,11 +748,18 @@
       <option name="project" value="LOCAL" />
       <updated>1504466898619</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Rewrote director code for multiple mounts, reducing the number of database queries per director hit required by one.&#10;- scratchpad now has a test case that was used to validate that this new syntax worked and wouldn't cause duplicate rows to clutter up the table.">
+      <created>1504469064875</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1504469064875</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="21" y="48" width="1870" height="953" extended-state="0" />
+    <frame x="29" y="79" width="1870" height="953" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20855615" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -808,7 +814,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="SHOW_FILE_HISTORY_DETAILS" value="false" />
-    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Starting to hook up the firestarting code, trying to bring some rationality to how fires are going to be tracked." />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;Apparently I'm not supposed to use str.isnumeric() anymore, str.isdigit() is the new thing in town." />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Added ability to have a reduction mod for fires as well as a severity mod starting out&#10;- Added explosion/capsize checks as an event on the 'Game Ship Fire/Flood' table, still need a function to interpret that&#10;- Changed parameters so armor_pen value carries into apply_crit() function, to allow for fires when armor hasn't been penetrated.&#10;- Finished code to deal with cargo critical hits" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Added function start_flooding() as counterpart to start_fire()" />
@@ -833,7 +838,8 @@
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Fix readme formatting errors" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Fix indexing crash bug on reducing speed after Engineering crits&#10;- Fix some readme typos" />
     <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Fix some mostly typo bugs found in the gun mounts crit code.&#10;- Reworking FC crits, since it turns out I never finished the code to handle mounts with primary/alterate directors." />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Fix some mostly typo bugs found in the gun mounts crit code.&#10;- Reworking FC crits, since it turns out I never finished the code to handle mounts with primary/alterate directors." />
+    <MESSAGE value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Rewrote director code for multiple mounts, reducing the number of database queries per director hit required by one.&#10;- scratchpad now has a test case that was used to validate that this new syntax worked and wouldn't cause duplicate rows to clutter up the table." />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/jeffdougherty/dca&#10;&#10;- Rewrote director code for multiple mounts, reducing the number of database queries per director hit required by one.&#10;- scratchpad now has a test case that was used to validate that this new syntax worked and wouldn't cause duplicate rows to clutter up the table." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -955,52 +961,52 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>21</line>
+          <line>20</line>
           <option name="timeStamp" value="521" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>30</line>
+          <line>29</line>
           <option name="timeStamp" value="523" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>23</line>
+          <line>22</line>
           <option name="timeStamp" value="524" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>63</line>
+          <line>62</line>
           <option name="timeStamp" value="529" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>71</line>
+          <line>73</line>
           <option name="timeStamp" value="535" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>788</line>
+          <line>814</line>
           <option name="timeStamp" value="536" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>814</line>
+          <line>840</line>
           <option name="timeStamp" value="537" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>427</line>
+          <line>454</line>
           <option name="timeStamp" value="539" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>421</line>
+          <line>448</line>
           <option name="timeStamp" value="540" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/DamageRules.py</url>
-          <line>883</line>
+          <line>909</line>
           <option name="timeStamp" value="541" />
         </line-breakpoint>
       </breakpoints>
@@ -1380,16 +1386,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DamageRules.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2115">
-          <caret line="601" column="17" selection-start-line="601" selection-start-column="17" selection-end-line="601" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scratchpad.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
@@ -1401,6 +1397,16 @@
             <element signature="e#2624#3109#0" expanded="false" />
             <element signature="e#3146#3685#0" expanded="false" />
             <element signature="e#3903#4242#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DamageRules.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1868">
+          <caret line="139" column="21" selection-start-line="139" selection-start-column="4" selection-end-line="139" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
           </folding>
         </state>
       </provider>
