@@ -753,20 +753,20 @@ def apply_crit(this_ship_record, ship_column_names, this_crit, armor_pen, debug_
 
     elif 'Aviation Fuel' in this_crit:
         if debug_mode or verbose_mode:
-            new_crit_string = "Aviation Fuel hit, starting fire.  "  + start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string = "Aviation Fuel hit, starting fire.  "  + start_fire(ship_id_info, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
-            new_crit_string = start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string = start_fire(ship_id_info, this_ship_record, ship_column_names, armor_pen=True, this_strength_mod='+2', this_reduction_mod='+2', debug_mode=debug_mode, verbose_mode=verbose_mode)
 
     elif 'Fire' in this_crit:
         #Start a fire
         if debug_mode or verbose_mode:
-            new_crit_string = "Fire crit rolled, starting fire. " + start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string = "Fire crit rolled, starting fire. " + start_fire(ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
-            new_crit_string = start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string = start_fire(ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, this_strength_mod='0', debug_mode=debug_mode, verbose_mode=verbose_mode)
 
     elif 'Flood' in this_crit:
         if debug_mode or verbose_mode:
-            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(target, ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string = "Flooding crit rolled, starting flood" + start_flooding(ship_id_info, this_ship_record, ship_column_names, armor_pen=armor_pen, debug_mode=debug_mode, verbose_mode=verbose_mode)
         pass
 
     elif 'Cargo' in this_crit:
@@ -781,7 +781,7 @@ def apply_crit(this_ship_record, ship_column_names, this_crit, armor_pen, debug_
             if ammo_effects_roll >= 8:
                 new_crit_string += 'Ammo explodes, ship sunk! ' + sink_ship(target)
             elif ammo_effects_roll >= 3:
-                new_crit_string += 'Starting fire, risk of explosion on Intermediate Turns.  ' + start_fire(target,ship_id_info, this_ship_record, ship_column_names, armor_pen, this_strength_mod='+1', this_reduction_mod='+1', debug_mode=debug_mode, verbose_mode=verbose_mode)
+                new_crit_string += 'Starting fire, risk of explosion on Intermediate Turns.  ' + start_fire(ship_id_info, this_ship_record, ship_column_names, armor_pen, this_strength_mod='+1', this_reduction_mod='+1', debug_mode=debug_mode, verbose_mode=verbose_mode)
                 cursor.execute("""INSERT INTO 'Game Ship Fire Flood' VALUES (?,?,?,?,'Non-cumulative explosion check',25,0,0);""",ship_id_info)
                 conn.commit()
             else:
@@ -795,7 +795,7 @@ def apply_crit(this_ship_record, ship_column_names, this_crit, armor_pen, debug_
                 cargo_fire_mod = '+' + str(rolld6())
             else:
                 cargo_fire_mod = '+2'
-            new_crit_string += 'Petroleum cargo hit, starting fire. ' + start_fire(target, ship_id_info, this_ship_record, ship_column_names, armor_pen, this_strength_mod=cargo_fire_mod, this_reduction_mod=cargo_fire_mod, debug_mode=debug_mode, verbose_mode=verbose_mode)
+            new_crit_string += 'Petroleum cargo hit, starting fire. ' + start_fire(ship_id_info, this_ship_record, ship_column_names, armor_pen, this_strength_mod=cargo_fire_mod, this_reduction_mod=cargo_fire_mod, debug_mode=debug_mode, verbose_mode=verbose_mode)
         else:
             new_crit_string += 'No other effect.'
 
