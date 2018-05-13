@@ -324,22 +324,15 @@ class ShipEntryForm(Frame):
         self.pack(fill=BOTH, expand=1)
         self.update_geometry()
         #Retrieve the data to make our lists.  Will need to be stored in the class since it also has to be changed from multiple places
-        cursor = connect_to_db()
+        #cursor, conn = connect_to_db(returnConnection=True)
         self.base_cmd_string = """SELECT * FROM 'Ship'"""
         self.columns_to_retrieve = ['Country', 'Ship Type', 'Class', 'Class Variant']
         self.supplemental_cmd_string = ""
         self.supplemental_args = {}
         self.indexes_dict = {}
-        lists_dict = {}
+        initial_lists_dict = self.get_all_ship_data()
         self.combobox_dict = {}
-        cursor.execute(self.base_cmd_string)
-        self.ship_table_headings = [description[0] for description in cursor.description]
-        db_dump = cursor.fetchall()
-        for this_column in self.columns_to_retrieve:
-            self.indexes_dict[this_column] = self.ship_table_headings.index(this_column)
-            this_list = list(set([result[self.indexes_dict[this_column]] for result in db_dump]))
-            this_list.sort()
-            lists_dict[this_column] = this_list
+
         self.indexes_dict['Ship Key'] = self.ship_table_headings.index('Ship Key')
         self.window_frames = []
         for i in xrange(2):
@@ -347,11 +340,25 @@ class ShipEntryForm(Frame):
             self.window_frames.append(this_frame)
             this_frame.pack(side='top')
         self.draw_name_entry_field()
-        self.draw_combo_boxes(lists_dict)
+        self.draw_combo_boxes(initial_lists_dict)
         self.draw_key_field()
+        self.draw_reset_button()
         self.draw_notes_field()
         self.draw_buttons()
+
+    def get_all_ship_data(self):
+        initial_lists_dict = {}
+        cursor = connect_to_db()
+        cursor.execute(self.base_cmd_string)
+        self.ship_table_headings = [description[0] for description in cursor.description]
+        db_dump = cursor.fetchall()
+        for this_column in self.columns_to_retrieve:
+            self.indexes_dict[this_column] = self.ship_table_headings.index(this_column)
+            this_list = list(set([result[self.indexes_dict[this_column]] for result in db_dump]))
+            this_list.sort()
+            initial_lists_dict[this_column] = this_list
         close_connection(cursor)
+        return initial_lists_dict
 
     def update_geometry(self):
         self.width = self.parent.winfo_width()
@@ -359,7 +366,7 @@ class ShipEntryForm(Frame):
         self.parent.geometry = self.winfo_toplevel().winfo_geometry()
 
     def draw_name_entry_field(self):
-        name_entry_frame = Frame(self.window_frames[0], width = self.width / 5)
+        name_entry_frame = Frame(self.window_frames[0], width = self.width / 6)
         name_entry_frame.pack(side='left')
         name_entry_label = Label(name_entry_frame, text = "Name")
         name_entry_label.pack(side='top')
@@ -374,7 +381,7 @@ class ShipEntryForm(Frame):
     def draw_combo_boxes(self, initial_lists_dict):
         combobox_frames = {}
         for this_column in self.columns_to_retrieve:
-            combobox_frames[this_column] = Frame(self.window_frames[0], width = self.width / 5)
+            combobox_frames[this_column] = Frame(self.window_frames[0], width = self.width / 6)
             combobox_frames[this_column].pack(side='left')
             this_combobox_label = Label(combobox_frames[this_column], text = this_column)
             this_combobox_label.pack(side='top')
@@ -397,13 +404,19 @@ class ShipEntryForm(Frame):
                 self.combobox_dict[this_column].config(state='disabled', textvariable=self.class_variant_string)
 
     def draw_key_field(self):
-        key_frame = Frame(self.window_frames[0], width = self.width / 5)
+        key_frame = Frame(self.window_frames[0], width = self.width / 6)
         key_frame.pack(side='left')
         key_label = Label(key_frame, text="Ship Key")
         key_label.pack(side='top')
         self.ship_key_field = Entry(key_frame, text= "", width = 3)
         self.ship_key_field.config(state='readonly')
         self.ship_key_field.pack(side='top')
+
+    def draw_reset_button(self):
+        reset_button_frame = Frame(self.window_frames[0], width = self.width / 6)
+        reset_button_frame.pack(side='left')
+        self.reset_button = Button(reset_button_frame, text="Reset", command=lambda: self.reset_all_buttons())
+        self.reset_button.pack(side='left')
 
     def draw_notes_field(self):
         notes_frame = Frame(self.window_frames[1], width = self.width/5, height=5)
@@ -488,6 +501,17 @@ class ShipEntryForm(Frame):
             self.combobox_dict['Class Variant'].config(state='disabled')
             self.name_entry_form.config(state='disabled')
             self.ok_button.config(state='disabled')
+
+    def reset_all_buttons(self):
+        self.supplemental_args = {}
+        self.supplemental_cmd_string = ""
+        initial_lists_dict = self.get_all_ship_data()
+        for key in self.combobox_dict.keys():
+            self.combobox_dict[key].config(values=initial_lists_dict[key])
+            self.combobox_dict[key].delete(0, 'end')
+        self.combobox_dict['Class Variant'].config(state='disabled')
+        self.name_entry_form.config(state='disabled')
+        self.ok_button.config(state='disabled')
 
     def lookup_ship_key(self, db_dump):
         self.new_ship_key = list(set([result[self.indexes_dict['Ship Key']] for result in db_dump]))
